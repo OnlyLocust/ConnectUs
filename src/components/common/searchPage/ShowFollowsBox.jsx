@@ -1,9 +1,8 @@
 "use client";
 
 import React from "react";
-import { TableCell, TableRow } from "../ui/table";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Button } from "../ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { Eye, UserMinus, UserPlus } from "lucide-react";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,6 +10,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import { API_URL } from "@/constants/constant";
 import { followRecv } from "@/store/authSlice";
+import { TableCell, TableRow } from "@/components/ui/table";
 
 const ShowFollowsBox = ({ user, userId }) => {
   const dispatch = useDispatch();

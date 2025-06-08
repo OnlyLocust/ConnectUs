@@ -1,6 +1,4 @@
 import React from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Button } from "../ui/button";
 import Link from "next/link";
 import { Eye, UserMinus, UserPlus } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,6 +7,8 @@ import { API_URL } from "@/constants/constant";
 import { toast } from "sonner";
 import { followRecv } from "@/store/authSlice";
 import { notify } from "@/lib/socket";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 
 const SearchShowFollowBox = ({ user }) => {
   const dispatch = useDispatch();

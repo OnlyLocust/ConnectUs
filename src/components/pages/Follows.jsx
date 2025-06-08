@@ -1,22 +1,21 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Card,
   CardContent,
-  CardHeader,
-  CardTitle,
+  CardHeader
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { API_URL } from "@/constants/constant";
 import { emptyFollow, setFollow } from "@/store/followSlice";
 import axios from "axios";
-import { Search} from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
-import ShowFollowsBox from "../common/ShowFollowsBox";
+import SearchInput from "../common/followPage/SearchInput";
+import FollowHeaderProfile from "../common/followPage/FollowHeaderProfile";
+import FollowType from "../common/followPage/FollowType";
+import ShowFollowsBox from "../common/searchPage/ShowFollowsBox";
 
 export default function FollowsPage({ id, followType }) {
   const follow = useSelector((state) => state.follow.follow) || [];
@@ -74,49 +73,14 @@ export default function FollowsPage({ id, followType }) {
       <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
         <main className="w-2/3 m-auto grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
           <div className="flex items-center justify-between">
-            <div className="flex gap-4 items-center justify-center">
-              <Avatar className="h-10 w-10">
-              <AvatarImage
-                src={profile?.profilePicture}
-                alt={profile?.username}
-              />
-              <AvatarFallback>
-                {profile?.username?.charAt(0).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-            <h1 className="text-2xl font-semibold">
-              {userId == id ? "Your" : `${profile?.username}'s`}{" "}
-              {followType == "followers" ? "followers" : "following"}
-            </h1>
-            </div>
+            <FollowHeaderProfile profilePicture={profile?.profilePicture} username={profile?.username} userId={userId} id={id} followType={followType} />
 
-            <div className="relative">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder="Search followers..."
-                className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
-                 value={searchQuery}
-          onChange={handleSearch}
-              />
-            </div>
+            <SearchInput value={searchQuery} onChange={handleSearch} />
           </div>
 
           <Card>
             <CardHeader>
-              <CardTitle>
-                {followType == "followers" ? (
-                  <span>
-                    Followers of {userId == id ? "You" : profile?.username} :{" "}
-                    {follow.length} People
-                  </span>
-                ) : (
-                  <span>
-                     {userId == id ? "You" : profile?.username} Following : {" "}
-                    {follow.length} People
-                  </span>
-                )}
-              </CardTitle>
+              <FollowType followType={followType} userId={userId} id={id} followLength={follow.length} username={profile?.username} />
             </CardHeader>
             <CardContent>
               <Table>

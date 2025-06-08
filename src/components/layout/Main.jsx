@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import { setPosts, addPosts } from "@/store/postSlice";
 import axios from "axios";
-import Loading from "../pages/Loading";
+import Loading from "../common/Loading";
 
 const Main = () => {
   const dispatch = useDispatch();
@@ -17,8 +17,6 @@ const Main = () => {
   const [skip, setSkip] = useState(0);
   const observerRef = useRef(null);
   const initialLoad = useRef(true);
-
-  
 
   const fetchPosts = async () => {
     if (loading || !hasMore) return;
@@ -31,7 +29,7 @@ const Main = () => {
 
       if (res.data.success) {
         const newPosts = res.data.posts || [];
-        
+
         if (newPosts.length === 0) {
           setHasMore(false);
           return;
@@ -43,8 +41,8 @@ const Main = () => {
           dispatch(addPosts(newPosts));
         }
 
-        setSkip(skip+1);
-        
+        setSkip(skip + 1);
+
         if (newPosts.length < 4) {
           setHasMore(false);
         }
@@ -54,8 +52,8 @@ const Main = () => {
     } catch (error) {
       toast.error(
         error.response?.data?.message ||
-        error.message ||
-        "Failed to fetch posts"
+          error.message ||
+          "Failed to fetch posts"
       );
     } finally {
       setLoading(false);
@@ -110,8 +108,13 @@ const Main = () => {
       </div>
 
       {/* Observer element */}
-      <div ref={observerRef} className="h-10 mt-4 flex items-center justify-center">
-        {loading && <span className="text-gray-500">Loading more posts...</span>}
+      <div
+        ref={observerRef}
+        className="h-10 mt-4 flex items-center justify-center"
+      >
+        {loading && (
+          <span className="text-gray-500">Loading more posts...</span>
+        )}
         {!hasMore && posts.length > 0 && (
           <span className="text-gray-400">No more posts to show</span>
         )}

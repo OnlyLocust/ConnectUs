@@ -1,18 +1,21 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { SearchIcon, XIcon, UsersIcon, ImageIcon } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import axios from "axios";
 import { API_URL } from "@/constants/constant";
 import { setSearchPosts, setSearchUsers } from "@/store/searchSlice";
-import SearchShowFollowBox from "../common/SearchShowFollowBox";
-import SearchShowPostBox from "../common/SearchShowPostBox";
+import SearchShowPostBox from "../common/searchPage/SearchShowPostBox";
+import SearchTabs from "../common/searchPage/SearchTabs";
+import SearchForm from "../common/searchPage/SearchForm";
+import SearchLoading from "../common/searchPage/SearchLoading";
+import NoSearch from "../common/searchPage/NoSearch";
+import SearchShowFollowBox from "../common/searchPage/SearchShowFollowBox";
+
+
+const searchSlicing = 7
 
 export default function SearchPage() {
   const dispatch = useDispatch();
@@ -96,65 +99,20 @@ export default function SearchPage() {
   return (
     <div className="max-w-2xl mx-auto p-4">
       <div className="sticky top-0 bg-background z-10 pb-4">
-        <form className="relative">
-          <div className="relative">
-            <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-            <Input
-              type="text"
-              placeholder="Search users or posts..."
-              className="pl-10 pr-10 py-6 rounded-xl text-base"
-              value={searchQuery}
-              onChange={handleSearch}
-            />
-            {searchQuery && (
-              <button
-                type="button"
-                onClick={() => setSearchQuery("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-              >
-                <XIcon className="h-5 w-5" />
-              </button>
-            )}
-          </div>
-        </form>
+        <SearchForm value={searchQuery} onChange={handleSearch} setSearchQuery={setSearchQuery} />
 
         {/* Tabs */}
-        <div className="flex space-x-2 mt-4">
-          <Button
-            variant={activeTab === "users" ? "default" : "outline"}
-            onClick={() => setActiveTab("users")}
-            className="rounded-full"
-          >
-            <UsersIcon className="h-4 w-4 mr-2" /> Users
-          </Button>
-          <Button
-            variant={activeTab === "posts" ? "default" : "outline"}
-            onClick={() => setActiveTab("posts")}
-            className="rounded-full"
-          >
-            <ImageIcon className="h-4 w-4 mr-2" /> Posts
-          </Button>
-        </div>
+        <SearchTabs activeTab={activeTab} setActiveTab={setActiveTab} />
       </div>
 
       {/* Results */}
       <div className="mt-4 space-y-4">
         {isLoading ? (
-          <div className="space-y-4">
-            {[...Array(4)].map((_, i) => (
-              <div key={i} className="flex items-center space-x-4 p-4">
-                <Skeleton className="h-12 w-12 rounded-full" />
-                <div className="space-y-2 flex-1">
-                  <Skeleton className="h-4 w-3/4" />
-                  <Skeleton className="h-3 w-1/2" />
-                </div>
-              </div>
-            ))}
-          </div>
+          <SearchLoading/>
         ) : searchItem.length > 0 ? (
           <div className="space-y-3">
             {activeTab === "users" ? (
-              searchItem.slice(0, 20).map((item, i) => (
+              searchItem.slice(0, searchSlicing).map((item, i) => (
                 <Card
                   key={i}
                   className="border-0 shadow-sm hover:shadow-md transition-shadow"
@@ -166,7 +124,7 @@ export default function SearchPage() {
               ))
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {searchItem.slice(0, 20).map((item) => (
+                {searchItem.slice(0, searchSlicing).map((item) => (
                   <Card
                     key={item._id}
                     className="border-0 shadow-sm hover:shadow-md transition-shadow cursor-pointer hover:border hover:border-gray-200 m-1"
@@ -180,15 +138,7 @@ export default function SearchPage() {
             )}
           </div>
         ) : debouncedQuery && !isLoading ? (
-          <div className="flex flex-col items-center justify-center py-12 text-center">
-            <SearchIcon className="h-12 w-12 text-gray-300 mb-4" />
-            <h3 className="text-lg font-medium text-gray-900">
-              No results found
-            </h3>
-            <p className="text-gray-500 mt-1">
-              Try different keywords or check your spelling
-            </p>
-          </div>
+          <NoSearch/>
         ) : null}
       </div>
     </div>

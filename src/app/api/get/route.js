@@ -12,7 +12,7 @@ export const GET = async (req) => {
     const userWithCounts = await User.aggregate([
       { $match: { _id: objectUserId } },
       {
-        $lookup: {
+        $lookup: { 
           from: "posts",
           localField: "posts",
           foreignField: "_id",

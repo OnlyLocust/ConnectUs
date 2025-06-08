@@ -1,12 +1,12 @@
-import Loading from '@/components/pages/Loading'
-import React from 'react'
+import Loading from "@/components/common/Loading";
+import React from "react";
 
 const loading = () => {
   return (
     <div>
-      <Loading/>
+      <Loading />
     </div>
-  )
-}
+  );
+};
 
-export default loading
+export default loading;

@@ -20,7 +20,8 @@ export const GET = async (req) => {
 export const PATCH = async (req) => {
   try {
     // const id = auth(req);
-    const id = req.headers['userId']
+    const id = req.headers.get("userId");
+    
 
     const form = await req.formData(); // ⬅️ this is the key
 
