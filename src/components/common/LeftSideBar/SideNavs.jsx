@@ -64,7 +64,7 @@ const SideNavs = ({user}) => {
           </Avatar>
         ),
         text: "Profile",
-        path: "/home/user/profile",
+        path: `/home/user/profile/${user._id}`,
       },
     ],
     [user?.profilePicture, user?.username, notRead]

@@ -13,6 +13,7 @@ import { API_URL } from "@/constants/constant";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserChats } from "@/store/chatSlice";
 import { toast } from "sonner";
+import { askOnline } from "@/lib/socket";
 
 export default function MessagesPage() {
 
@@ -28,6 +29,10 @@ const [loading , setLoading] = useState(false)
   const [searchTerm, setSearchTerm] = useState("");
 
   // Sample data - replace with your actual data
+
+  useEffect(() => {
+    askOnline()
+  },[chatUsers])
 
 
   const filteredChats = useMemo(() => {
@@ -45,6 +50,8 @@ const [loading , setLoading] = useState(false)
         const res = await axios.get(`${API_URL}/chat/chatusers`,{withCredentials:true})
         if(res.data.success){
           dispatch(setUserChats(res.data.chatUsers))
+          console.log(res.data.chatUsers);
+          
         }
         else{
           throw new Error(res.data.message || "Failed to fetch all users for chat")
@@ -53,6 +60,7 @@ const [loading , setLoading] = useState(false)
         toast.error(error.message || error.data.message || 'Failed to fetch all users for chat')
       }
       finally{
+        askOnline()
         setLoading(false)
       }
     }

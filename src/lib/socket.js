@@ -1,70 +1,92 @@
-import { io } from "socket.io-client";
-import dotenv from "dotenv";
-dotenv.config();
-import { store } from "@/store/store";
-import { addChat } from "@/store/chatSlice";
-import { setNotRead } from "@/store/authSlice";
+  import { io } from "socket.io-client";
+  import dotenv from "dotenv";
+  dotenv.config();
+  import { store } from "@/store/store";
+  import { addChat, addOnline, removeOnline, setOnline } from "@/store/chatSlice";
+  import { setNotRead } from "@/store/authSlice";
 
-let socket;
+  let socket;
 
-export const initiateSocket = (userId) => {
-  if (!socket) {
-    socket = io(process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:3000", {
-      query: { userId },
-      transports: ["websocket"],
-    });
+  export const initiateSocket = (userId) => {
+    if (!socket) {
+      socket = io(process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:3000", {
+        query: { userId },
+        transports: ["websocket"],
+      });
 
-    socket.on("connect", () => {
-      console.log("✅ Socket connected:", socket.id);
-    });
+      socket.on("connect", () => {
+        console.log("✅ Socket connected:", socket.id);
+      });
 
-    socket.on("get", (data) => {
-      const recv = store.getState().chat.recv;
+      socket.on("get", (data) => {
+        const recv = store.getState().chat.recv;
 
-      if (recv === data.userId) {
-        store.dispatch(
-          addChat({
-            message: data.message,
-            isSender: false,
-            createdAt: data.createdAt,
-          })
-        );
-      }
-    });
+        if (recv === data.userId) {
+          store.dispatch(
+            addChat({
+              message: data.message,
+              isSender: false,
+              createdAt: data.createdAt,
+            })
+          );
+        }
+      });
 
-    socket.on("notification" ,() => {
-      store.dispatch(setNotRead({type:'inc'}))
-    })
+      socket.on("online-users" , (data) => {
+        store.dispatch(setOnline(data))
+      })
+
+      socket.on('user-online' ,(data) => {
+        const {userId} = data;
+        store.dispatch(addOnline(userId))
+      })
+
+      socket.on('user-offline' ,(data) => {
+        const {userId} = data;
+        store.dispatch(removeOnline(userId))
+      })
+
+      socket.on("notification" ,() => {
+        store.dispatch(setNotRead({type:'inc'}))
+      })
+    }
+  };
+
+  export const sendMessageToSocket = (recvId, message) => {
+    if (socket) {
+      socket.emit("send", {
+        recvId,
+        message,
+        createdAt: Date.now(),
+      });
+    } else {
+      console.warn("❌ Socket not initialized");
+    }
+  };
+
+  export const notify = (recvId) => {
+    if (socket) {
+      socket.emit("notify", {
+        recvId
+      });
+    } else {
+      console.warn("❌ Socket not initialized");
+    }
   }
-};
 
-export const sendMessageToSocket = (recvId, message) => {
-  if (socket) {
-    socket.emit("send", {
-      recvId,
-      message,
-      createdAt: Date.now(),
-    });
-  } else {
-    console.warn("❌ Socket not initialized");
+  export const askOnline = () => {
+    if(socket){
+      socket.emit("get-users" ,{})
+    } else {
+      console.warn("❌ Socket not initialized");
+    }
   }
-};
 
-export const notify = (recvId) => {
-   if (socket) {
-    socket.emit("notify", {
-      recvId
-    });
-  } else {
-    console.warn("❌ Socket not initialized");
-  }
-}
+  export const getSocket = () => socket;
 
-export const getSocket = () => socket;
-
-export const disconnectSocket = () => {
-  if (socket) {
-    socket.disconnect();
-    socket = null;
-  }
-};
+  export const disconnectSocket = () => {
+    if (socket) {
+      socket.disconnect();
+      socket = null;
+    }
+  };

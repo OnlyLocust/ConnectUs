@@ -7,16 +7,19 @@ import { Separator } from "@/components/ui/separator";
 import axios from "axios";
 import { API_URL } from "@/constants/constant";
 import { useDispatch, useSelector } from "react-redux";
-import {  setNotifications } from "@/store/notificationSlice";
+import { setNotifications } from "@/store/notificationSlice";
 import { toast } from "sonner";
 import { setNotRead } from "@/store/authSlice";
 import NoNotification from "../common/notificationPage/NoNotification";
 import Settings from "../common/notificationPage/Settings";
 import NotificationCard from "../common/notificationPage/NotificationCard";
 import Header from "../common/notificationPage/Header";
+import LoadingNotifications from "../common/notificationPage/LoadingNotifications";
 
 export default function NotificationsPage() {
   const dispatch = useDispatch();
+
+  const [loading, setLoading] = useState(false);
 
   const notifications = useSelector(
     (state) => state.notification.notifications
@@ -26,6 +29,7 @@ export default function NotificationsPage() {
   useEffect(() => {
     const getNotifications = async () => {
       try {
+        setLoading(true);
         const res = await axios.get(`${API_URL}/notification/get`, {
           withCredentials: true,
         });
@@ -38,28 +42,12 @@ export default function NotificationsPage() {
         toast.error(
           error.message || error.data.message || "failed notification"
         );
+      } finally {
+        setLoading(false);
       }
-    };
-
-    const setNotReadZero = async () => {
-      try {
-        const res = await axios.patch(`${API_URL}/notification/reset`, {
-          withCredentials: true,
-        });
-        if (!res.data.success) {
-          throw new Error("Failed to set zero ");
-        }
-      } catch (error) {
-        toast.error(error.message || error.data.message || "failed zero");
-      }
-      dispatch(setNotRead({ type: "reset" }));
     };
 
     getNotifications();
-
-    return () => {
-      setNotReadZero(); // Don't wrap it in async IIFE
-    };
   }, []);
 
   const [activeTab, setActiveTab] = useState("all");
@@ -108,27 +96,31 @@ export default function NotificationsPage() {
         </TabsList>
 
         <TabsContent value={activeTab} className="mt-6">
-          <div className="space-y-4">
-            {filteredNotifications.length > 0 ? (
-              filteredNotifications.map((notification, i) => (
-                <div
-                  key={notification._id}
-                  className={`p-4 rounded-lg ${
-                    i < notRead
-                      ? "bg-gray-200 border border-blue-100"
-                      : "bg-white border"
-                  }`}
-                >
-                  <NotificationCard
-                    getNotificationIcon={getNotificationIcon}
-                    notification={notification}
-                  />
-                </div>
-              ))
-            ) : (
-              <NoNotification />
-            )}
-          </div>
+          {loading ? (
+            <LoadingNotifications />
+          ) : (
+            <div className="space-y-4">
+              {filteredNotifications.length > 0 ? (
+                filteredNotifications.map((notification, i) => (
+                  <div
+                    key={notification._id}
+                    className={`p-4 rounded-lg ${
+                      i < notRead && activeTab === "all"
+                        ? "bg-gray-100 border border-blue-100"
+                        : "bg-white border"
+                    }`}
+                  >
+                    <NotificationCard
+                      getNotificationIcon={getNotificationIcon}
+                      notification={notification}
+                    />
+                  </div>
+                ))
+              ) : (
+                <NoNotification />
+              )}
+            </div>
+          )}
         </TabsContent>
       </Tabs>
 

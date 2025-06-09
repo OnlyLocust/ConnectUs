@@ -54,12 +54,12 @@ const Options = ({
   };
 
   const followUser = async () => {
+    dispatch(followRecv({follow:!isFollowing, recvId: userId}));
     try {
       const res = await axios.patch(`${API_URL}/follow/${userId}`, {
         withCredentials: true,
       });
       
-
       if (res.data.success) {
         toast.success(res.data.message);
 
@@ -72,8 +72,9 @@ const Options = ({
           { withCredentials: true }
         );
         }
-        dispatch(followRecv({follow, recvId: userId}));
+      
       } else {
+        dispatch(followRecv({follow:isFollowing, recvId: userId}));
         throw new Error(res.data.message || "Failed to follow user");
       }
     } catch (error) {
@@ -108,7 +109,7 @@ const Options = ({
         )}
         
         {userId == id && (
-          <Button  className="bg-blue-500 hover:text-white text-white hover:bg-blue-600"><Link href='/home/user/profile' className="w-full">Go To Profile</Link></Button>
+          <Button  className="bg-blue-500 hover:text-white text-white hover:bg-blue-600"><Link href={`/home/user/profile/${id}`} className="w-full">Go To Profile</Link></Button>
         )}
         {userId != id && (
           <Button className="bg-black text-white hover:text-white hover:bg-black"><Link href={`/home/user/profile/${userId}`} className="w-full">View Profile</Link></Button>

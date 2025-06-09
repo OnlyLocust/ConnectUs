@@ -111,7 +111,7 @@ const PostCard = ({ post, type }) => {
       );
       if (!res.data.success) throw new Error("Post Like Failed");
       else {
-        if(!isLiked){
+        if(!isLiked && authorId !== user._id){
           notify(authorId);
         await axios.post(
           `${API_URL}/notification/send/${authorId}`,
@@ -149,12 +149,14 @@ const PostCard = ({ post, type }) => {
       );
       if (!res.data.success) throw new Error(res.data.message);
       else {
-        notify(authorId);
-        await axios.post(
-          `${API_URL}/notification/send/${authorId}`,
-          { action: "comment" },
-          { withCredentials: true }
-        );
+        if( authorId !== user._id){
+          notify(authorId);
+          await axios.post(
+            `${API_URL}/notification/send/${authorId}`,
+            { action: "comment" },
+            { withCredentials: true }
+          );
+        }
       }
 
       setComment("");

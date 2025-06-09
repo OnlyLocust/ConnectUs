@@ -20,7 +20,7 @@ app.prepare().then(async () => {
   }).listen(port)
 
 
-  let users = []
+  let onlineUsers = new Map();
 
   const io = new Server(server, {
     cors: {
@@ -31,22 +31,31 @@ app.prepare().then(async () => {
 
   io.on('connection', (socket) => {
     const { userId } = socket.handshake.query;
-    users[userId] = socket.id
+    const userSocket = socket.id
+    onlineUsers.set(userId, socket.id);
+
+    io.emit('user-online', {userId})
 
     socket.on('send' , (data) => {
       const {recvId , message , createdAt} = data
-      const recvSocket = users[recvId]
-      
-
+      // const recvSocket = users[recvId]
+      const recvSocket = onlineUsers.get(recvId)
       if(recvSocket){
         io.to(recvSocket).emit('get', {userId, message ,createdAt})
       }
       
     })
 
+    socket.on('get-users',() => {
+
+      const onlineUserSet = Array.from(onlineUsers.keys())
+
+      io.to(userSocket).emit('online-users' ,{onlineUsers:onlineUserSet})
+    })
+
     socket.on('notify' , (data) => {
       const {recvId} = data
-      const recvSocket = users[recvId]
+      const recvSocket = onlineUsers.get(recvId)
 
       if(recvSocket){
         io.to(recvSocket).emit('notification', {})
@@ -56,13 +65,16 @@ app.prepare().then(async () => {
 
     socket.on('disconnect', () => {
       
-      for (const id in users) {
-        if (users[id] === socket.id) {
-          console.log(`🔴 ${id} disconnected`);
-          delete users[id];
-          break;
-        }
-      }
+      io.emit("user-offline" , {userId})
+      onlineUsers.delete(userId);
+      
+      
+      // for (let [userId, sId] of onlineUsers.entries()) {
+      //   if (sId === socket.id) {
+      //     onlineUsers.delete(userId);
+      //     break;
+      //   }
+      // }
     })
 
   })

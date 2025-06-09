@@ -30,6 +30,7 @@ const FirstButton = ({ userId, id }) => {
   const isFollowing = useMemo(() => userFollowing.includes(id), [userFollowing, id]);
 
   const followUser = useCallback(async () => {
+
     try {
       const res = await axios.patch(`${API_URL}/follow/${id}`, {}, { withCredentials: true });
 

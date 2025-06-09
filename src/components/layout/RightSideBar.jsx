@@ -39,7 +39,7 @@ const RightSideBar = () => {
   return (
     <aside className="w-[300px] hidden lg:block p-6 fixed right-0 top-0 h-screen overflow-y-auto">
       <Link
-        href="/home/user/profile"
+        href={`/home/user/profile/${user._id}`} 
         className="flex justify-between items-center mb-8 pt-4 cursor-pointer"
       >
         <SuggestUser

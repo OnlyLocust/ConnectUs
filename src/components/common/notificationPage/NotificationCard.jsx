@@ -10,7 +10,7 @@ const NotificationCard = ({notification , getNotificationIcon}) => {
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <Avatar className="h-8 w-8">
+          <Avatar className="h-8 w-8 border border-black">
             <AvatarImage src={notification.actor.profilePicture || "#"} />
             <AvatarFallback>
               {notification.actor.username.charAt(0)}

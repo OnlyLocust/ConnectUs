@@ -9,8 +9,13 @@ export const GET = async (req) => {
       "name username profilePicture"
     );
 
+    
+
     const chatUsers = chats.map((chat) => {
-      if(chat.members[0]._id == id){
+
+      
+      
+      if(chat.members[0]._id.toString() === id){
         return {
           _id:chat._id,
           member:{
@@ -22,7 +27,7 @@ export const GET = async (req) => {
           updatedAt:chat.updatedAt
         }
       }
-      else if(chat.members[1]._id == id){
+      else if(chat.members[1]._id.toString() === id){
         return {
           _id:chat._id,
           member:{
