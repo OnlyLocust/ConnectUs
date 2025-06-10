@@ -14,7 +14,7 @@ import { toast } from "sonner";
 const FirstButton = ({ userId, id }) => {
   const dispatch = useDispatch();
 
-  // 🧠 Short-circuit render if it's the current user's profile
+
   if (userId === id) {
     return (
       <Link href="/home/edit/profile">
@@ -25,7 +25,7 @@ const FirstButton = ({ userId, id }) => {
     );
   }
 
-  // 🧠 Only runs when userId != id
+
   const userFollowing = useSelector((state) => state.auth.user.following);
   const isFollowing = useMemo(() => userFollowing.includes(id), [userFollowing, id]);
 

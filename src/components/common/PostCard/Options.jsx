@@ -5,9 +5,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../ui/dialog";
-import { Button } from "../ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+} from "../../ui/dialog";
+import { Button } from "../../ui/button";
 import { useDispatch } from "react-redux";
 import { deletePost } from "@/store/postSlice";
 import axios from "axios";
@@ -16,6 +15,7 @@ import { toast } from "sonner";
 import { followRecv, removePost } from "@/store/authSlice";
 import Link from "next/link";
 import { notify } from "@/lib/socket";
+import ShowAvatar from "../ShowAvatar";
 
 const Options = ({
   children,
@@ -30,7 +30,6 @@ const Options = ({
   const [open, setOpen] = useState(false);
 
   const isFollowing = userFollowing.includes(userId);
-
 
   const deletePostHandler = async () => {
     try {
@@ -54,27 +53,26 @@ const Options = ({
   };
 
   const followUser = async () => {
-    dispatch(followRecv({follow:!isFollowing, recvId: userId}));
+    dispatch(followRecv({ follow: !isFollowing, recvId: userId }));
     try {
       const res = await axios.patch(`${API_URL}/follow/${userId}`, {
         withCredentials: true,
       });
-      
+
       if (res.data.success) {
         toast.success(res.data.message);
 
         const follow = res.data.follow;
-        if(follow){
-          notify(userId)
+        if (follow) {
+          notify(userId);
           await axios.post(
-          `${API_URL}/notification/send/${userId}`,
-          { action: "follow" },
-          { withCredentials: true }
-        );
+            `${API_URL}/notification/send/${userId}`,
+            { action: "follow" },
+            { withCredentials: true }
+          );
         }
-      
       } else {
-        dispatch(followRecv({follow:isFollowing, recvId: userId}));
+        dispatch(followRecv({ follow: isFollowing, recvId: userId }));
         throw new Error(res.data.message || "Failed to follow user");
       }
     } catch (error) {
@@ -94,32 +92,52 @@ const Options = ({
           <DialogTitle></DialogTitle>
         </DialogHeader>
         <div className="flex items-center gap-3 justify-center">
-          <Avatar className="w-10 h-10">
-            <AvatarImage src={profilePicture} alt={username} />
-            <AvatarFallback>{username.charAt(0).toUpperCase()}</AvatarFallback>
-          </Avatar>
+          <ShowAvatar
+            profilePicture={profilePicture}
+            username={username}
+            size={10}
+          />
           <div>
             <p className="text-sm font-semibold">{username}</p>
           </div>
         </div>
-        {/* <ScrollArea className="max-h-64 pr-4"> */}
-        {/* {userId != id && <Button className="bg-blue-500">Follow</Button>} */}
-        {userId != id && (
-          isFollowing ? <Button variant='outline' onClick={followUser}>Following</Button> : <Button className="bg-blue-500 text-white hover:bg-blue-600" onClick={followUser}>Follow</Button>
-        )}
-        
+
+        {userId != id &&
+          (isFollowing ? (
+            <Button variant="outline" onClick={followUser}>
+              Following
+            </Button>
+          ) : (
+            <Button
+              className="bg-blue-500 text-white hover:bg-blue-600"
+              onClick={followUser}
+            >
+              Follow
+            </Button>
+          ))}
+
         {userId == id && (
-          <Button  className="bg-blue-500 hover:text-white text-white hover:bg-blue-600"><Link href={`/home/user/profile/${id}`} className="w-full">Go To Profile</Link></Button>
+          <Button className="bg-blue-500 hover:text-white text-white hover:bg-blue-600">
+            <Link href={`/home/user/profile/${id}`} className="w-full">
+              Go To Profile
+            </Link>
+          </Button>
         )}
         {userId != id && (
-          <Button className="bg-black text-white hover:text-white hover:bg-black"><Link href={`/home/user/profile/${userId}`} className="w-full">View Profile</Link></Button>
+          <Button className="bg-black text-white hover:text-white hover:bg-black">
+            <Link href={`/home/user/profile/${userId}`} className="w-full">
+              View Profile
+            </Link>
+          </Button>
         )}
         {userId == id && (
-          <Button className="bg-red-500 text-white hover:bg-red-600" onClick={deletePostHandler}>
+          <Button
+            className="bg-red-500 text-white hover:bg-red-600"
+            onClick={deletePostHandler}
+          >
             Delete
           </Button>
         )}
-        {/* </ScrollArea> */}
       </DialogContent>
     </Dialog>
   );

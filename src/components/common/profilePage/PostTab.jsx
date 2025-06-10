@@ -22,7 +22,7 @@ const PostTab = ({selectedTab, postLength, bookmarkLength ,setSelectedTab}) => {
       }`}
         >
           {tab[0]} {tab[1]}
-          {/* Underline animation */}
+
           <div
             className={`absolute bottom-0 left-0 right-0 h-0.5 bg-black transition-all duration-300 ease-in-out 
           ${

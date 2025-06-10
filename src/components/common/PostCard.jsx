@@ -4,20 +4,14 @@ import profile from "./../../../public/profile.png";
 
 import React, { useState, useCallback, useMemo, memo } from "react";
 import { Card } from "../ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import {
-  Heart,
-  MessageCircle,
-  Send,
-  MoreHorizontal,
-} from "lucide-react";
+import { Heart, MessageCircle, Send, MoreHorizontal } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { FaHeart, FaRegBookmark, FaBookmark } from "react-icons/fa";
 import { toast } from "sonner";
 import { API_URL } from "@/constants/constant";
 import axios from "axios";
 import { formatDistanceToNow } from "date-fns";
-import Comments from "./Comments";
+import Comments from "./PostCard/Comments";
 import {
   removePostComment,
   setPostComment,
@@ -29,9 +23,12 @@ import {
   setRecvOnePostComment,
   setRecvOnePostLike,
 } from "@/store/recvSlice";
-import Options from "./Options";
+import Options from "./PostCard/Options";
 import { Badge } from "../ui/badge";
 import { notify } from "@/lib/socket";
+import ShowAvatar from "./ShowAvatar";
+import PostImage from "./PostCard/PostImage";
+import CommentInput from "./PostCard/CommentInput";
 
 const PostCard = ({ post, type }) => {
   const dispatch = useDispatch();
@@ -40,7 +37,6 @@ const PostCard = ({ post, type }) => {
 
   const [comment, setComment] = useState("");
 
-  // Destructure post
   const {
     _id: postId,
     image,
@@ -52,7 +48,6 @@ const PostCard = ({ post, type }) => {
     location,
   } = post;
 
-  // Memoized derived states
   const isLiked = useMemo(() => likes.includes(user._id), [likes, user._id]);
   const likeCount = likes.length;
   const isBookmarked = useMemo(
@@ -111,13 +106,13 @@ const PostCard = ({ post, type }) => {
       );
       if (!res.data.success) throw new Error("Post Like Failed");
       else {
-        if(!isLiked && authorId !== user._id){
+        if (!isLiked && authorId !== user._id) {
           notify(authorId);
-        await axios.post(
-          `${API_URL}/notification/send/${authorId}`,
-          { action: "like" },
-          { withCredentials: true }
-        );
+          await axios.post(
+            `${API_URL}/notification/send/${authorId}`,
+            { action: "like" },
+            { withCredentials: true }
+          );
         }
       }
     } catch (error) {
@@ -149,7 +144,7 @@ const PostCard = ({ post, type }) => {
       );
       if (!res.data.success) throw new Error(res.data.message);
       else {
-        if( authorId !== user._id){
+        if (authorId !== user._id) {
           notify(authorId);
           await axios.post(
             `${API_URL}/notification/send/${authorId}`,
@@ -165,7 +160,7 @@ const PostCard = ({ post, type }) => {
         ? dispatch(removeRecvOnePostComment())
         : dispatch(removePostComment({ postId }));
       toast.error("Error posting a comment");
-    } 
+    }
   }, [comment, dispatch, postId, type, user.username]);
 
   const sendPost = useCallback(() => {
@@ -179,13 +174,13 @@ const PostCard = ({ post, type }) => {
 
   return (
     <Card className="w-full max-w-xl mx-auto rounded-lg shadow-sm border border-gray-100 mb-6 p-3">
-      {/* Header */}
       <div className="flex items-center justify-between px-3 py-1">
         <div className="flex items-center gap-3">
-          <Avatar className="w-10 h-10">
-            <AvatarImage src={profilePicture || "/avatar.jpg"} alt={username} />
-            <AvatarFallback>{username.charAt(0).toUpperCase()}</AvatarFallback>
-          </Avatar>
+          <ShowAvatar
+            username={username}
+            profilePicture={profilePicture}
+            size={10}
+          />
           <div>
             <p className="text-sm font-semibold">
               {username}{" "}
@@ -213,17 +208,8 @@ const PostCard = ({ post, type }) => {
         </Options>
       </div>
 
-      {/* Image */}
-      <div className="w-full bg-gray-50 overflow-hidden rounded-md">
-        <img
-          src={image || profile}
-          alt={caption || "Post image"}
-          className="w-full h-full object-cover"
-          loading="lazy"
-        />
-      </div>
+      <PostImage image={image} caption={caption} />
 
-      {/* Actions */}
       <div className="px-3">
         <div className="flex justify-between items-center mb-2">
           <div className="flex gap-4">
@@ -266,13 +252,11 @@ const PostCard = ({ post, type }) => {
           </button>
         </div>
 
-        {/* Caption */}
         <p className="text-sm mb-1">
           <span className="font-semibold mr-2">{username}</span>
           {caption}
         </p>
 
-        {/* Comments preview */}
         {comments.length > 0 && (
           <Comments comments={comments}>
             <button className="text-sm text-gray-500 mb-1 cursor-pointer">
@@ -285,32 +269,11 @@ const PostCard = ({ post, type }) => {
         <p className="text-xs text-gray-400 uppercase mt-2">{formattedDate}</p>
       </div>
 
-      {/* Add Comment */}
-      <div className="border-t border-gray-100 p-3">
-        <div className="flex items-center">
-          <input
-            type="text"
-            placeholder="Add a comment..."
-            className="text-sm w-full focus:outline-none"
-            value={comment}
-            onChange={commentHandler}
-            aria-label="Add a comment"
-          />
-          <button
-            className="text-blue-500 font-semibold text-sm ml-auto"
-            onClick={commentPost}
-            // disabled={isLoading}
-            aria-label="Post comment"
-          >
-            {/* {isLoading ? (
-              <Loader2Icon className="animate-spin h-5 w-5" />
-            ) : (
-              "Post"
-            )} */}
-            Post
-          </button>
-        </div>
-      </div>
+      <CommentInput
+        comment={comment}
+        commentHandler={commentHandler}
+        commentPost={commentPost}
+      />
     </Card>
   );
 };

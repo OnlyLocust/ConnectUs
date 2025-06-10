@@ -77,7 +77,6 @@ const RightSideBar = () => {
             />
           </Link>
         ))}
-        {/* </ScrollArea> */}
       </div>
     </aside>
   );

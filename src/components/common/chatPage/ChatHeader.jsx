@@ -1,7 +1,7 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { MoreVertical } from "lucide-react";
 import React from "react";
+import ShowAvatar from "../ShowAvatar";
 
 const ChatHeader = ({activeChat, chatUsers}) => {
 
@@ -10,15 +10,8 @@ const ChatHeader = ({activeChat, chatUsers}) => {
   return (
     <div className="flex items-center justify-between p-4 border-b">
       <div className="flex items-center">
-        <Avatar className="h-10 w-10 mr-3">
-          <AvatarImage
-            src={chatUser?.member.profilePicture}
-          />
-          <AvatarFallback>
-            {chatUser?.member.username.charAt(0)}
-          </AvatarFallback>
-        </Avatar>
-        <div>
+        <ShowAvatar profilePicture={chatUser.member.profilePicture} username={chatUser.member.username} size={10} className='mr-3'/>
+        <div className="ml-3">
           <h3 className="font-medium">
             {chatUser?.member.username}
           </h3>

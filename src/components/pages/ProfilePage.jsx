@@ -10,10 +10,10 @@ import { removeRecv,  setRecv } from "@/store/recvSlice";
  import Loading from "@/components/common/Loading";
 import PostTab from "@/components/common/profilePage/PostTab";
 import FollowDetails from "@/components/common/profilePage/FollowDetails";
-import ProfilePicture from "@/components/common/profilePage/ProfilePicture";
 import SecondButton from "@/components/common/profilePage/SecondButton";
 import FirstButton from "@/components/common/profilePage/FirstButton";
 import { useParams } from "next/navigation";
+import ShowAvatar from "../common/ShowAvatar";
 
 const ProfilePage = () => {
   const params = useParams()
@@ -46,7 +46,6 @@ const ProfilePage = () => {
     };
 
     getUser();
-    // Cleanup function to remove receiver when component unmounts
 
     return () => dispatch(removeRecv());
   }, []);
@@ -56,11 +55,10 @@ const ProfilePage = () => {
   return recv ? (
     <div className="max-w-4xl mx-auto p-6">
       <div className="flex gap-15 items-center mb-10 bg-white shadow-md rounded-lg p-6  justify-around">
-        {/* Profile Picture */}
 
-        <ProfilePicture profilePicture={recv?.profilePicture} username={recv?.username}/>
+        <ShowAvatar profilePicture={recv.profilePicture} username={recv.username} size={32}/>
 
-        {/* Profile Info */}
+
         <div className="flex-1">
           <div className="flex items-center gap-4 mb-4 justify-between">
             <h2 className="text-2xl font-semibold">{recv?.username}</h2>
@@ -82,9 +80,9 @@ const ProfilePage = () => {
 
       <PostTab selectedTab={selectedTab} setSelectedTab={setSelectedTab} postLength={recv?.posts?.length} bookmarkLength={recv?.bookmarks?.length} />
 
-      {/* Posts Grid */}
+
       <div
-        key={selectedTab} // triggers re-animation on tab change
+        key={selectedTab} 
         className="transition-all duration-500 ease-in-out animate-fadeIn"
       >
         {selectedTab === "Posts" && <PostsShow posts={recv?.posts} />}
@@ -97,5 +95,3 @@ const ProfilePage = () => {
 };
 
 export default ProfilePage;
-
-// 💬❤️

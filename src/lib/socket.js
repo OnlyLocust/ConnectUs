@@ -2,7 +2,7 @@
   import dotenv from "dotenv";
   dotenv.config();
   import { store } from "@/store/store";
-  import { addChat, addOnline, removeOnline, setOnline } from "@/store/chatSlice";
+  import { addChat, addOnline, removeOnline, setNotReadMessage, setOnline } from "@/store/chatSlice";
   import { setNotRead } from "@/store/authSlice";
 
   let socket;
@@ -29,6 +29,9 @@
               createdAt: data.createdAt,
             })
           );
+        }
+        else{
+          store.dispatch(setNotReadMessage(data.userId.toString()));
         }
       });
 

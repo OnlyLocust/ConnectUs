@@ -33,7 +33,7 @@ const LoginForm = () => {
       ...prev,
       [name]: value,
     }));
-    // Clear error when user types
+
     if (errors[name]) {
       setErrors((prev) => ({
         ...prev,
@@ -91,7 +91,7 @@ const LoginForm = () => {
         error.response?.data?.message || error.message || "Login failed";
       toast.error(errorMessage);
 
-      // Handle specific API errors
+
       if (error.response?.data?.error === "Invalid credentials") {
         setErrors({
           email: " ",
@@ -108,13 +108,13 @@ const LoginForm = () => {
      
      <EmailInput value={formData.email} onChange={handleChange} errors={errors.email}/>
 
-      {/* Password Field */}
+
       <PasswordInput value={formData.password} onChange={handleChange} errors={errors.password}/>
 
-      {/* Remember Me & Forgot Password */}
+
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2">
-          {/* You can add a remember me checkbox here if needed */}
+
         </div>
         <Button
           variant="link"
@@ -126,7 +126,7 @@ const LoginForm = () => {
         </Button>
       </div>
 
-      {/* Submit Button */}
+
       <Button type="submit" className="w-full" disabled={isLoading}>
         {isLoading ? (
           <>

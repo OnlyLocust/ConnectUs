@@ -19,51 +19,6 @@ import { ComingSoonBox } from '../common/ComingSoon';
 export default function ExplorePage() {
   const [searchQuery, setSearchQuery] = useState('');
   
-  // const trendingPosts = [
-  //   {
-  //     id: 1,
-  //     username: 'traveler123',
-  //     avatar: '/avatars/traveler.jpg',
-  //     content: 'Just arrived in Bali! This place is magical 🌴 #travel #bali',
-  //     likes: 1243,
-  //     comments: 89,
-  //     time: new Date('2023-05-20T14:30:00'),
-  //   },
-  //   {
-  //     id: 2,
-  //     username: 'foodie_guru',
-  //     avatar: '/avatars/foodie.jpg',
-  //     content: 'Made this delicious pasta from scratch today! Recipe in comments 👇',
-  //     likes: 892,
-  //     comments: 45,
-  //     time: new Date('2023-05-21T09:15:00'),
-  //   },
-  // ];
-
-  // const suggestedUsers = [
-  //   {
-  //     id: 1,
-  //     username: 'photography_lover',
-  //     avatar: '/avatars/photographer.jpg',
-  //     bio: 'Street photography enthusiast | Nikon shooter',
-  //     followers: 5421,
-  //   },
-  //   {
-  //     id: 2,
-  //     username: 'fitness_coach',
-  //     avatar: '/avatars/coach.jpg',
-  //     bio: 'Helping people transform their lives through fitness',
-  //     followers: 12800,
-  //   },
-  // ];
-
-  // const popularTags = [
-  //   { name: '#travel', posts: 125000 },
-  //   { name: '#food', posts: 98000 },
-  //   { name: '#photography', posts: 75600 },
-  //   { name: '#fitness', posts: 68200 },
-  // ];
-
   const trendingPosts = [];
   const suggestedUsers = [];
   const popularTags = [];

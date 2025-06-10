@@ -1,6 +1,6 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDistanceToNow } from "date-fns";
 import React from "react";
+import ShowAvatar from "../ShowAvatar";
 
 const NotificationCard = ({notification , getNotificationIcon}) => {
   return (
@@ -10,12 +10,7 @@ const NotificationCard = ({notification , getNotificationIcon}) => {
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <Avatar className="h-8 w-8 border border-black">
-            <AvatarImage src={notification.actor.profilePicture || "#"} />
-            <AvatarFallback>
-              {notification.actor.username.charAt(0)}
-            </AvatarFallback>
-          </Avatar>
+          <ShowAvatar profilePicture={notification.actor.profilePicture} username={notification.actor.username} size={8}/>
           <div className="flex-1">
             <p className="text-sm font-medium">
               <span className="hover:underline cursor-pointer">

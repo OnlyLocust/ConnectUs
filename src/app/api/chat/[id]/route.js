@@ -14,7 +14,7 @@ export const GET = async (req, { params }) => {
 
     if (!messages) {
       return NextResponse.json(
-        {messages: { messages: [] }, success: true },
+        { messages: { messages: [] }, success: true },
         { status: 200 }
       );
     }
@@ -27,7 +27,6 @@ export const GET = async (req, { params }) => {
         isSender: msg.sender.toString() === userId,
       };
     });
-    
 
     return NextResponse.json(
       {

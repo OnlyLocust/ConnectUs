@@ -25,11 +25,16 @@ export const POST = async (req,{params}) => {
     if (!chat) {
       chat = await Chat.create({
         members: [userId, recvId],
+        notRead: {
+          [userId.toString()]: 0,
+          [recvId.toString()]: 0,
+        },
       });
     }
 
     chat.messages.push(addMessage._id)
     chat.lastMessage=message
+    chat.notRead.set(recvId, (chat.notRead.get(recvId) || 0) + 1);
 
     await chat.save()
 

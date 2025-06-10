@@ -29,7 +29,7 @@ export default function SearchPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
 
-  // Debounce search input
+
   useEffect(() => {
     const timeout = setTimeout(() => {
       setDebouncedQuery(searchQuery);
@@ -37,7 +37,7 @@ export default function SearchPage() {
     return () => clearTimeout(timeout);
   }, [searchQuery]);
 
-  // Filtered search results
+
   const searchItem = useMemo(() => {
     if (activeTab === "users") {
       if (!debouncedQuery.trim()) return users;
@@ -101,16 +101,16 @@ export default function SearchPage() {
       <div className="sticky top-0 bg-background z-10 pb-4">
         <SearchForm value={searchQuery} onChange={handleSearch} setSearchQuery={setSearchQuery} />
 
-        {/* Tabs */}
+
         <SearchTabs activeTab={activeTab} setActiveTab={setActiveTab} />
       </div>
 
-      {/* Results */}
+
       <div className="mt-4 space-y-4">
         {isLoading ? (
           <SearchLoading/>
         ) : searchItem.length > 0 ? (
-          <div className="space-y-3">
+          <div className="space-y-3 animate-fadeIn">
             {activeTab === "users" ? (
               searchItem.slice(0, searchSlicing).map((item, i) => (
                 <Card
@@ -123,7 +123,7 @@ export default function SearchPage() {
                 </Card>
               ))
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-fadeIn">
                 {searchItem.slice(0, searchSlicing).map((item) => (
                   <Card
                     key={item._id}

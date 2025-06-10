@@ -38,7 +38,7 @@ const SignupForm = () => {
       ...prev,
       [name]: value,
     }));
-    // Clear error when user types
+
     if (errors[name]) {
       setErrors((prev) => ({
         ...prev,
@@ -99,7 +99,7 @@ const SignupForm = () => {
         error.response?.data?.message || error.message || "Login failed";
       toast.error(errorMessage);
 
-      // Handle specific API errors
+
       if (error.response?.data?.error === "Invalid credentials") {
         setErrors({
           email: " ",
@@ -115,16 +115,13 @@ const SignupForm = () => {
 
   return (
     <form onSubmit={signupHandler} className="space-y-4">
-      {/* Username Field */}
+
       <UsernameInput value={formData.username} onChange={handleChange}/>
 
-      {/* Email Field */}
       <EmailInput value={formData.email} onChange={handleChange} errors={errors.email}/>
 
-      {/* Password Field */}
       <PasswordInput value={formData.password} onChange={handleChange} errors={errors.password}/>
 
-      {/* Submit Button */}
       <Button type="submit" className="w-full" disabled={isLoading}>
         {isLoading ? (
           <>

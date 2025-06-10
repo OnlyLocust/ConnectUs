@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -14,6 +13,7 @@ import BioInput from "../common/editProfilePage/BioInput";
 import ProfileInput from "../common/editProfilePage/ProfileInput";
 import UserInputName from "../common/editProfilePage/UserInputName";
 import SubmitButton from "../common/editProfilePage/SubmitButton";
+import ShowAvatar from "../common/ShowAvatar";
 
 const EditProfile = () => {
   const router = useRouter();
@@ -62,7 +62,6 @@ const EditProfile = () => {
       setFormData((prev) => ({
         ...prev,
         profilePicture: file,
-        // profilePicture: URL.createObjectURL(file),
       }));
     }
   };
@@ -116,12 +115,7 @@ const EditProfile = () => {
             Profile Picture
           </Label>
 
-          <Avatar className="w-32 h-32 border-4 border-primary">
-            <AvatarImage src={previewImage} alt="Profile" />
-            <AvatarFallback>
-              {formData.username.charAt(0).toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
+          <ShowAvatar profilePicture={previewImage} username={formData.username} size={32}/>
 
           <ProfileInput onChange={handleImageChange} />
         </div>

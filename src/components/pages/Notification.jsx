@@ -9,7 +9,6 @@ import { API_URL } from "@/constants/constant";
 import { useDispatch, useSelector } from "react-redux";
 import { setNotifications } from "@/store/notificationSlice";
 import { toast } from "sonner";
-import { setNotRead } from "@/store/authSlice";
 import NoNotification from "../common/notificationPage/NoNotification";
 import Settings from "../common/notificationPage/Settings";
 import NotificationCard from "../common/notificationPage/NotificationCard";

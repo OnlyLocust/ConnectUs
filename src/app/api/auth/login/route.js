@@ -67,30 +67,8 @@ export const POST = async (req) => {
           followers:1,
           following:1,
           notifications:1,
-          posts: {
-            $map: {
-              input: "$posts",
-              as: "post",
-              in: {
-                _id: "$$post._id",
-                image: "$$post.image",
-                likeCount: { $size: "$$post.likes" },
-                commentCount: { $size: "$$post.comments" },
-              },
-            },
-          },
-          bookmarks: {
-            $map: {
-              input: "$bookmarks",
-              as: "post",
-              in: {
-                _id: "$$post._id",
-                image: "$$post.image",
-                likeCount: { $size: "$$post.likes" },
-                commentCount: { $size: "$$post.comments" },
-              },
-            },
-          },
+          posts:1,
+          bookmarks: 1
         },
       },
     ]);

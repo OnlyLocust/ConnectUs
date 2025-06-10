@@ -1,5 +1,3 @@
-
-// components/LoadingNotifications.jsx
 import React from "react";
 import { Bell } from "lucide-react";
 

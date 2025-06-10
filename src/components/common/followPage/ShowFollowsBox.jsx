@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Eye, UserMinus, UserPlus } from "lucide-react";
 import Link from "next/link";
@@ -11,6 +10,7 @@ import { toast } from "sonner";
 import { API_URL } from "@/constants/constant";
 import { followRecv } from "@/store/authSlice";
 import { TableCell, TableRow } from "@/components/ui/table";
+import ShowAvatar from "../ShowAvatar";
 
 const ShowFollowsBox = ({ user, userId }) => {
   const dispatch = useDispatch();
@@ -45,15 +45,7 @@ const ShowFollowsBox = ({ user, userId }) => {
     <TableRow>
       <TableCell>
         <div className="flex items-center gap-4">
-          <Avatar className="h-10 w-10">
-            <AvatarImage
-              src={user.profilePicture || "#"}
-              alt={user.username || "User"}
-            />
-            <AvatarFallback>
-              {user.username.charAt(0).toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
+          <ShowAvatar profilePicture={user.profilePicture} username={user.username} size={10} />
           <div>
             <div className="font-medium">{user.username || "User"}</div>
             <div className="text-sm text-muted-foreground">

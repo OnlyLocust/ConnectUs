@@ -16,61 +16,61 @@ import { toast } from "sonner";
 import { askOnline } from "@/lib/socket";
 
 export default function MessagesPage() {
+  const dispatch = useDispatch();
 
-  const dispatch = useDispatch()
+  const chatUsers = useSelector((state) => state.chat.chatUsers);
 
-  const chatUsers = useSelector((state) => state.chat.chatUsers)
+  const recvId = useSelector((state) => state.chat.recv);
 
-  const recvId = useSelector((state) => state.chat.recv)
-  
-const [loading , setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   const [activeChat, setActiveChat] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Sample data - replace with your actual data
-
   useEffect(() => {
-    askOnline()
-  },[chatUsers])
-
+    askOnline();
+  }, [chatUsers]);
 
   const filteredChats = useMemo(() => {
     const term = searchTerm.toLowerCase().trim();
     if (!term) return chatUsers;
 
-    return chatUsers.filter((chat) => chat.member.username.toLowerCase().includes(term));
+    return chatUsers.filter((chat) =>
+      chat.member.username.toLowerCase().includes(term)
+    );
   }, [chatUsers, searchTerm]);
-
 
   useEffect(() => {
     const getChatUsers = async () => {
-      setLoading(true)
+      setLoading(true);
       try {
-        const res = await axios.get(`${API_URL}/chat/chatusers`,{withCredentials:true})
-        if(res.data.success){
-          dispatch(setUserChats(res.data.chatUsers))
-          console.log(res.data.chatUsers);
-          
-        }
-        else{
-          throw new Error(res.data.message || "Failed to fetch all users for chat")
+        const res = await axios.get(`${API_URL}/chat/chatusers`, {
+          withCredentials: true,
+        });
+        if (res.data.success) {
+          dispatch(setUserChats(res.data.chatUsers));
+        } else {
+          throw new Error(
+            res.data.message || "Failed to fetch all users for chat"
+          );
         }
       } catch (error) {
-        toast.error(error.message || error.data.message || 'Failed to fetch all users for chat')
+        toast.error(
+          error.message ||
+            error.data.message ||
+            "Failed to fetch all users for chat"
+        );
+      } finally {
+        askOnline();
+        setLoading(false);
       }
-      finally{
-        askOnline()
-        setLoading(false)
-      }
-    }
+    };
 
-    getChatUsers()
-  },[])
+    getChatUsers();
+  }, []);
 
   return (
     <div className="flex h-screen border rounded-lg overflow-hidden ">
-      {/* Left sidebar - Chat list */}
       <div className="w-full md:w-1/3 border-r bg-gray-50">
         <SearchBox searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
 
@@ -82,27 +82,20 @@ const [loading , setLoading] = useState(false)
         />
       </div>
 
-      {/* Right side - Chat messages */}
       <div className="hidden md:flex flex-col w-2/3 bg-white h-full">
         {activeChat ? (
           <>
-            {/* Chat header */}
             <ChatHeader activeChat={activeChat} chatUsers={chatUsers} />
 
-            {/* Messages area */}
             <div className="flex-1 overflow-hidden ">
               {" "}
-              {/* Takes remaining space */}
-              <ChatArea recvId={recvId}/>
+              <ChatArea recvId={recvId} activeChat={activeChat} />
             </div>
 
-            {/* Message input */}
-            <MessageInput
-              recvId={recvId}
-            />
+            <MessageInput recvId={recvId} />
           </>
         ) : (
-          <NoChat/>
+          <NoChat />
         )}
       </div>
     </div>

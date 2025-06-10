@@ -28,7 +28,6 @@ const Login = () => {
 
           <Separator className="my-6" />
 
-          {/* Social Login Options */}
           <GoogleAuth/>
         </CardContent>
 

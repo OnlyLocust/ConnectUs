@@ -5,7 +5,7 @@ const chatSlice = createSlice({
   initialState: {
     chatUsers: [],
     recv: null,
-    chats: null,
+    chats: [],
   },
   reducers: {
     setUserChats: (state, action) => {
@@ -26,7 +26,17 @@ const chatSlice = createSlice({
       state.chats.pop();
     },
     setRecvId: (state, action) => {
-      state.recv = action.payload;
+      const id = action.payload;
+       state.recv = id
+
+      state.chatUsers = state.chatUsers.map((chat) =>
+        chat.member._id === id
+          ? {
+              ...chat,
+              notRead: 0,
+            }
+          : chat
+      );
     },
     setOnline: (state, action) => {
       // const onlines =;
@@ -72,6 +82,18 @@ const chatSlice = createSlice({
           : chat
       );
     },
+    setNotReadMessage: (state, action) => {
+      const id = action.payload;
+
+      state.chatUsers = state.chatUsers.map((chat) =>
+        chat.member._id === id
+          ? {
+              ...chat,
+              notRead: (chat.notRead || 0) + 1,
+            }
+          : chat
+      );
+    },
   },
 });
 
@@ -84,5 +106,6 @@ export const {
   setOnline,
   addOnline,
   removeOnline,
+  setNotReadMessage
 } = chatSlice.actions;
 export default chatSlice.reducer;

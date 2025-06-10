@@ -37,6 +37,3 @@ export function ComingSoonBox({
     </Card>
   );
 }
-
-// Example usage:
-// <ComingSoonBox featureName="Dark Mode" expectedDate="Q3 2024" />

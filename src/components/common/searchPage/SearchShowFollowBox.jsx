@@ -7,8 +7,8 @@ import { API_URL } from "@/constants/constant";
 import { toast } from "sonner";
 import { followRecv } from "@/store/authSlice";
 import { notify } from "@/lib/socket";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import ShowAvatar from "../ShowAvatar";
 
 const SearchShowFollowBox = ({ user }) => {
   const dispatch = useDispatch();
@@ -51,15 +51,8 @@ const SearchShowFollowBox = ({ user }) => {
   return (
     <div className="flex items-center px-4 hover:bg-gray-50/50 transition-colors rounded-lg">
       <div className="flex items-center flex-1 min-w-0 space-x-3">
-        <Avatar className="h-14 w-14 border-2 border-white shadow-sm">
-          <AvatarImage
-            src={user.profilePicture || "/default-avatar.png"}
-            alt={user.username}
-          />
-          <AvatarFallback className="bg-gradient-to-br from-blue-400 to-purple-500 text-white font-medium">
-            {user.username?.charAt(0).toUpperCase()}
-          </AvatarFallback>
-        </Avatar>
+
+        <ShowAvatar profilePicture={user.profilePicture} username={user.username} size={14} />
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center space-x-2">

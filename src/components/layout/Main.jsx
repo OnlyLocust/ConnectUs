@@ -62,13 +62,11 @@ const Main = () => {
   };
 
   useEffect(() => {
-    // Reset pagination when component mounts
     setSkip(0);
     setHasMore(true);
     fetchPosts();
   }, []);
 
-  // Intersection Observer for infinite scroll
   useEffect(() => {
     if (initialLoad.current) return;
 
@@ -99,15 +97,17 @@ const Main = () => {
       {/* Posts */}
       <div className="flex flex-col gap-6">
         {posts.length > 0 ? (
-          posts.map((post, i) => (
+          <div className="animate-fadeIn">
+            {posts.map((post, i) => (
             <PostCard key={`${post._id}-${i}`} post={post} type="all" />
-          ))
+          ))}
+          </div>
         ) : (
           <Loading />
         )}
       </div>
 
-      {/* Observer element */}
+
       <div
         ref={observerRef}
         className="h-10 mt-4 flex items-center justify-center"

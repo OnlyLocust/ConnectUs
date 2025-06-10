@@ -9,8 +9,8 @@ import {
 } from "lucide-react";
 import { useMemo } from "react";
 import SideItem from "./SideItem";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useSelector } from "react-redux";
+import ShowAvatar from "../ShowAvatar";
 
 const SideNavs = ({user}) => {
   const notRead = useSelector((state) => state.auth.notRead);
@@ -56,12 +56,7 @@ const SideNavs = ({user}) => {
       },
       {
         icon: (
-          <Avatar className="w-7 h-7 border-2 border-pink-500">
-            <AvatarImage src={user?.profilePicture} />
-            <AvatarFallback>
-              {user?.username.charAt(0).toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
+          <ShowAvatar profilePicture={user?.profilePicture} username={user?.username} size={8} isUser={true}/>
         ),
         text: "Profile",
         path: `/home/user/profile/${user._id}`,

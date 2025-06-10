@@ -18,7 +18,7 @@ const PostsShow = ({ posts }) => {
               className="w-full h-[300px] object-cover transition-all duration-300 group-hover:brightness-75"
             />
 
-            {/* Hover overlay */}
+
             <div className="absolute inset-0 flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-100 text-white font-semibold text-lg">
               <div className="flex items-center gap-1 text-2xl font-bold">
                 <Heart /> { post.likeCount}

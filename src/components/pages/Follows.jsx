@@ -15,7 +15,7 @@ import { toast } from "sonner";
 import SearchInput from "../common/followPage/SearchInput";
 import FollowHeaderProfile from "../common/followPage/FollowHeaderProfile";
 import FollowType from "../common/followPage/FollowType";
-import ShowFollowsBox from "../common/searchPage/ShowFollowsBox";
+import ShowFollowsBox from "../common/followPage/ShowFollowsBox";
 
 export default function FollowsPage({ id, followType }) {
   const follow = useSelector((state) => state.follow.follow) || [];

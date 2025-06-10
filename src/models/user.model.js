@@ -67,10 +67,7 @@ const userSchema = new mongoose.Schema(
       notRead: {
         type: Number,
         default: 0,
-      },
-      // banType: {
-      //   type: [String],
-      // },
+      }
     },
   },
   {

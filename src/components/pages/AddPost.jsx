@@ -8,10 +8,10 @@ import axios from "axios";
 import { API_URL } from "@/constants/constant";
 import { useRouter } from "next/navigation";
 import { setPost } from "@/store/authSlice";
-import ProfileHeader from "../common/appPostPage/ProfileHeader";
-import ImageInput from "../common/appPostPage/ImageInput";
-import SubmitButton from "../common/appPostPage/SubmitButton";
-import CaptionInput from "../common/appPostPage/CaptionInput";
+import ProfileHeader from "../common/addPostPage/ProfileHeader";
+import ImageInput from "../common/addPostPage/ImageInput";
+import SubmitButton from "../common/addPostPage/SubmitButton";
+import CaptionInput from "../common/addPostPage/CaptionInput";
 
 export default function AddPost() {
 
@@ -47,7 +47,7 @@ const dispatch = useDispatch();
     }
   };
 
-  // Clear image preview
+
   const clearImage = () => {
     setImage(null);
     setPreviewUrl(null);
@@ -74,14 +74,14 @@ const dispatch = useDispatch();
         headers: {
           "Content-Type": "multipart/form-data",
         },
-        withCredentials: true, // Include cookies for authentication
+        withCredentials: true,
       });
 
       if(res.data.success === false) {
         throw new Error(res.data.message || "Failed to create post");
       }
 
-      // Simulate API call
+
       dispatch(setPost({postId: res.data.post._id, image: res.data.post.image}));
       await new Promise((r) => setTimeout(r, 2000));
 
@@ -102,15 +102,12 @@ const dispatch = useDispatch();
         <CardContent className="p-6 space-y-4">
           <ProfileHeader isLoading={isLoading} image={image} submitPost={submitPost}/>
 
-          {/* Image preview or upload button */}
           <ImageInput image={image} previewUrl={previewUrl} clearImage={clearImage} fileInputRef={fileInputRef} onImageChange={onImageChange}/>
 
-          {/* Post details section */}
           <div className="space-y-4">
-            {/* Caption input with emoji picker */}
+
             <CaptionInput caption={caption} showEmojiPicker={showEmojiPicker} captionRef={captionRef} setCaption={setCaption} setShowEmojiPicker={setShowEmojiPicker}/>
 
-            {/* Additional features */}
             <SubmitButton disabled={isLoading || !image} isLoading={isLoading} submitPost={submitPost}/>
           </div>
         </CardContent>

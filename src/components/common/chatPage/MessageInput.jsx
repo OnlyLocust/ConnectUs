@@ -21,6 +21,7 @@ const MessageInput = ({recvId}) => {
 
   const sendMessage = async () => {
     dispatch(addChat({message,isSender:true}))
+    setMessage("")
     try {
       const res = await axios.post(`${API_URL}/chat/send/${recvId}`, {message} , {withCredentials:true})
       
@@ -33,9 +34,6 @@ const MessageInput = ({recvId}) => {
     } catch (error) {
       dispatch(removeChat())
       toast.error(error.message || error.data.message || 'Failed to send message')
-    }
-    finally{
-      setMessage("")
     }
   }
 

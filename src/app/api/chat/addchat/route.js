@@ -13,12 +13,23 @@ export const POST = async (req) => {
     if (!chat) {
       chat = await Chat.create({
         members: [id, recvId],
+        notRead: {
+          [id.toString()]: 0,
+          [recvId.toString()]: 0,
+        },
       });
     }
 
-    return NextResponse.json({chatId:chat._id,success:true},{status:200})
+    console.log(chat);
 
+    return NextResponse.json(
+      { chatId: chat._id, success: true },
+      { status: 200 }
+    );
   } catch (error) {
-    return NextResponse.json({message:error.message, success:false},{status:500})
+    return NextResponse.json(
+      { message: error.message, success: false },
+      { status: 500 }
+    );
   }
 };
