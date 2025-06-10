@@ -2,7 +2,7 @@ import Post from "@/models/post.model";
 import { auth } from "../middleware/authMiddleware";
 import { NextResponse } from "next/server";
 
-const skipValue = 4
+const skipValue = 4;
 
 export const GET = async (req) => {
   try {
@@ -30,13 +30,9 @@ export const GET = async (req) => {
         },
       })
       .sort({ createdAt: -1 })
-      .skip(skip*skipValue)
+      .skip(skip * skipValue)
       .limit(limit);
 
-      console.log(skip);
-      
-
-      
 
     return NextResponse.json(
       { message: "Posts fetched successfully", success: true, posts },
