@@ -14,7 +14,7 @@ import notification from './notificationSlice'
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist:['auth' , 'recv', 'follow']
+  whitelist:['auth','recv','follow']
 };
 
 // combine reducers
