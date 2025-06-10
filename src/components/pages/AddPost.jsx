@@ -5,13 +5,15 @@ import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 import { useDispatch } from "react-redux";
 import axios from "axios";
-import { API_URL } from "@/constants/constant";
 import { useRouter } from "next/navigation";
 import { setPost } from "@/store/authSlice";
 import ProfileHeader from "../common/addPostPage/ProfileHeader";
 import ImageInput from "../common/addPostPage/ImageInput";
 import SubmitButton from "../common/addPostPage/SubmitButton";
 import CaptionInput from "../common/addPostPage/CaptionInput";
+import dotenv from 'dotenv'
+dotenv.config()
+const API_URL = process.env.API_URL
 
 export default function AddPost() {
 

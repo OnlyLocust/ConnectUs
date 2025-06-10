@@ -5,7 +5,6 @@ import { Bell, UserPlus, Heart, MessageSquare } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import axios from "axios";
-import { API_URL } from "@/constants/constant";
 import { useDispatch, useSelector } from "react-redux";
 import { setNotifications } from "@/store/notificationSlice";
 import { toast } from "sonner";
@@ -14,6 +13,9 @@ import Settings from "../common/notificationPage/Settings";
 import NotificationCard from "../common/notificationPage/NotificationCard";
 import Header from "../common/notificationPage/Header";
 import LoadingNotifications from "../common/notificationPage/LoadingNotifications";
+import dotenv from 'dotenv'
+dotenv.config()
+const API_URL = process.env.API_URL
 
 export default function NotificationsPage() {
   const dispatch = useDispatch();

@@ -2,13 +2,15 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import PostCard from "../common/PostCard";
-import { API_URL } from "@/constants/constant";
 import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import { setPosts, addPosts } from "@/store/postSlice";
 import axios from "axios";
 import Loading from "../common/Loading";
 import NoPosts from "../common/NoPost";
+import dotenv from 'dotenv'
+dotenv.config()
+const API_URL = process.env.API_URL
 
 const Main = () => {
   const dispatch = useDispatch();

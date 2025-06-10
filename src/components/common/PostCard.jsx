@@ -8,7 +8,6 @@ import { Heart, MessageCircle, Send, MoreHorizontal } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { FaHeart, FaRegBookmark, FaBookmark } from "react-icons/fa";
 import { toast } from "sonner";
-import { API_URL } from "@/constants/constant";
 import axios from "axios";
 import { formatDistanceToNow } from "date-fns";
 import Comments from "./PostCard/Comments";
@@ -29,6 +28,9 @@ import { notify } from "@/lib/socket";
 import ShowAvatar from "./ShowAvatar";
 import PostImage from "./PostCard/PostImage";
 import CommentInput from "./PostCard/CommentInput";
+import dotenv from 'dotenv'
+dotenv.config()
+const API_URL = process.env.API_URL
 
 const PostCard = ({ post, type }) => {
   const dispatch = useDispatch();

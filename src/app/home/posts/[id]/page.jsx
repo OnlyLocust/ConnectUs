@@ -1,11 +1,13 @@
 'use client'
 import PostCard from '@/components/common/PostCard';
-import { API_URL } from '@/constants/constant';
 import { removeRecvPost, setRecvOnePost } from '@/store/recvSlice';
 import axios from 'axios';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'sonner';
+import dotenv from 'dotenv'
+dotenv.config()
+const API_URL = process.env.API_URL
 
 const page = ({params}) => {
 

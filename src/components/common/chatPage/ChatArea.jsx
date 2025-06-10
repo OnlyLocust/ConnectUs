@@ -1,7 +1,6 @@
 "use client"
 
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { API_URL } from "@/constants/constant";
 import { setChats } from "@/store/chatSlice";
 import axios from "axios";
 import { formatDistanceToNow } from "date-fns";
@@ -9,6 +8,9 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import Loader from "./Loader";
+import dotenv from 'dotenv'
+dotenv.config()
+const API_URL = process.env.API_URL
 
 const ChatArea = ({recvId, activeChat}) => {
 const dispatch = useDispatch()

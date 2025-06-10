@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { API_URL } from "@/constants/constant";
 import { setAuth } from "@/store/authSlice";
 import GenderInput from "../common/editProfilePage/GenderInput";
 import BioInput from "../common/editProfilePage/BioInput";
@@ -14,6 +13,9 @@ import ProfileInput from "../common/editProfilePage/ProfileInput";
 import UserInputName from "../common/editProfilePage/UserInputName";
 import SubmitButton from "../common/editProfilePage/SubmitButton";
 import ShowAvatar from "../common/ShowAvatar";
+import dotenv from 'dotenv'
+dotenv.config()
+const API_URL = process.env.API_URL
 
 const EditProfile = () => {
   const router = useRouter();

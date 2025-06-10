@@ -9,11 +9,13 @@ import ChatHeader from "../common/chatPage/ChatHeader";
 import ChatArea from "../common/chatPage/ChatArea";
 import NoChat from "../common/chatPage/NoChat";
 import axios from "axios";
-import { API_URL } from "@/constants/constant";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserChats } from "@/store/chatSlice";
 import { toast } from "sonner";
 import { askOnline } from "@/lib/socket";
+import dotenv from 'dotenv'
+dotenv.config()
+const API_URL = process.env.API_URL
 
 export default function MessagesPage() {
   const dispatch = useDispatch();

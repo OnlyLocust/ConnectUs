@@ -10,12 +10,14 @@ import { Button } from "../../ui/button";
 import { useDispatch } from "react-redux";
 import { deletePost } from "@/store/postSlice";
 import axios from "axios";
-import { API_URL } from "@/constants/constant";
 import { toast } from "sonner";
 import { followRecv, removePost } from "@/store/authSlice";
 import Link from "next/link";
 import { notify } from "@/lib/socket";
 import ShowAvatar from "../ShowAvatar";
+import dotenv from 'dotenv'
+dotenv.config()
+const API_URL = process.env.API_URL
 
 const Options = ({
   children,

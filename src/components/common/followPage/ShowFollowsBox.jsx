@@ -7,10 +7,12 @@ import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { toast } from "sonner";
-import { API_URL } from "@/constants/constant";
 import { followRecv } from "@/store/authSlice";
 import { TableCell, TableRow } from "@/components/ui/table";
 import ShowAvatar from "../ShowAvatar";
+import dotenv from 'dotenv'
+dotenv.config()
+const API_URL = process.env.API_URL
 
 const ShowFollowsBox = ({ user, userId }) => {
   const dispatch = useDispatch();

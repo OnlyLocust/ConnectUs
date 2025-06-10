@@ -1,10 +1,12 @@
 import { Button } from "@/components/ui/button";
-import { API_URL } from "@/constants/constant";
 import { setNotRead } from "@/store/authSlice";
 import axios from "axios";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
+import dotenv from 'dotenv'
+dotenv.config()
+const API_URL = process.env.API_URL
 
 const Header = () => {
 

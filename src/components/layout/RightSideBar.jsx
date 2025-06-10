@@ -2,11 +2,13 @@
 import React, { memo, useCallback, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import { API_URL } from "@/constants/constant";
 import { setSuggestions } from "@/store/authSlice";
 import { toast } from "sonner";
 import Link from "next/link";
 import SuggestUser from "../common/RightSideBar/SuggestUser";
+import dotenv from 'dotenv'
+dotenv.config()
+const API_URL = process.env.API_URL
 
 const RightSideBar = () => {
   const dispatch = useDispatch();

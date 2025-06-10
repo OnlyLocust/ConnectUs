@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { API_URL } from "@/constants/constant";
 import { Loader2 } from "lucide-react";
 import { setAuth } from "@/store/authSlice";
 import { toast } from "sonner";
@@ -10,6 +9,9 @@ import { Button } from "@/components/ui/button";
 import EmailInput from "./EmailInput";
 import PasswordInput from "./PasswordInput";
 import UsernameInput from "./UsernameInput";
+import dotenv from 'dotenv'
+dotenv.config()
+const API_URL = process.env.API_URL
 
 const SignupForm = () => {
 

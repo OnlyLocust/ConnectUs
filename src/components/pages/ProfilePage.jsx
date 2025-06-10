@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PostsShow from "@/components/common/PostsShow";
 import axios from "axios";
-import { API_URL } from "@/constants/constant";
 import { toast } from "sonner";
 import { removeRecv,  setRecv } from "@/store/recvSlice";
  import Loading from "@/components/common/Loading";
@@ -14,6 +13,9 @@ import SecondButton from "@/components/common/profilePage/SecondButton";
 import FirstButton from "@/components/common/profilePage/FirstButton";
 import { useParams } from "next/navigation";
 import ShowAvatar from "../common/ShowAvatar";
+import dotenv from 'dotenv'
+dotenv.config()
+const API_URL = process.env.API_URL
 
 const ProfilePage = () => {
   const params = useParams()

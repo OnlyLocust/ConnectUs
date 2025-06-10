@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { API_URL } from "@/constants/constant";
 import { sendMessageToSocket } from "@/lib/socket";
 import { addChat, removeChat } from "@/store/chatSlice";
 import axios from "axios";
@@ -8,6 +7,9 @@ import { Paperclip, Send, Smile } from "lucide-react";
 import React, { useCallback, useState } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
+import dotenv from 'dotenv'
+dotenv.config()
+const API_URL = process.env.API_URL
 
 const MessageInput = ({recvId}) => {
 

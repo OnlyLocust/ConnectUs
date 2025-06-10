@@ -3,12 +3,14 @@ import Link from "next/link";
 import { Eye, UserMinus, UserPlus } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import { API_URL } from "@/constants/constant";
 import { toast } from "sonner";
 import { followRecv } from "@/store/authSlice";
 import { notify } from "@/lib/socket";
 import { Button } from "@/components/ui/button";
 import ShowAvatar from "../ShowAvatar";
+import dotenv from 'dotenv'
+dotenv.config()
+const API_URL = process.env.API_URL
 
 const SearchShowFollowBox = ({ user }) => {
   const dispatch = useDispatch();

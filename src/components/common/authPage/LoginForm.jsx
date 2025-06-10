@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { API_URL } from "@/constants/constant";
 import { toast } from "sonner";
 import { useDispatch } from "react-redux";
 import { setAuth, setNotRead } from "@/store/authSlice";
@@ -9,6 +8,9 @@ import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import EmailInput from "./EmailInput";
 import PasswordInput from "./PasswordInput";
+import dotenv from 'dotenv'
+dotenv.config()
+const API_URL = process.env.API_URL
 
 const LoginForm = () => {
   const dispatch = useDispatch();

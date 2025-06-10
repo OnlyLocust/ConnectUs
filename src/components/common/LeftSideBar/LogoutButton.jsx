@@ -1,4 +1,3 @@
-import { API_URL } from "@/constants/constant";
 import { disconnectSocket } from "@/lib/socket";
 import { logout } from "@/store/authSlice";
 import axios from "axios";
@@ -7,6 +6,9 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
+import dotenv from 'dotenv'
+dotenv.config()
+const API_URL = process.env.API_URL
 
 const LogoutButton = () => {
 

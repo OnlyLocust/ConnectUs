@@ -6,7 +6,6 @@ import {
   CardHeader
 } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { API_URL } from "@/constants/constant";
 import { emptyFollow, setFollow } from "@/store/followSlice";
 import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
@@ -16,6 +15,9 @@ import SearchInput from "../common/followPage/SearchInput";
 import FollowHeaderProfile from "../common/followPage/FollowHeaderProfile";
 import FollowType from "../common/followPage/FollowType";
 import ShowFollowsBox from "../common/followPage/ShowFollowsBox";
+import dotenv from 'dotenv'
+dotenv.config()
+const API_URL = process.env.API_URL
 
 export default function FollowsPage({ id, followType }) {
   const follow = useSelector((state) => state.follow.follow) || [];
