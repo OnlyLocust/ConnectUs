@@ -51,12 +51,14 @@ const ProfilePage = () => {
 
   return recv ? (
     <div className="max-w-4xl mx-auto p-6">
-      <div className="flex gap-15 items-center mb-10 bg-white shadow-md rounded-lg p-6  justify-around">
-        <ShowAvatar
+      <div className="flex gap-15 items-center mb-10 bg-white shadow-md rounded-lg p-6 justify-around">
+        <div className="h-32 w-32">
+          <ShowAvatar
           profilePicture={recv.profilePicture}
           username={recv.username}
           size={32}
         />
+        </div>
 
         <div className="flex-1">
           <div className="flex items-center gap-4 mb-4 justify-between">
