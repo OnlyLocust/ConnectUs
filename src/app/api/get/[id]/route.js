@@ -39,6 +39,8 @@ export const GET = async (req,{params}) => {
                   profilePicture: 1,
                   followerCount: { $size: { $ifNull: ["$followers", []] } },
                   followingCount: { $size: { $ifNull: ["$following", []] } },
+                  bio:1,
+                  gender:1,
                   posts: {
                     $map: {
                       input: "$posts",

@@ -17,6 +17,7 @@ import { API_URL } from "@/constants/constant";
 
 const EditProfile = () => {
   const router = useRouter();
+  const userId = useSelector((state) => state.auth.user._id)
 
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
@@ -25,7 +26,7 @@ const EditProfile = () => {
 
   const [formData, setFormData] = useState({
     username: user?.username,
-    gender: user?.gender,
+    gender: user?.gender || 'Other',
     bio: user?.bio,
     profilePicture: user?.profilePicture,
   });
@@ -33,7 +34,7 @@ const EditProfile = () => {
   const [previewImage, setPreviewImage] = useState(formData.profilePicture);
 
   useEffect(() => {
-    router.prefetch("/home/profile");
+    router.prefetch(`/home/user/profile/${userId}`);
   }, []);
 
   const handleChange = (e) => {
@@ -87,7 +88,7 @@ const EditProfile = () => {
       if (res.data.success) {
         dispatch(setAuth(res.data.user));
         toast.success("Profile updated successfully");
-        router.push("/home/profile");
+        router.push(`/home/user/profile/${userId}`);
       } else {
         throw new Error(res.data.message);
       }
