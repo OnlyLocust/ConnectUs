@@ -14,9 +14,9 @@
         transports: ["websocket"],
       });
 
-      socket.on("connect", () => {
-        console.log("✅ Socket connected:", socket.id);
-      });
+      // socket.on("connect", () => {
+      //   console.log("✅ Socket connected");
+      // });
 
       socket.on("get", (data) => {
         const recv = store.getState().chat.recv;
