@@ -9,13 +9,10 @@ import Link from "next/link";
 import React, { useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
-import dotenv from 'dotenv'
-dotenv.config()
-const API_URL = process.env.API_URL
+import { API_URL } from "@/constants/constant";
 
 const FirstButton = ({ userId, id }) => {
   const dispatch = useDispatch();
-
 
   if (userId === id) {
     return (
@@ -27,14 +24,19 @@ const FirstButton = ({ userId, id }) => {
     );
   }
 
-
   const userFollowing = useSelector((state) => state.auth.user.following);
-  const isFollowing = useMemo(() => userFollowing.includes(id), [userFollowing, id]);
+  const isFollowing = useMemo(
+    () => userFollowing.includes(id),
+    [userFollowing, id]
+  );
 
   const followUser = useCallback(async () => {
-
     try {
-      const res = await axios.patch(`${API_URL}/follow/${id}`, {}, { withCredentials: true });
+      const res = await axios.patch(
+        `${API_URL}/follow/${id}`,
+        {},
+        { withCredentials: true }
+      );
 
       if (res.data.success) {
         toast.success(res.data.message);
@@ -56,7 +58,9 @@ const FirstButton = ({ userId, id }) => {
       }
     } catch (error) {
       toast.error(
-        error.response?.data?.message || error.message || "Failed to follow user"
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to follow user"
       );
     }
   }, [dispatch, id]);

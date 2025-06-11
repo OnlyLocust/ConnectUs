@@ -10,9 +10,7 @@ import { toast } from "sonner";
 import { followRecv } from "@/store/authSlice";
 import { TableCell, TableRow } from "@/components/ui/table";
 import ShowAvatar from "../ShowAvatar";
-import dotenv from 'dotenv'
-dotenv.config()
-const API_URL = process.env.API_URL
+import { API_URL } from "@/constants/constant";
 
 const ShowFollowsBox = ({ user, userId }) => {
   const dispatch = useDispatch();
@@ -47,7 +45,11 @@ const ShowFollowsBox = ({ user, userId }) => {
     <TableRow>
       <TableCell>
         <div className="flex items-center gap-4">
-          <ShowAvatar profilePicture={user.profilePicture} username={user.username} size={10} />
+          <ShowAvatar
+            profilePicture={user.profilePicture}
+            username={user.username}
+            size={10}
+          />
           <div>
             <div className="font-medium">{user.username || "User"}</div>
             <div className="text-sm text-muted-foreground">

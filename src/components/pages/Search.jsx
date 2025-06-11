@@ -12,12 +12,9 @@ import SearchForm from "../common/searchPage/SearchForm";
 import SearchLoading from "../common/searchPage/SearchLoading";
 import NoSearch from "../common/searchPage/NoSearch";
 import SearchShowFollowBox from "../common/searchPage/SearchShowFollowBox";
-import dotenv from 'dotenv'
-dotenv.config()
-const API_URL = process.env.API_URL
+import { API_URL } from "@/constants/constant";
 
-
-const searchSlicing = 7
+const searchSlicing = 7;
 
 export default function SearchPage() {
   const dispatch = useDispatch();
@@ -31,14 +28,12 @@ export default function SearchPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
 
-
   useEffect(() => {
     const timeout = setTimeout(() => {
       setDebouncedQuery(searchQuery);
     }, 300);
     return () => clearTimeout(timeout);
   }, [searchQuery]);
-
 
   const searchItem = useMemo(() => {
     if (activeTab === "users") {
@@ -101,16 +96,18 @@ export default function SearchPage() {
   return (
     <div className="max-w-2xl mx-auto p-4">
       <div className="sticky top-0 bg-background z-10 pb-4">
-        <SearchForm value={searchQuery} onChange={handleSearch} setSearchQuery={setSearchQuery} />
-
+        <SearchForm
+          value={searchQuery}
+          onChange={handleSearch}
+          setSearchQuery={setSearchQuery}
+        />
 
         <SearchTabs activeTab={activeTab} setActiveTab={setActiveTab} />
       </div>
 
-
       <div className="mt-4 space-y-4">
         {isLoading ? (
-          <SearchLoading/>
+          <SearchLoading />
         ) : searchItem.length > 0 ? (
           <div className="space-y-3 animate-fadeIn">
             {activeTab === "users" ? (
@@ -140,7 +137,7 @@ export default function SearchPage() {
             )}
           </div>
         ) : debouncedQuery && !isLoading ? (
-          <NoSearch/>
+          <NoSearch />
         ) : null}
       </div>
     </div>

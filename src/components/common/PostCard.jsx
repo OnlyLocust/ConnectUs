@@ -1,7 +1,4 @@
 "use client";
-
-import profile from "./../../../public/profile.png";
-
 import React, { useState, useCallback, useMemo, memo } from "react";
 import { Card } from "../ui/card";
 import { Heart, MessageCircle, Send, MoreHorizontal } from "lucide-react";
@@ -28,9 +25,7 @@ import { notify } from "@/lib/socket";
 import ShowAvatar from "./ShowAvatar";
 import PostImage from "./PostCard/PostImage";
 import CommentInput from "./PostCard/CommentInput";
-import dotenv from 'dotenv'
-dotenv.config()
-const API_URL = process.env.API_URL
+import { API_URL } from "@/constants/constant";
 
 const PostCard = ({ post, type }) => {
   const dispatch = useDispatch();

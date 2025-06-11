@@ -6,14 +6,11 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
-import dotenv from 'dotenv'
-dotenv.config()
-const API_URL = process.env.API_URL
+import { API_URL } from "@/constants/constant";
 
 const LogoutButton = () => {
-
-    const dispatch = useDispatch();
-    const router = useRouter();  
+  const dispatch = useDispatch();
+  const router = useRouter();
 
   const logoutHandler = async () => {
     try {

@@ -13,9 +13,7 @@ import Settings from "../common/notificationPage/Settings";
 import NotificationCard from "../common/notificationPage/NotificationCard";
 import Header from "../common/notificationPage/Header";
 import LoadingNotifications from "../common/notificationPage/LoadingNotifications";
-import dotenv from 'dotenv'
-dotenv.config()
-const API_URL = process.env.API_URL
+import { API_URL } from "@/constants/constant";
 
 export default function NotificationsPage() {
   const dispatch = useDispatch();

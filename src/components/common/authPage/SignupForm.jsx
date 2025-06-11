@@ -9,13 +9,10 @@ import { Button } from "@/components/ui/button";
 import EmailInput from "./EmailInput";
 import PasswordInput from "./PasswordInput";
 import UsernameInput from "./UsernameInput";
-import dotenv from 'dotenv'
-dotenv.config()
-const API_URL = process.env.API_URL
+import { API_URL } from "@/constants/constant";
 
 const SignupForm = () => {
-
-      const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -101,7 +98,6 @@ const SignupForm = () => {
         error.response?.data?.message || error.message || "Login failed";
       toast.error(errorMessage);
 
-
       if (error.response?.data?.error === "Invalid credentials") {
         setErrors({
           email: " ",
@@ -113,16 +109,21 @@ const SignupForm = () => {
     }
   };
 
-
-
   return (
     <form onSubmit={signupHandler} className="space-y-4">
+      <UsernameInput value={formData.username} onChange={handleChange} />
 
-      <UsernameInput value={formData.username} onChange={handleChange}/>
+      <EmailInput
+        value={formData.email}
+        onChange={handleChange}
+        errors={errors.email}
+      />
 
-      <EmailInput value={formData.email} onChange={handleChange} errors={errors.email}/>
-
-      <PasswordInput value={formData.password} onChange={handleChange} errors={errors.password}/>
+      <PasswordInput
+        value={formData.password}
+        onChange={handleChange}
+        errors={errors.password}
+      />
 
       <Button type="submit" className="w-full" disabled={isLoading}>
         {isLoading ? (

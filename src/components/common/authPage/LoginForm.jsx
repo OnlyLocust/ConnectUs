@@ -8,9 +8,8 @@ import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import EmailInput from "./EmailInput";
 import PasswordInput from "./PasswordInput";
-import dotenv from 'dotenv'
-dotenv.config()
-const API_URL = process.env.API_URL
+import { API_URL } from "@/constants/constant";
+
 
 const LoginForm = () => {
   const dispatch = useDispatch();
@@ -93,7 +92,6 @@ const LoginForm = () => {
         error.response?.data?.message || error.message || "Login failed";
       toast.error(errorMessage);
 
-
       if (error.response?.data?.error === "Invalid credentials") {
         setErrors({
           email: " ",
@@ -107,17 +105,20 @@ const LoginForm = () => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-     
-     <EmailInput value={formData.email} onChange={handleChange} errors={errors.email}/>
+      <EmailInput
+        value={formData.email}
+        onChange={handleChange}
+        errors={errors.email}
+      />
 
-
-      <PasswordInput value={formData.password} onChange={handleChange} errors={errors.password}/>
-
+      <PasswordInput
+        value={formData.password}
+        onChange={handleChange}
+        errors={errors.password}
+      />
 
       <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-2">
-
-        </div>
+        <div className="flex items-center space-x-2"></div>
         <Button
           variant="link"
           type="button"
@@ -127,7 +128,6 @@ const LoginForm = () => {
           Forgot password?
         </Button>
       </div>
-
 
       <Button type="submit" className="w-full" disabled={isLoading}>
         {isLoading ? (

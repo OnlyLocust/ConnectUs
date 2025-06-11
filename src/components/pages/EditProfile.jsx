@@ -13,9 +13,7 @@ import ProfileInput from "../common/editProfilePage/ProfileInput";
 import UserInputName from "../common/editProfilePage/UserInputName";
 import SubmitButton from "../common/editProfilePage/SubmitButton";
 import ShowAvatar from "../common/ShowAvatar";
-import dotenv from 'dotenv'
-dotenv.config()
-const API_URL = process.env.API_URL
+import { API_URL } from "@/constants/constant";
 
 const EditProfile = () => {
   const router = useRouter();
@@ -111,13 +109,16 @@ const EditProfile = () => {
       <h1 className="text-3xl font-bold text-center mb-8">Edit Profile</h1>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        
         <div className="flex flex-col items-center gap-4">
           <Label htmlFor="profilePicture" className="text-lg font-semibold">
             Profile Picture
           </Label>
 
-          <ShowAvatar profilePicture={previewImage} username={formData.username} size={32}/>
+          <ShowAvatar
+            profilePicture={previewImage}
+            username={formData.username}
+            size={32}
+          />
 
           <ProfileInput onChange={handleImageChange} />
         </div>

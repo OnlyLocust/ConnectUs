@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { setChats } from "@/store/chatSlice";
@@ -8,70 +8,66 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import Loader from "./Loader";
-import dotenv from 'dotenv'
-dotenv.config()
-const API_URL = process.env.API_URL
+import { API_URL } from "@/constants/constant";
 
-const ChatArea = ({recvId, activeChat}) => {
-const dispatch = useDispatch()
-const messages = useSelector((state) => state.chat.chats)
-const [loading , setLoading] = useState(false)
+const ChatArea = ({ recvId, activeChat }) => {
+  const dispatch = useDispatch();
+  const messages = useSelector((state) => state.chat.chats);
+  const [loading, setLoading] = useState(false);
 
-useEffect(() => {
+  useEffect(() => {
+    const getMessages = async () => {
+      setLoading(true);
+      try {
+        const res = await axios.get(`${API_URL}/chat/${recvId}`, {
+          withCredentials: true,
+        });
 
-  const getMessages = async () => {
-    setLoading(true)
-    try {
-      const res = await axios.get(`${API_URL}/chat/${recvId}`, {withCredentials:true})
-
-      if(res.data.success){
-        dispatch(setChats(res.data.messages))
+        if (res.data.success) {
+          dispatch(setChats(res.data.messages));
+        } else {
+          throw new Error("Failed to fetch messages");
+        }
+      } catch (error) {
+        toast.error(
+          error.message || error.data.message || "Failed to fetch messages"
+        );
+      } finally {
+        setLoading(false);
       }
-      else{
-        throw new Error("Failed to fetch messages")
+    };
+
+    const setNotRead = async () => {
+      try {
+        const res = await axios.patch(`${API_URL}/chat/notread/${activeChat}`, {
+          withCredentials: true,
+        });
+
+        if (res.data.success) {
+          // dispatch(setChats(res.data.messages))
+        } else {
+          throw new Error("Failed to fetch messages");
+        }
+      } catch (error) {
+        toast.error(
+          error.message || error.data.message || "Failed to fetch messages"
+        );
       }
-    } catch (error) {
-      toast.error(error.message || error.data.message || 'Failed to fetch messages')
-    }
-    finally{
-      setLoading(false)
-    }
-    
-  }
+    };
 
-   const setNotRead = async () => {
-    try {
-      const res = await axios.patch(`${API_URL}/chat/notread/${activeChat}`, {withCredentials:true})
+    getMessages();
+    setNotRead();
+  }, [recvId]);
 
-      if(res.data.success){
-        // dispatch(setChats(res.data.messages))
-      }
-      else{
-        throw new Error("Failed to fetch messages")
-      }
-    } catch (error) {
-      toast.error(error.message || error.data.message || 'Failed to fetch messages')
-    }
-    
-  }
-
-  getMessages()
-  setNotRead()
-
-}, [recvId])
-
-  return (
-    loading ?(
-      <Loader/>
-    ) : (
-      <ScrollArea className="h-full px-4 py-2">
-      <div  className="space-y-4">
+  return loading ? (
+    <Loader />
+  ) : (
+    <ScrollArea className="h-full px-4 py-2">
+      <div className="space-y-4">
         {messages?.map((msg) => (
           <div
             key={msg.createdAt}
-            className={`flex ${
-              msg.isSender ? "justify-end" : "justify-start"
-            }`}
+            className={`flex ${msg.isSender ? "justify-end" : "justify-start"}`}
           >
             <div
               className={`max-w-xs md:max-w-md rounded-lg px-4 py-2 ${
@@ -91,7 +87,6 @@ useEffect(() => {
         ))}
       </div>
     </ScrollArea>
-    )
   );
 };
 

@@ -11,13 +11,10 @@ import ProfileHeader from "../common/addPostPage/ProfileHeader";
 import ImageInput from "../common/addPostPage/ImageInput";
 import SubmitButton from "../common/addPostPage/SubmitButton";
 import CaptionInput from "../common/addPostPage/CaptionInput";
-import dotenv from 'dotenv'
-dotenv.config()
-const API_URL = process.env.API_URL
+import { API_URL } from "@/constants/constant";
 
 export default function AddPost() {
-
-const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const router = useRouter();
   const [image, setImage] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
@@ -28,9 +25,8 @@ const dispatch = useDispatch();
   const captionRef = useRef(null);
 
   useEffect(() => {
-    router.prefetch('/home');
+    router.prefetch("/home");
   }, []);
-
 
   const onImageChange = (e) => {
     const file = e.target.files?.[0];
@@ -48,7 +44,6 @@ const dispatch = useDispatch();
       setPreviewUrl(URL.createObjectURL(file));
     }
   };
-
 
   const clearImage = () => {
     setImage(null);
@@ -79,20 +74,25 @@ const dispatch = useDispatch();
         withCredentials: true,
       });
 
-      if(res.data.success === false) {
+      if (res.data.success === false) {
         throw new Error(res.data.message || "Failed to create post");
       }
 
-
-      dispatch(setPost({postId: res.data.post._id, image: res.data.post.image}));
+      dispatch(
+        setPost({ postId: res.data.post._id, image: res.data.post.image })
+      );
       await new Promise((r) => setTimeout(r, 2000));
 
       toast.success("Post created successfully!");
       setCaption("");
       clearImage();
-      router.push("/home"); 
+      router.push("/home");
     } catch (error) {
-      toast.error( error.response?.data?.message || error.message || "Failed to create post");
+      toast.error(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to create post"
+      );
     } finally {
       setIsLoading(false);
     }
@@ -102,15 +102,34 @@ const dispatch = useDispatch();
     <div className="min-h-screen flex flex-col items-center p-4 bg-gray-50">
       <Card className="w-full max-w-2xl rounded-lg shadow-sm bg-white">
         <CardContent className="p-6 space-y-4">
-          <ProfileHeader isLoading={isLoading} image={image} submitPost={submitPost}/>
+          <ProfileHeader
+            isLoading={isLoading}
+            image={image}
+            submitPost={submitPost}
+          />
 
-          <ImageInput image={image} previewUrl={previewUrl} clearImage={clearImage} fileInputRef={fileInputRef} onImageChange={onImageChange}/>
+          <ImageInput
+            image={image}
+            previewUrl={previewUrl}
+            clearImage={clearImage}
+            fileInputRef={fileInputRef}
+            onImageChange={onImageChange}
+          />
 
           <div className="space-y-4">
+            <CaptionInput
+              caption={caption}
+              showEmojiPicker={showEmojiPicker}
+              captionRef={captionRef}
+              setCaption={setCaption}
+              setShowEmojiPicker={setShowEmojiPicker}
+            />
 
-            <CaptionInput caption={caption} showEmojiPicker={showEmojiPicker} captionRef={captionRef} setCaption={setCaption} setShowEmojiPicker={setShowEmojiPicker}/>
-
-            <SubmitButton disabled={isLoading || !image} isLoading={isLoading} submitPost={submitPost}/>
+            <SubmitButton
+              disabled={isLoading || !image}
+              isLoading={isLoading}
+              submitPost={submitPost}
+            />
           </div>
         </CardContent>
       </Card>

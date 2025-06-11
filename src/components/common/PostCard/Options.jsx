@@ -15,9 +15,7 @@ import { followRecv, removePost } from "@/store/authSlice";
 import Link from "next/link";
 import { notify } from "@/lib/socket";
 import ShowAvatar from "../ShowAvatar";
-import dotenv from 'dotenv'
-dotenv.config()
-const API_URL = process.env.API_URL
+import { API_URL } from "@/constants/constant";
 
 const Options = ({
   children,

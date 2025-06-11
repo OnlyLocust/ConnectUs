@@ -4,13 +4,10 @@ import axios from "axios";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
-import dotenv from 'dotenv'
-dotenv.config()
-const API_URL = process.env.API_URL
+import { API_URL } from "@/constants/constant";
 
 const Header = () => {
-
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const setNotReadZero = async () => {
     try {
@@ -30,7 +27,9 @@ const Header = () => {
     <div className="flex justify-between items-center mb-8">
       <h1 className="text-2xl font-bold">Notifications</h1>
       <div className="flex items-center gap-4">
-        <Button variant="outline" onClick={setNotReadZero}>Mark all as read</Button>
+        <Button variant="outline" onClick={setNotReadZero}>
+          Mark all as read
+        </Button>
       </div>
     </div>
   );

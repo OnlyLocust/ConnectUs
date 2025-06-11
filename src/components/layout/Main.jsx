@@ -8,9 +8,7 @@ import { setPosts, addPosts } from "@/store/postSlice";
 import axios from "axios";
 import Loading from "../common/Loading";
 import NoPosts from "../common/NoPost";
-import dotenv from 'dotenv'
-dotenv.config()
-const API_URL = process.env.API_URL
+import { API_URL } from "@/constants/constant";
 
 const Main = () => {
   const dispatch = useDispatch();
@@ -97,24 +95,21 @@ const Main = () => {
 
   return (
     <main className="flex-1 max-w-[600px] mx-auto px-4 py-6 h-screen overflow-y-auto hide-scrollbar">
-
-
       <div className="flex flex-col gap-6">
         {!loading ? (
           posts.length > 0 ? (
             <div className="animate-fadeIn">
-            {posts.map((post, i) => (
-            <PostCard key={`${post._id}-${i}`} post={post} type="all" />
-          ))}
-          </div>
+              {posts.map((post, i) => (
+                <PostCard key={`${post._id}-${i}`} post={post} type="all" />
+              ))}
+            </div>
           ) : (
-            <NoPosts/>
+            <NoPosts />
           )
         ) : (
           <Loading />
         )}
       </div>
-
 
       <div
         ref={observerRef}
