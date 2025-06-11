@@ -62,15 +62,15 @@ const ProfilePage = () => {
 
         <div className="flex-1">
           <div className="flex items-center gap-4 mb-4 justify-between">
-            <h2 className="text-2xl font-semibold">{recv?.username}</h2>
+            <h2 className="text-2xl font-semibold">{recv?.username || "some one"}</h2>
 
             <FirstButton userId={userId} id={id} />
           </div>
           <div className="flex items-center justify-between">
             <FollowDetails
-              postLength={recv?.posts.length}
-              followerCount={recv?.followerCount}
-              followingCount={recv?.followingCount}
+              postLength={recv?.posts.length || 0}
+              followerCount={recv?.followerCount || 0}
+              followingCount={recv?.followingCount || 0}
               userId={id}
             />
 
@@ -79,7 +79,7 @@ const ProfilePage = () => {
 
           <div>
             {/* <p className="font-semibold">{recv?.username}</p> */}
-            <p className="text-sm text-muted-foreground">{recv?.bio}</p>
+            <p className="text-sm text-muted-foreground">{recv?.bio || ''}</p>
           </div>
         </div>
       </div>

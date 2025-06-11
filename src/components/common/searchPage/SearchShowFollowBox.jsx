@@ -69,7 +69,7 @@ const SearchShowFollowBox = ({ user }) => {
 
       <div className="flex space-x-2 ml-4">
         <Link
-          href={`/home/user/profile${user._id == userId ? "" : `/${user._id}`}`}
+          href={`/home/user/profile/${user._id}`}
         >
           <Button variant="outline" size="sm" className="gap-1">
             <Eye className="h-4 w-4" />

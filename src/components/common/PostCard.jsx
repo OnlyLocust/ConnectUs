@@ -133,10 +133,11 @@ const PostCard = ({ post, type }) => {
       ? dispatch(setRecvOnePostComment(payload))
       : dispatch(setPostComment(payload));
 
+      setComment("");
     try {
       const res = await axios.patch(
         `${API_URL}/post/comment/${postId}`,
-        { text: comment },
+        { text: payload.text },
         { withCredentials: true }
       );
       if (!res.data.success) throw new Error(res.data.message);
@@ -151,7 +152,6 @@ const PostCard = ({ post, type }) => {
         }
       }
 
-      setComment("");
     } catch (error) {
       type === "single"
         ? dispatch(removeRecvOnePostComment())
