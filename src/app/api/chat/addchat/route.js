@@ -20,8 +20,6 @@ export const POST = async (req) => {
       });
     }
 
-    console.log(chat);
-
     return NextResponse.json(
       { chatId: chat._id, success: true },
       { status: 200 }

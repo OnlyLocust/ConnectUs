@@ -14,9 +14,9 @@
         transports: ["websocket"],
       });
 
-      // socket.on("connect", () => {
-      //   console.log("✅ Socket connected");
-      // });
+      socket.on("connect", () => {
+        console.log("✅ connected to server !!!!");
+      });
 
       socket.on("get", (data) => {
         const recv = store.getState().chat.recv;
@@ -63,7 +63,7 @@
         createdAt: Date.now(),
       });
     } else {
-      console.warn("❌ Socket not initialized");
+      console.warn("❌ Disconnnected from server ......!!!");
     }
   };
 
@@ -73,7 +73,7 @@
         recvId
       });
     } else {
-      console.warn("❌ Socket not initialized");
+      console.warn("❌ Disconnnected from server ......!!!");
     }
   }
 
@@ -81,7 +81,7 @@
     if(socket){
       socket.emit("get-users" ,{})
     } else {
-      console.warn("❌ Socket not initialized");
+      console.warn("❌ Disconnnected from server ......!!!");
     }
   }
 
