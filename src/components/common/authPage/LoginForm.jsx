@@ -10,7 +10,6 @@ import EmailInput from "./EmailInput";
 import PasswordInput from "./PasswordInput";
 import { API_URL } from "@/constants/constant";
 
-
 const LoginForm = () => {
   const dispatch = useDispatch();
   const router = useRouter();
@@ -83,7 +82,11 @@ const LoginForm = () => {
         toast.success(res.data.message);
         dispatch(setAuth(res.data.user));
         dispatch(setNotRead({ type: "set", notRead: res.data.notRead }));
-        router.push("/home");
+        // router.push("/home");
+
+        setTimeout(() => {
+          router.push("/home");
+        }, 100); 
       } else {
         throw new Error(res.data.message || "Login failed");
       }
