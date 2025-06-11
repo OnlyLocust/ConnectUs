@@ -17,7 +17,8 @@ const Main = () => {
   const [hasMore, setHasMore] = useState(true);
   const [skip, setSkip] = useState(0);
   const observerRef = useRef(null);
-  const initialLoad = useRef(true);
+  // const initialLoad = useRef(true);
+  const [initialLoad, setInitialLoad] = useState(true);
 
   const fetchPosts = async () => {
     if (loading || !hasMore) return;
@@ -58,7 +59,8 @@ const Main = () => {
       );
     } finally {
       setLoading(false);
-      initialLoad.current = false;
+      // initialLoad.current = false;
+      setInitialLoad(false);
     }
   };
 
@@ -69,7 +71,7 @@ const Main = () => {
   }, []);
 
   useEffect(() => {
-    if (initialLoad.current) return;
+    if (initialLoad) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -96,18 +98,16 @@ const Main = () => {
   return (
     <main className="flex-1 max-w-[600px] mx-auto px-4 py-6 h-screen overflow-y-auto hide-scrollbar">
       <div className="flex flex-col gap-6">
-        {!loading ? (
-          posts.length > 0 ? (
-            <div className="animate-fadeIn">
-              {posts.map((post, i) => (
-                <PostCard key={`${post._id}-${i}`} post={post} type="all" />
-              ))}
-            </div>
-          ) : (
-            <NoPosts />
-          )
-        ) : (
+        {loading && initialLoad ? (
           <Loading />
+        ) : posts.length > 0 ? (
+          <div className="animate-fadeIn">
+            {posts.map((post, i) => (
+              <PostCard key={`${post._id}-${i}`} post={post} type="all" />
+            ))}
+          </div>
+        ) : (
+          <NoPosts />
         )}
       </div>
 
@@ -115,7 +115,7 @@ const Main = () => {
         ref={observerRef}
         className="h-10 mt-4 flex items-center justify-center"
       >
-        {loading && (
+        {loading && !initialLoad && (
           <span className="text-gray-500">Loading more posts...</span>
         )}
         {!hasMore && posts.length > 0 && (
