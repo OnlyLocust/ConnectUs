@@ -2,6 +2,7 @@ import User from "@/models/user.model";
 import { auth } from "../../middleware/authMiddleware";
 import Post from "@/models/post.model";
 import { NextResponse } from "next/server";
+import Comment from "@/models/comment.model";
 
 export const DELETE = async (req, { params }) => {
   try {
@@ -32,6 +33,7 @@ export const DELETE = async (req, { params }) => {
       );
     }
 
+    //remove post from user 
     user.posts = user.posts.filter((post) => post != postId);
 
     const deletedPost = await Post.findByIdAndDelete(postId);
@@ -41,6 +43,18 @@ export const DELETE = async (req, { params }) => {
         { status: 404 }
       );
     }
+
+    // remove image from cloudinary
+    // to be done in future
+
+    // delete all comment reletaed to this post
+    await Comment.deleteMany({ _id: { $in: deletedPost.comments } });
+
+    // delete all book marks 
+    await User.updateMany(
+      { bookmarks: postId },
+      { $pull: { bookmarks: postId } }
+    );
 
     await user.save();
     return NextResponse.json(
