@@ -14,6 +14,13 @@ const LeftSideBar = () => {
   const btnRef = useRef(null);
 
   useEffect(() => {
+    // On first mount, place button in bottom right
+    const initialX = window.innerWidth - 60;
+    const initialY = window.innerHeight - 60;
+    setDragOffset({ x: initialX, y: initialY });
+  }, []);
+
+  useEffect(() => {
     if (user?._id) initiateSocket(user._id);
   }, [user]);
 
@@ -75,27 +82,64 @@ const LeftSideBar = () => {
       >
         <div>
           <Header />
-          <SideNavs user={user} />
+          <SideNavs
+            user={user}
+            onItemClick={() => setIsMobileMenuOpen(false)}
+          />
         </div>
         <LogoutButton />
       </aside>
 
-      {/* Stylish Movable Hamburger (Mobile Only) */}
       <div
         ref={btnRef}
         style={{
           transform: `translate(${dragOffset.x}px, ${dragOffset.y}px)`,
-          transition: "transform 0.05s linear",
+          transition: "transform 0.1s cubic-bezier(0.18, 0.89, 0.32, 1.28)",
         }}
-        className="md:hidden fixed z-50 cursor-grab"
+        className="md:hidden fixed z-50 cursor-grab active:cursor-grabbing"
       >
         <button
-          className="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 
-                     text-white shadow-xl rounded-full p-3 border border-white 
-                     active:scale-95 transition-all duration-200"
+          className="relative bg-gradient-to-br from-rose-400 via-fuchsia-500 to-indigo-500 
+               text-white shadow-lg rounded-full p-2.5 border border-white/20 
+               hover:shadow-md hover:scale-105 active:scale-95 transition-all duration-300
+               group overflow-hidden"
           onClick={() => setIsMobileMenuOpen((prev) => !prev)}
         >
-          <Menu size={24} />
+
+          <div
+            className="absolute inset-0 bg-gradient-to-br from-amber-400 to-pink-500 opacity-0 
+                    group-hover:opacity-100 transition-opacity duration-500 mix-blend-overlay"
+          />
+
+
+          <div className="relative flex flex-col items-center justify-center w-5 h-5">
+            <span
+              className={`absolute block h-0.5 w-5 bg-white rounded-full transition-all duration-300 
+                        ${
+                          isMobileMenuOpen
+                            ? "rotate-45 translate-y-0"
+                            : "-translate-y-1.5"
+                        }`}
+            />
+            <span
+              className={`absolute block h-0.5 w-5 bg-white rounded-full transition-all duration-300 
+                        ${isMobileMenuOpen ? "opacity-0" : "opacity-100"}`}
+            />
+            <span
+              className={`absolute block h-0.5 w-5 bg-white rounded-full transition-all duration-300 
+                        ${
+                          isMobileMenuOpen
+                            ? "-rotate-45 translate-y-0"
+                            : "translate-y-1.5"
+                        }`}
+            />
+          </div>
+
+          {/* Subtle pulsing glow effect */}
+          <div
+            className="absolute inset-0 rounded-full border border-white/10 animate-ping 
+                    opacity-0 group-hover:opacity-20 duration-1000"
+          />
         </button>
       </div>
 

@@ -9,7 +9,7 @@ const ImageInput = ({
   onImageChange,
 }) => {
   return (
-    <div className="border rounded-lg border-dashed border-gray-300 relative cursor-pointer hover:border-gray-400 transition">
+    <div className="border rounded-lg border-dashed border-gray-300 relative cursor-pointer hover:border-gray-400 transition px-3">
       {image ? (
         <div className="relative">
           <img
@@ -29,10 +29,10 @@ const ImageInput = ({
       ) : (
         <label
           htmlFor="file-upload"
-          className="flex flex-col items-center justify-center h-64 cursor-pointer text-gray-400"
+          className="flex flex-col items-center justify-center h-64 cursor-pointer text-gray-400 text-center"
         >
           <ImageIcon className="w-12 h-12 mb-3" />
-          <span className="text-lg">
+          <span className="text-lg mx-auto ">
             Drag photos and videos here or click to browse
           </span>
           <p className="text-sm text-gray-400 mt-2">JPEG, PNG up to 5MB</p>

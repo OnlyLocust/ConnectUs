@@ -12,7 +12,7 @@ import SideItem from "./SideItem";
 import { useSelector } from "react-redux";
 import ShowAvatar from "../ShowAvatar";
 
-const SideNavs = ({user}) => {
+const SideNavs = ({user, onItemClick }) => {
   const notRead = useSelector((state) => state.auth.notRead);
 
   const sideItems = useMemo(
@@ -68,7 +68,7 @@ const SideNavs = ({user}) => {
   return (
     <nav className="flex flex-col gap-1">
       {sideItems.map((item) => (
-        <SideItem path={item.path} text={item.text} icon={item.icon} notRead={notRead} key={item.text}/>
+        <SideItem path={item.path} text={item.text} icon={item.icon} notRead={notRead} key={item.text} onItemClick ={onItemClick }/>
       ))}
     </nav>
   );
