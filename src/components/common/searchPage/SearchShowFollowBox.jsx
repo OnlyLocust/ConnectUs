@@ -49,7 +49,7 @@ const SearchShowFollowBox = ({ user }) => {
   };
 
   return (
-    <div className="flex items-center px-4 hover:bg-gray-50/50 transition-colors rounded-lg">
+    <Link href={`/home/user/profile/${user._id}`} className="flex items-center px-4 hover:bg-gray-50/50 transition-colors rounded-lg">
       <div className="flex items-center flex-1 min-w-0 space-x-3">
         <ShowAvatar
           profilePicture={user.profilePicture}
@@ -68,14 +68,14 @@ const SearchShowFollowBox = ({ user }) => {
       </div>
 
       <div className="flex space-x-2 ml-4">
-        <Link
+        {/* <Link
           href={`/home/user/profile/${user._id}`}
         >
           <Button variant="outline" size="sm" className="gap-1">
             <Eye className="h-4 w-4" />
             <span>Profile</span>
           </Button>
-        </Link>
+        </Link> */}
         {user._id == userId ? (
           <Button
             variant={"outline"}
@@ -107,7 +107,7 @@ const SearchShowFollowBox = ({ user }) => {
           </Button>
         )}
       </div>
-    </div>
+    </Link>
   );
 };
 
