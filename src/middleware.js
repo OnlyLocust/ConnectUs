@@ -10,10 +10,10 @@ export async function middleware(req) {
     return NextResponse.next();
   }
 
-  if (pathname.startsWith("/home")) {
-    const token = req.cookies.get("token")?.value;
-    if (!token) return NextResponse.redirect(new URL("/", req.url));    
-  }
+  // if (pathname.startsWith("/home")) {
+  //   const token = req.cookies.get("token")?.value;
+  //   if (!token) return NextResponse.redirect(new URL("/", req.url));    
+  // }
 
 
   try {
