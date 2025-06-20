@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "sonner";
@@ -13,6 +15,7 @@ import { API_URL } from "@/constants/constant";
 const LoginForm = () => {
   const dispatch = useDispatch();
   const router = useRouter();
+
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
@@ -25,7 +28,7 @@ const LoginForm = () => {
 
   useEffect(() => {
     router.prefetch("/home");
-  });
+  }, [router]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -76,17 +79,20 @@ const LoginForm = () => {
 
     try {
       setIsLoading(true);
-      const res = await axios.post(`${API_URL}/auth/login`, formData);
+
+      const res = await axios.post(
+        `${API_URL}/auth/login`,
+        formData,
+        { withCredentials: true }  
+      );
 
       if (res.data.success) {
         toast.success(res.data.message);
         dispatch(setAuth(res.data.user));
         dispatch(setNotRead({ type: "set", notRead: res.data.notRead }));
-        // router.push("/home");
 
-        setTimeout(() => {
-          router.push("/home");
-        }, 100); 
+        router.push("/home"); 
+        
       } else {
         throw new Error(res.data.message || "Login failed");
       }
@@ -121,7 +127,7 @@ const LoginForm = () => {
       />
 
       <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-2"></div>
+        <div className="flex items-center space-x-2" />
         <Button
           variant="link"
           type="button"
