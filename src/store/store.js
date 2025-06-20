@@ -9,6 +9,7 @@ import follow from './followSlice'
 import search from './searchSlice'; 
 import chat from './chatSlice'
 import notification from './notificationSlice'
+import ui from './uiSlice'
 
 // persist config
 const persistConfig = {
@@ -25,7 +26,8 @@ const rootReducer = combineReducers({
   follow,
   search,
   chat,
-  notification
+  notification,
+  ui
 });
 
 // wrap with persist reducer
