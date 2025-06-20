@@ -35,7 +35,7 @@ export default function MessagesPage() {
   }, [chatUsers, searchTerm]);
 
   useEffect(() => {
-    dispatch(setIsHide(false)); // Show hamburger on mount
+    dispatch(setIsHide(false)); 
     const getChatUsers = async () => {
       setLoading(true);
       try {
@@ -68,7 +68,7 @@ export default function MessagesPage() {
 
   return (
     <div className="flex h-screen border rounded-lg overflow-hidden">
-      {/* Chat Users */}
+
       <div
         className={`w-full md:w-1/3 border-r bg-gray-50 ${
           isMobileChatView ? "hidden md:block" : "block"
@@ -81,14 +81,14 @@ export default function MessagesPage() {
           setActiveChat={(chatId) => {
             setActiveChat(chatId);
             if (window.innerWidth < 768) {
-              setViewHam(true, true); // Hide hamburger when chat starts
+              setViewHam(true, true);  
             }
           }}
           loading={loading}
         />
       </div>
 
-      {/* Chat Area */}
+
       <div
         className={`flex-col w-full md:w-2/3 bg-white h-full ${
           isMobileChatView ? "flex" : "hidden md:flex"
@@ -99,7 +99,7 @@ export default function MessagesPage() {
             <ChatHeader
               activeChat={activeChat}
               chatUsers={chatUsers}
-              onBack={() => setViewHam(false, false)} // Show hamburger when going back
+              onBack={() => setViewHam(false, false)} 
             />
             <div className="flex-1 overflow-hidden">
               <ChatArea recvId={recvId} activeChat={activeChat} />

@@ -22,6 +22,13 @@ const ProfilePage = () => {
   const userId = useSelector((state) => state.auth.user._id);
   const [selectedTab, setSelectedTab] = useState("Posts");
   const recv = useSelector((state) => state.recv.receiver);
+  const [isMobileView, setMobileView] = useState(false);
+
+  useEffect(() => {
+    if (window.innerWidth < 768) {
+      setMobileView(true);
+    }
+  }, []);
 
   useEffect(() => {
     const getUser = async () => {
@@ -50,37 +57,40 @@ const ProfilePage = () => {
   }, []);
 
   return recv ? (
-    <div className="max-w-4xl mx-auto p-6">
-      <div className="flex gap-15 items-center mb-10 bg-white shadow-md rounded-lg p-6 justify-around">
-        <div className="h-32 w-32">
-          <ShowAvatar
-          profilePicture={recv.profilePicture}
-          username={recv.username}
-          size={32}
-        />
+    <div className="max-w-4xl mx-auto p-2 sm:p-6">
+
+      <div className="flex flex-col sm:flex-row items-center mb-10 bg-white shadow-md rounded-lg p-4 md:p-6 gap-4 sm:gap-10">
+        <div className="flex flex-row flex-1 gap-4 sm:gap-6 items-center w-full">
+
+          <div className="h-20 w-20 sm:h-32 sm:w-32 flex-shrink-0">
+            <ShowAvatar
+              profilePicture={recv.profilePicture}
+              username={recv.username}
+              size={isMobileView ? 20 : 32} 
+            />
+          </div>
+
+
+          <div className="flex-1 w-full text-left">
+            <h2 className="text-xl md:text-2xl font-semibold mb-2">
+              {recv?.username || "some one"}
+            </h2>
+            <div className="">
+              <FollowDetails
+                postLength={recv?.posts.length || 0}
+                followerCount={recv?.followerCount || 0}
+                followingCount={recv?.followingCount || 0}
+                userId={id}
+              />
+            </div>
+            <p className="text-sm text-muted-foreground">{recv?.bio || ""}</p>
+          </div>
         </div>
 
-        <div className="flex-1">
-          <div className="flex items-center gap-4 mb-4 justify-between">
-            <h2 className="text-2xl font-semibold">{recv?.username || "some one"}</h2>
 
-            <FirstButton userId={userId} id={id} />
-          </div>
-          <div className="flex items-center justify-between">
-            <FollowDetails
-              postLength={recv?.posts.length || 0}
-              followerCount={recv?.followerCount || 0}
-              followingCount={recv?.followingCount || 0}
-              userId={id}
-            />
-
-            <SecondButton userId={userId} id={id} />
-          </div>
-
-          <div>
-
-            <p className="text-sm text-muted-foreground">{recv?.bio || ''}</p>
-          </div>
+        <div className="flex sm:flex-col gap-3 sm:gap-4 w-full sm:w-auto justify-around">
+          <FirstButton userId={userId} id={id} />
+          <SecondButton userId={userId} id={id} />
         </div>
       </div>
 

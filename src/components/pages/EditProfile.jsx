@@ -128,7 +128,7 @@ const EditProfile = () => {
 
         <BioInput value={formData.bio} onChange={handleChange} />
 
-        <SubmitButton isLoading={isLoading} />
+        <SubmitButton isLoading={isLoading} userId={userId}/>
       </form>
     </div>
   );

@@ -3,7 +3,7 @@ import React from "react";
 
 const FollowDetails = ({userId,postLength,followerCount,followingCount}) => {
   return (
-    <div className="flex gap-8 text-sm mb-4">
+    <div className="flex gap-6 sm:gap-8 text-[12px] md:text-sm mb-2 sm:mb-4">
       <span>
         <strong>{postLength || '0'}</strong> posts
       </span>
