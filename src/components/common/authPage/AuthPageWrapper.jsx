@@ -10,7 +10,7 @@ const AuthPageWrapper = ({children}) => {
         {children}
 
         <div className="text-center text-sm text-gray-500">
-          <p>© {new Date().getFullYear()} SocialConnect. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} ConnectUs. All rights reserved.</p>
         </div>
       </div>
     </div>
