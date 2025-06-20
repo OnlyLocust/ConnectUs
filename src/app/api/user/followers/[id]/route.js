@@ -1,11 +1,9 @@
-import { auth } from "@/app/api/middleware/authMiddleware";
 import User from "@/models/user.model";
 import { NextResponse } from "next/server";
 
 export const GET = async (req, { params }) => {
     try {
         const {id:userId} = await params;
-        // const id = auth(req)
     const id = req.headers.get('userId');
         if(!id) {
             return NextResponse.json(({success: false, message: "Unauthorized"}), {status: 401});
