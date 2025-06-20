@@ -44,7 +44,7 @@ const ShowFollowsBox = ({ user, userId }) => {
   return (
     <TableRow>
       <TableCell>
-        <div className="flex items-center gap-4">
+        <Link href={`/home/user/profile${user._id == userId ? "" : `/${user._id}`}`} className="flex items-center gap-4">
           <ShowAvatar
             profilePicture={user.profilePicture}
             username={user.username}
@@ -56,17 +56,17 @@ const ShowFollowsBox = ({ user, userId }) => {
               @{user.username || "User"}
             </div>
           </div>
-        </div>
+        </Link>
       </TableCell>
       <TableCell className="flex justify-end gap-2">
-        <Link
+        {/* <Link
           href={`/home/user/profile${user._id == userId ? "" : `/${user._id}`}`}
         >
           <Button variant="outline" size="sm" className="gap-1">
             <Eye className="h-4 w-4" />
             <span>Profile</span>
           </Button>
-        </Link>
+        </Link> */}
         {user._id == userId ? (
           <Button
             variant={"outline"}

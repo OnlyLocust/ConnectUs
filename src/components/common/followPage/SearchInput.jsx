@@ -4,7 +4,7 @@ import React from "react";
 
 const SearchInput = ({value,onChange}) => {
   return (
-    <div className="relative">
+    <div className="relative w-full sm:w-auto">
       <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
       <Input
         type="search"
