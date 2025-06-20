@@ -90,9 +90,20 @@ const SignupForm = () => {
         toast.success(res.data.message);
         dispatch(setAuth(res.data.user));
 
-        setTimeout(() => {
-          router.push("/home");
-        }, 1000);
+        // setTimeout(() => {
+        //   router.push("/home");
+        // }, 1000);
+
+        const checkCookieInterval = setInterval(() => {
+          const cookies = document.cookie;
+
+
+          if (cookies.includes("token")) {
+            clearInterval(checkCookieInterval);
+            router.push("/"); 
+          }
+        }, 100);
+
       } else {
         throw new Error(res.data.message || "Login failed");
       }

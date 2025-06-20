@@ -89,9 +89,19 @@ const LoginForm = () => {
         dispatch(setAuth(res.data.user));
         dispatch(setNotRead({ type: "set", notRead: res.data.notRead }));
 
-        setTimeout(() => {
-          router.push("/home");
-        }, 1000);
+        // setTimeout(() => {
+        //   router.push("/home");
+        // }, 1000);
+
+        const checkCookieInterval = setInterval(() => {
+          const cookies = document.cookie;
+
+          if (cookies.includes("token")) {
+            clearInterval(checkCookieInterval);
+            router.push("/"); 
+          }
+        }, 100);
+
 
       } else {
         throw new Error(res.data.message || "Login failed");
