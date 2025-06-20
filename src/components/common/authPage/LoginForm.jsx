@@ -80,19 +80,19 @@ const LoginForm = () => {
     try {
       setIsLoading(true);
 
-      const res = await axios.post(
-        `${API_URL}/auth/login`,
-        formData,
-        { withCredentials: true }  
-      );
+      const res = await axios.post(`${API_URL}/auth/login`, formData, {
+        withCredentials: true,
+      });
 
       if (res.data.success) {
         toast.success(res.data.message);
         dispatch(setAuth(res.data.user));
         dispatch(setNotRead({ type: "set", notRead: res.data.notRead }));
 
-        router.push("/home"); 
-        
+        setTimeout(() => {
+          router.push("/home");
+        }, 300);
+
       } else {
         throw new Error(res.data.message || "Login failed");
       }

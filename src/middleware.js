@@ -12,10 +12,8 @@ export async function middleware(req) {
 
   if (pathname.startsWith("/home")) {
     const token = req.cookies.get("token")?.value;
-    if (!token) return NextResponse.redirect(new URL("/", req.url));
-    
+    if (!token) return NextResponse.redirect(new URL("/", req.url));    
   }
-
 
 
   try {
