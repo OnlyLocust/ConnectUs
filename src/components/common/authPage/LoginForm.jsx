@@ -98,7 +98,7 @@ const LoginForm = () => {
 
           if (cookies.includes("token")) {
             clearInterval(checkCookieInterval);
-            router.push("/"); 
+            router.push("/home"); 
           }
         }, 100);
 
