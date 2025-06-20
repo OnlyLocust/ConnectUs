@@ -1,13 +1,14 @@
 import User from "@/models/user.model";
-import { auth } from "../../middleware/authMiddleware";
 import Post from "@/models/post.model";
 import { NextResponse } from "next/server";
 import Comment from "@/models/comment.model";
+import cloudinary, { getPublicIdFromUrl } from "@/utils/cloudinary";
+
+
 
 export const DELETE = async (req, { params }) => {
   try {
     const { id: postId } = await params;
-    // const id = auth(req);
     const id = req.headers.get('userId');
     if (!id) {
       return NextResponse.json(
@@ -45,6 +46,13 @@ export const DELETE = async (req, { params }) => {
     }
 
     // remove image from cloudinary
+
+    const publicId = getPublicIdFromUrl(deletedPost.image);
+    if (publicId) {
+      await cloudinary.uploader.destroy(publicId);
+    }
+    else throw new Error("Failed to delete image")
+  
     // to be done in future
 
     // delete all comment reletaed to this post
@@ -72,7 +80,6 @@ export const DELETE = async (req, { params }) => {
 export const PATCH = async (req, { params }) => {
   try {
     const { id: postId } = await params;
-    // const id = auth(req);
     const id = req.headers.get('userId');
     if (!id) {
       return NextResponse.json(
@@ -134,7 +141,6 @@ export const PATCH = async (req, { params }) => {
 export const GET = async (req, { params }) => {
   try {
     const { id: postId } = await params;
-    // const id = auth(req);
     const id = req.headers.get('userId');
     if (!id) {
       return NextResponse.json(

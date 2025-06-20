@@ -1,12 +1,10 @@
 import Post from "@/models/post.model";
 import User from "@/models/user.model";
 import { NextResponse } from "next/server";
-import { auth } from "../../middleware/authMiddleware";
 import cloudinary from "@/utils/cloudinary";
 
 export const POST = async (req) => {
   try {
-    // const id = auth(req);
     const id = req.headers.get('userId');
     if (!id) {
       return NextResponse.json(

@@ -1,5 +1,4 @@
 import User from "@/models/user.model";
-import { auth } from "../../middleware/authMiddleware";
 import { NextResponse } from "next/server";
 
 export const PATCH = async (req, { params }) => {
@@ -7,7 +6,7 @@ export const PATCH = async (req, { params }) => {
     const {id : userId} = await params;
     const id = req.headers.get('userId');
 
-    // const id = auth(req);
+
     if (!userId) {
       return NextResponse.json(
         { message: "User ID is required", success: false },

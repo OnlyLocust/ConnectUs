@@ -1,11 +1,9 @@
 import { NextResponse } from 'next/server';
-import { auth } from '../../middleware/authMiddleware';
 import User from '@/models/user.model';
 import mongoose from 'mongoose';
 
 export async function GET(req) {
   try {
-    // const id = auth(req)
     const id = req.headers.get('userId');
     
     const suggestions = await User.aggregate([

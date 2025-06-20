@@ -1,12 +1,10 @@
 import Post from "@/models/post.model";
-import { auth } from "../middleware/authMiddleware";
 import { NextResponse } from "next/server";
 
 const skipValue = 4;
 
 export const GET = async (req) => {
   try {
-    // const id = auth(req);
     const id = req.headers.get("userId");
 
     if (!id) {

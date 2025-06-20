@@ -1,10 +1,8 @@
 import { NextResponse } from "next/server"
-import { auth } from "../../middleware/authMiddleware"
 import Post from "@/models/post.model"
 
 export const GET = async (req) => {
     try {
-        // const id = auth(req)
     const id = req.headers.get('userId');
         if(!id) {
             return NextResponse.json({

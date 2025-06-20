@@ -1,11 +1,9 @@
-import { auth } from "@/app/api/middleware/authMiddleware";
 import Comment from "@/models/comment.model";
 import Post from "@/models/post.model";
 import { NextResponse } from "next/server";
 
 export const PATCH = async (req, { params }) => {
     try {
-        // const id = auth(req);
     const id = req.headers.get('userId');
 
         const {text} = await req.json();

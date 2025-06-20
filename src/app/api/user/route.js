@@ -1,11 +1,9 @@
 import User from "@/models/user.model";
-import { auth } from "../middleware/authMiddleware";
 import { NextResponse } from "next/server";
-import cloudinary from "@/utils/cloudinary";
+import cloudinary, { getPublicIdFromUrl } from "@/utils/cloudinary";
 
 export const GET = async (req) => {
   try {
-    // const id = auth(req);
     const id = req.headers.get('userId');
     const user = await User.findById(id).populate("posts bookmarks");
     return NextResponse.json({ user, success: true }, { status: 200 });
@@ -19,9 +17,8 @@ export const GET = async (req) => {
 
 export const PATCH = async (req) => {
   try {
-    // const id = auth(req);
     const id = req.headers.get("userId");
-    
+
 
     const form = await req.formData(); // ⬅️ this is the key
 
@@ -66,6 +63,11 @@ export const PATCH = async (req) => {
           .end(buffer); // 🔥 Send the buffer here!
       });
 
+      if (user.profilePicture) {
+        const publicId = getPublicIdFromUrl(user.profilePicture);
+        await cloudinary.uploader.destroy(publicId);        
+      }
+
       user.profilePicture = result.secure_url;
       changes = true;
     }
@@ -92,6 +94,8 @@ export const PATCH = async (req) => {
       { status: 200 }
     );
   } catch (error) {
+    console.log(error);
+    
     return NextResponse.json(
       { error: error.message, success: false },
       { status: 500 }

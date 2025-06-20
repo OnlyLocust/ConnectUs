@@ -1,13 +1,10 @@
 import User from "@/models/user.model";
 import { NextResponse } from "next/server";
-import { auth } from "../../middleware/authMiddleware";
 import mongoose from "mongoose";
 
 
 export const GET = async (req,{params}) => {
-    try {
-        // const id = auth(req)
-    const id = req.headers.get('userId');
+    try {    const id = req.headers.get('userId');
         const {id : userId} = await params;      
 
         

@@ -1,10 +1,8 @@
 import { NextResponse } from "next/server";
-import { auth } from "../middleware/authMiddleware";
 import User from "@/models/user.model";
 
 export const GET = async (req) => {
   try {
-    // const id = auth(req);
     const id = req.headers.get('userId');
 
     const objectUserId = new mongoose.Types.ObjectId(id);
