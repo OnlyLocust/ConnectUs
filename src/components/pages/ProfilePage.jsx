@@ -78,7 +78,7 @@ const ProfilePage = () => {
           </div>
 
           <div>
-            {/* <p className="font-semibold">{recv?.username}</p> */}
+
             <p className="text-sm text-muted-foreground">{recv?.bio || ''}</p>
           </div>
         </div>

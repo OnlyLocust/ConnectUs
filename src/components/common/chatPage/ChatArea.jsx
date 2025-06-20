@@ -4,7 +4,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { setChats } from "@/store/chatSlice";
 import axios from "axios";
 import { formatDistanceToNow } from "date-fns";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import Loader from "./Loader";
@@ -14,6 +14,8 @@ const ChatArea = ({ recvId, activeChat }) => {
   const dispatch = useDispatch();
   const messages = useSelector((state) => state.chat.chats);
   const [loading, setLoading] = useState(false);
+
+  const bottomRef = useRef(null); // 👈 ref for auto-scroll
 
   useEffect(() => {
     const getMessages = async () => {
@@ -39,18 +41,12 @@ const ChatArea = ({ recvId, activeChat }) => {
 
     const setNotRead = async () => {
       try {
-        const res = await axios.patch(`${API_URL}/chat/notread/${activeChat}`, {
+        await axios.patch(`${API_URL}/chat/notread/${activeChat}`, {
           withCredentials: true,
         });
-
-        if (res.data.success) {
-          // dispatch(setChats(res.data.messages))
-        } else {
-          throw new Error("Failed to fetch messages");
-        }
       } catch (error) {
         toast.error(
-          error.message || error.data.message || "Failed to fetch messages"
+          error.message || error.data.message || "Failed to update read status"
         );
       }
     };
@@ -59,6 +55,13 @@ const ChatArea = ({ recvId, activeChat }) => {
     setNotRead();
   }, [recvId]);
 
+
+  useEffect(() => {
+    if (bottomRef.current) {
+      bottomRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
+
   return loading ? (
     <Loader />
   ) : (
@@ -66,7 +69,7 @@ const ChatArea = ({ recvId, activeChat }) => {
       <div className="space-y-4">
         {messages?.map((msg) => (
           <div
-            key={msg.createdAt}
+            key={msg._id || msg.createdAt}
             className={`flex ${msg.isSender ? "justify-end" : "justify-start"}`}
           >
             <div
@@ -85,6 +88,8 @@ const ChatArea = ({ recvId, activeChat }) => {
             </div>
           </div>
         ))}
+
+        <div ref={bottomRef} />
       </div>
     </ScrollArea>
   );
