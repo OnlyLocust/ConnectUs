@@ -61,9 +61,13 @@ export default function MessagesPage() {
     getChatUsers();
   }, []);
 
+  useEffect(() => {
+    dispatch(setIsHide(isMobileChatView));
+  },[isMobileChatView])
+
   const setViewHam = (isChatView, hideHam) => {
     setIsMobileChatView(isChatView);
-    dispatch(setIsHide(hideHam));
+    // dispatch(setIsHide(hideHam));
   };
 
   return (

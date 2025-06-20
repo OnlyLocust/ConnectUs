@@ -91,7 +91,7 @@ const LoginForm = () => {
 
         setTimeout(() => {
           router.push("/home");
-        }, 300);
+        }, 500);
 
       } else {
         throw new Error(res.data.message || "Login failed");

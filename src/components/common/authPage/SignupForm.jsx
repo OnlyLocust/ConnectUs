@@ -89,10 +89,10 @@ const SignupForm = () => {
       if (res.data.success) {
         toast.success(res.data.message);
         dispatch(setAuth(res.data.user));
-        
+
         setTimeout(() => {
           router.push("/home");
-        }, 300);
+        }, 500);
       } else {
         throw new Error(res.data.message || "Login failed");
       }
