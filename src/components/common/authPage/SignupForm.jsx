@@ -92,7 +92,7 @@ const SignupForm = () => {
 
         setTimeout(() => {
           router.push("/home");
-        }, 500);
+        }, 1000);
       } else {
         throw new Error(res.data.message || "Login failed");
       }

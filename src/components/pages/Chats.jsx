@@ -15,9 +15,11 @@ import { setUserChats } from "@/store/chatSlice";
 import { askOnline } from "@/lib/socket";
 import { API_URL } from "@/constants/constant";
 import { setIsHide } from "@/store/uiSlice";
+import { usePathname } from "next/navigation";
 
 export default function MessagesPage() {
   const dispatch = useDispatch();
+  const pathname = usePathname();
   const chatUsers = useSelector((state) => state.chat.chatUsers);
   const recvId = useSelector((state) => state.chat.recv);
 
@@ -35,7 +37,14 @@ export default function MessagesPage() {
   }, [chatUsers, searchTerm]);
 
   useEffect(() => {
-    dispatch(setIsHide(false)); 
+    return () => {
+      // This runs when path changes
+      dispatch(setIsHide(false));
+    };
+  }, [pathname]);
+
+  useEffect(() => {
+    dispatch(setIsHide(false));
     const getChatUsers = async () => {
       setLoading(true);
       try {
@@ -63,16 +72,15 @@ export default function MessagesPage() {
 
   useEffect(() => {
     dispatch(setIsHide(isMobileChatView));
-  },[isMobileChatView])
+  }, [isMobileChatView]);
 
-  const setViewHam = (isChatView, hideHam) => {
+  const setViewHam = (isChatView) => {
     setIsMobileChatView(isChatView);
     // dispatch(setIsHide(hideHam));
   };
 
   return (
     <div className="flex h-screen border rounded-lg overflow-hidden">
-
       <div
         className={`w-full md:w-1/3 border-r bg-gray-50 ${
           isMobileChatView ? "hidden md:block" : "block"
@@ -85,13 +93,12 @@ export default function MessagesPage() {
           setActiveChat={(chatId) => {
             setActiveChat(chatId);
             if (window.innerWidth < 768) {
-              setViewHam(true, true);  
+              setViewHam(true);
             }
           }}
           loading={loading}
         />
       </div>
-
 
       <div
         className={`flex-col w-full md:w-2/3 bg-white h-full ${
@@ -103,7 +110,7 @@ export default function MessagesPage() {
             <ChatHeader
               activeChat={activeChat}
               chatUsers={chatUsers}
-              onBack={() => setViewHam(false, false)} 
+              onBack={() => setViewHam(false)}
             />
             <div className="flex-1 overflow-hidden">
               <ChatArea recvId={recvId} activeChat={activeChat} />

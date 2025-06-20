@@ -9,7 +9,6 @@ import axios from "axios";
 import Loading from "../common/Loading";
 import NoPosts from "../common/NoPost";
 import { API_URL } from "@/constants/constant";
-import { setIsHide } from "@/store/uiSlice";
 
 const Main = () => {
   const dispatch = useDispatch();
@@ -18,7 +17,6 @@ const Main = () => {
   const [hasMore, setHasMore] = useState(true);
   const [skip, setSkip] = useState(0);
   const observerRef = useRef(null);
-  // const initialLoad = useRef(true);
   const [initialLoad, setInitialLoad] = useState(true);
 
   const fetchPosts = async () => {
@@ -69,7 +67,6 @@ const Main = () => {
     setSkip(0);
     setHasMore(true);
     fetchPosts();
-    dispatch(setIsHide(false))
   }, []);
 
   useEffect(() => {
