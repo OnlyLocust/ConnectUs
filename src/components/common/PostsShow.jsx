@@ -7,15 +7,16 @@ import Link from "next/link";
 const PostsShow = ({ posts }) => {
 
   return (
-    <div className="grid grid-cols-3 gap-4">
+    <div className="grid grid-cols-3 gap-1 md:gap-4">
       {posts?.map((post, i) => (
-        <Card key={i} className="overflow-hidden relative group cursor-pointer" >
+        // <Card key={i} className="overflow-hidden relative group cursor-pointer" >
+        <Card key={i} className="overflow-hidden relative group cursor-pointer py-0" >
           <Link href={`/home/posts/${post._id}`}>
           <CardContent className="p-0">
             <img
               src={post.image}
               alt={`Post ${i}`}
-              className="w-full h-[300px] object-cover transition-all duration-300 group-hover:brightness-75"
+              className="w-full h-[100px] md:h-[300px] object-cover transition-all duration-300 group-hover:brightness-75"
             />
 
 
