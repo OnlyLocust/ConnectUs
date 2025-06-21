@@ -101,7 +101,7 @@ export default function MessagesPage() {
       </div>
 
       <div
-        className={`flex-col w-full md:w-2/3 bg-white h-full ${
+        className={`flex-col w-full h-[90%] md:w-2/3 bg-white sm:h-full ${
           isMobileChatView ? "flex" : "hidden md:flex"
         }`}
       >
