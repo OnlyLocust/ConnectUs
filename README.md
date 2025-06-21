@@ -3,7 +3,7 @@
 A full-stack real-time social media platform where users can post, like, comment, chat, and receive instant notifications.  
 Built using **Next.js**, **Tailwind CSS**, **Redux**, **MongoDB**, and **Socket.io** — this app delivers a smooth and modern social experience with real-time features and clean UI.
 
-🚀 [Live Demo](https://social-media-6p73.onrender.com/)
+🚀 [Live Demo](https://connectus-ul0i.onrender.com/)
 
 
 
