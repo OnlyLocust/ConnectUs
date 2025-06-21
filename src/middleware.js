@@ -39,6 +39,7 @@ export async function middleware(req) {
 }
 
 export const config = {
-  matcher: ["/home/:path*", "/api/:path*"], // protect any /home page
+  matcher: ["/home/create/:path*" , "/home/edit/:path*", "/home/explore/:path*" , "/api/:path*"], 
+  // matcher: ["/home/:path*", "/api/:path*"], 
   // matcher: [ "/api/:path*"], // protect any /home page
 };
