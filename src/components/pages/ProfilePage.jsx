@@ -62,7 +62,7 @@ const ProfilePage = () => {
       <div className="flex flex-col sm:flex-row items-center mb-10 bg-white shadow-md rounded-lg p-4 md:p-6 gap-4 sm:gap-10">
         <div className="flex flex-row flex-1 gap-4 sm:gap-6 items-center w-full">
 
-          <div className="h-20 w-20 sm:h-32 sm:w-32 flex-shrink-0">
+          <div className={` ${isMobileView ? 'h-20 w-20' : 'h-32 w-32'}sm:h-32 sm:w-32 flex-shrink-0`}>
             <ShowAvatar
               profilePicture={recv.profilePicture}
               username={recv.username}
