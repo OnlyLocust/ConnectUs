@@ -105,7 +105,7 @@ const EditProfile = () => {
 
   return (
     <div className="max-w-2xl mx-auto p-6">
-      <h1 className="text-3xl font-bold text-center mb-8">Edit Profile</h1>
+      <h1 className="text-3xl font-bold text-center text-foreground mb-8">Edit Profile</h1>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="flex flex-col items-center gap-4">

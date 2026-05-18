@@ -25,7 +25,7 @@ const Header = () => {
 
   return (
     <div className="flex justify-between items-center mb-8">
-      <h1 className="text-2xl font-bold">Notifications</h1>
+      <h1 className="text-2xl font-bold text-foreground">Notifications</h1>
       <div className="flex items-center gap-4">
         <Button variant="" onClick={setNotReadZero}>
           Mark all as read

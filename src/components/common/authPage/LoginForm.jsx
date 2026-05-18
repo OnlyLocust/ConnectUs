@@ -131,7 +131,7 @@ const LoginForm = () => {
         <Button
           variant="link"
           type="button"
-          className="text-sm h-auto p-0 text-blue-600 hover:text-blue-800"
+          className="text-sm h-auto p-0 text-primary hover:text-primary/80"
           onClick={handleForgotPassword}
         >
           Forgot password?

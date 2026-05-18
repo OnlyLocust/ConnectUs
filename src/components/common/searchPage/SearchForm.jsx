@@ -1,4 +1,4 @@
-import { Input } from "@/components/ui/input";
+﻿import { Input } from "@/components/ui/input";
 import { SearchIcon, XIcon } from "lucide-react";
 import React from "react";
 
@@ -6,7 +6,7 @@ const SearchForm = ({value,onChange, setSearchQuery}) => {
   return (
     <form className="relative">
       <div className="relative">
-        <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+        <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
         <Input
           type="text"
           placeholder="Search users or posts..."
@@ -18,7 +18,7 @@ const SearchForm = ({value,onChange, setSearchQuery}) => {
           <button
             type="button"
             onClick={() => setSearchQuery("")}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-muted-foreground"
           >
             <XIcon className="h-5 w-5" />
           </button>

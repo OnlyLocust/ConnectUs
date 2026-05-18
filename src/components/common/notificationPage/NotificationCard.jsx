@@ -1,4 +1,4 @@
-import { formatDistanceToNow } from "date-fns";
+﻿import { formatDistanceToNow } from "date-fns";
 import React from "react";
 import ShowAvatar from "../ShowAvatar";
 
@@ -12,7 +12,7 @@ const NotificationCard = ({notification , getNotificationIcon}) => {
         <div className="flex items-center gap-2">
           <ShowAvatar profilePicture={notification.actor.profilePicture} username={notification.actor.username} size={8}/>
           <div className="flex-1">
-            <p className="text-sm font-medium">
+            <p className="text-sm font-medium text-foreground">
               <span className="hover:underline cursor-pointer">
                 {notification.actor.username}
               </span>{" "}
@@ -21,7 +21,7 @@ const NotificationCard = ({notification , getNotificationIcon}) => {
               {notification.action === "follow" && "started following you"}
               {notification.action === "message" && "Messaged you"}
             </p>
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-muted-foreground">
               {formatDistanceToNow(notification.createdAt, {
                 addSuffix: true,
               })}

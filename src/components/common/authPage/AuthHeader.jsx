@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 
 const AuthHeader = () => {
   return (
@@ -19,7 +19,7 @@ const AuthHeader = () => {
         <span style={{ color: "#ff6ec7" }}>Us</span>
       </h1>
 
-      <p className="text-gray-600">
+      <p className="text-muted-foreground">
         Connect with friends and the world around you
       </p>
     </div>

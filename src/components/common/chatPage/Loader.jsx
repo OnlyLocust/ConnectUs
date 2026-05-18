@@ -1,10 +1,10 @@
-import React from 'react';
+﻿import React from 'react';
 
 const Loader = ({ type = 'chats' }) => {
   const loaderText = type === 'chats' ? 'Loading conversations' : 'Loading users';
   
   return (
-    <div className="w-full p-5 flex flex-col items-center text-gray-600">
+    <div className="w-full p-5 flex flex-col items-center text-muted-foreground">
 
       <div className="flex gap-2 mb-5">
         {[0, 0.2, 0.4].map((delay, i) => (
@@ -27,23 +27,23 @@ const Loader = ({ type = 'chats' }) => {
       
       <div className="w-full max-w-md">
         {[...Array(type === 'chats' ? 3 : 5)].map((_, i) => (
-          <div key={i} className="flex gap-4 p-3 mb-3 rounded-xl bg-gray-50 overflow-hidden relative">
+          <div key={i} className="flex gap-4 p-3 mb-3 rounded-xl bg-muted overflow-hidden relative">
 
 
-            <div className="w-10 h-10 rounded-full bg-gray-200 relative overflow-hidden">
+            <div className="w-10 h-10 rounded-full bg-muted relative overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-100 to-transparent animate-shimmer" />
             </div>
             
 
             <div className="flex-1 space-y-2">
               <div 
-                className="h-3 rounded bg-gray-200 relative overflow-hidden"
+                className="h-3 rounded bg-muted relative overflow-hidden"
                 style={{ width: i % 2 ? '70%' : '90%' }}
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-100 to-transparent animate-shimmer" />
               </div>
               <div 
-                className="h-3 rounded bg-gray-200 relative overflow-hidden"
+                className="h-3 rounded bg-muted relative overflow-hidden"
                 style={{ width: i % 2 ? '50%' : '80%' }}
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-100 to-transparent animate-shimmer" />

@@ -1,8 +1,8 @@
-import React from "react";
+﻿import React from "react";
 
 const CommentInput = ({comment, commentHandler, commentPost}) => {
   return (
-    <div className="border-t border-gray-100 p-3">
+    <div className="border-t border-border p-3">
       <div className="flex items-center">
         <input
           type="text"

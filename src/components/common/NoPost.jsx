@@ -1,7 +1,7 @@
-const NoPosts = ({
+﻿const NoPosts = ({
   icon = (
     <svg
-      className="w-12 h-12 text-gray-400"
+      className="w-12 h-12 text-muted-foreground"
       fill="none"
       stroke="currentColor"
       viewBox="0 0 24 24"
@@ -20,7 +20,7 @@ const NoPosts = ({
 }) => {
   return (
     <div className="animate-fadeIn flex flex-col items-center justify-center p-6 text-center bg-card rounded-lg border border-border shadow-sm">
-      <div className="mb-4 p-4 bg-gray-50 rounded-full">{icon}</div>
+      <div className="mb-4 p-4 bg-muted rounded-full">{icon}</div>
 
       <h3 className="text-lg font-medium text-foreground mb-1">{title}</h3>
 

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Bell, UserPlus, Heart, MessageSquare } from "lucide-react";
@@ -67,7 +67,7 @@ export default function NotificationsPage() {
       case "follow":
         return <UserPlus className="h-5 w-5 text-green-500" />;
       default:
-        return <Bell className="h-5 w-5 text-gray-500" />;
+        return <Bell className="h-5 w-5 text-muted-foreground" />;
     }
   }, []);
 

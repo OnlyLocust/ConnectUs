@@ -1,4 +1,4 @@
-import { Textarea } from "@/components/ui/textarea";
+﻿import { Textarea } from "@/components/ui/textarea";
 import EmojiPicker from "emoji-picker-react";
 import { Smile } from "lucide-react";
 import React from "react";
@@ -31,7 +31,7 @@ const CaptionInput = ({
       <button
         type="button"
         onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-        className="absolute right-2 bottom-2 text-gray-400 hover:text-gray-600"
+        className="absolute right-2 bottom-2 text-muted-foreground hover:text-muted-foreground"
       >
         <Smile className="h-5 w-5" />
       </button>

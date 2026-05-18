@@ -37,12 +37,12 @@ const AllUsersChat = ({filteredChats , activeChat, setActiveChat, loading }) => 
               <div className="relative mr-3">
                 <ShowAvatar profilePicture={chat.member.profilePicture} username={chat.member.username} size={12}/>
                 {chat.member.online && (
-                  <Badge className="absolute bottom-0 right-0 h-3 w-3 bg-green-500 border-2 border-white rounded-full" />
+                  <Badge className="absolute bottom-0 right-0 h-3 w-3 bg-green-500 border-2 border-background rounded-full" />
                 )}
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex justify-between items-center">
-                  <h3 className="font-medium truncate">{chat.member.username}</h3>
+                  <h3 className="font-medium text-foreground truncate">{chat.member.username}</h3>
                   <span className="text-xs text-muted-foreground">
                     {formatDistanceToNow(chat.updatedAt, { addSuffix: true })}
                   </span>

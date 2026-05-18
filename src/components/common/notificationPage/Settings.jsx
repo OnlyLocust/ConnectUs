@@ -1,15 +1,15 @@
-import { Switch } from "@/components/ui/switch";
+﻿import { Switch } from "@/components/ui/switch";
 import React from "react";
 
 const Settings = ({notificationSettings,setNotificationSettings}) => {
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-bold">Notification Settings</h2>
+      <h2 className="text-xl font-bold text-foreground">Notification Settings</h2>
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="font-medium">Likes</h3>
-            <p className="text-sm text-gray-500">
+            <h3 className="font-medium text-foreground">Likes</h3>
+            <p className="text-sm text-muted-foreground">
               When someone likes your post
             </p>
           </div>
@@ -25,8 +25,8 @@ const Settings = ({notificationSettings,setNotificationSettings}) => {
         </div>
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="font-medium">Comments</h3>
-            <p className="text-sm text-gray-500">
+            <h3 className="font-medium text-foreground">Comments</h3>
+            <p className="text-sm text-muted-foreground">
               When someone comments on your post
             </p>
           </div>
@@ -42,8 +42,8 @@ const Settings = ({notificationSettings,setNotificationSettings}) => {
         </div>
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="font-medium">New Followers</h3>
-            <p className="text-sm text-gray-500">When someone follows you</p>
+            <h3 className="font-medium text-foreground">New Followers</h3>
+            <p className="text-sm text-muted-foreground">When someone follows you</p>
           </div>
           <Switch
             checked={notificationSettings.follows}
@@ -57,8 +57,8 @@ const Settings = ({notificationSettings,setNotificationSettings}) => {
         </div>
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="font-medium">Messages</h3>
-            <p className="text-sm text-gray-500">
+            <h3 className="font-medium text-foreground">Messages</h3>
+            <p className="text-sm text-muted-foreground">
               When you receive new messages
             </p>
           </div>

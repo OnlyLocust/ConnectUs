@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React from "react";
 import {
@@ -33,7 +33,7 @@ const Comments = ({ children, comments }) => {
                 </div>
               ))
             ) : (
-              <p className="text-sm text-gray-500">No comments yet</p>
+              <p className="text-sm text-muted-foreground">No comments yet</p>
             )}
           </div>
         </ScrollArea>

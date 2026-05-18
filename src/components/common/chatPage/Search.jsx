@@ -1,4 +1,4 @@
-import { Input } from "@/components/ui/input";
+﻿import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import React from "react";
 
@@ -7,7 +7,7 @@ const SearchBox = ({searchTerm ,setSearchTerm}) => {
     <div className="p-4 border-b">
       <h2 className="text-xl font-bold">Messages</h2>
       <div className="relative mt-4">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
           type="text"
           placeholder="Search conversations"

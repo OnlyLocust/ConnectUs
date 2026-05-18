@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+﻿import { Button } from "@/components/ui/button";
 import { Loader2Icon } from "lucide-react";
 import React from "react";
 import { useSelector } from "react-redux";
@@ -13,7 +13,7 @@ const ProfileHeader = ({isLoading,image,submitPost}) => {
         <ShowAvatar profilePicture={user.profilePicture} username={user.username} size={10} isUser={true} />
         <div>
           <p className="font-medium">{user.username}</p>
-          <p className="text-xs text-gray-500">Post to your profile</p>
+          <p className="text-xs text-muted-foreground">Post to your profile</p>
         </div>
       </div>
       <Button

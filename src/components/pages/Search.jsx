@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect, useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -126,7 +126,7 @@ export default function SearchPage() {
                 {searchItem.slice(0, searchSlicing).map((item) => (
                   <Card
                     key={item._id}
-                    className="border-0 shadow-sm hover:shadow-md transition-shadow cursor-pointer hover:border hover:border-gray-200 m-1"
+                    className="border-0 shadow-sm hover:shadow-md transition-shadow cursor-pointer hover:border hover:border-border m-1"
                   >
                     <CardContent className="p-0">
                       <SearchShowPostBox post={item} />

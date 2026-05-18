@@ -1,11 +1,11 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import React from "react";
 
 const SearchShowPostBox = ({post}) => {
   return (
     <Link href={`/home/posts/${post._id}`} className="block">
     <div className="relative group" >
-      <div className="aspect-square bg-gray-100 overflow-hidden">
+      <div className="aspect-square bg-muted overflow-hidden">
         <img
           src={post.image || "/placeholder-image.jpg"}
           alt={post.caption || "Post"}

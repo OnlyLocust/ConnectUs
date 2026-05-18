@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
@@ -36,7 +36,7 @@ export default function ExplorePage() {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
           <svg
-            className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"
+            className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -62,7 +62,7 @@ export default function ExplorePage() {
 
         {/* Trending Content */}
         <TabsContent value="trending" className="mt-6">
-          <h2 className="text-2xl font-bold mb-6">Trending Posts</h2>
+          <h2 className="text-2xl font-bold text-foreground mb-6">Trending Posts</h2>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {trendingPosts.map((post) => (
               <Card key={post.id} className="hover:shadow-lg transition-shadow">
@@ -79,9 +79,9 @@ export default function ExplorePage() {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-gray-800">{post.content}</p>
+                  <p className="text-foreground">{post.content}</p>
                 </CardContent>
-                <CardFooter className="flex justify-between text-sm text-gray-500">
+                <CardFooter className="flex justify-between text-sm text-muted-foreground">
                   <span>{post.likes} likes</span>
                   <span>{post.comments} comments</span>
                 </CardFooter>
@@ -92,7 +92,7 @@ export default function ExplorePage() {
 
         {/* People Content */}
         <TabsContent value="people" className="mt-6">
-          <h2 className="text-2xl font-bold mb-6">Suggested People</h2>
+          <h2 className="text-2xl font-bold text-foreground mb-6">Suggested People</h2>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {suggestedUsers.map((user) => (
               <Card key={user.id} className="text-center p-6">
@@ -102,7 +102,7 @@ export default function ExplorePage() {
                 </Avatar>
                 <CardTitle className="text-xl">@{user.username}</CardTitle>
                 <CardDescription className="mt-2 mb-4">{user.bio}</CardDescription>
-                <div className="text-sm text-gray-500 mb-4">
+                <div className="text-sm text-muted-foreground mb-4">
                   {user.followers.toLocaleString()} followers
                 </div>
                 <Button variant="outline" className="w-full">
@@ -115,7 +115,7 @@ export default function ExplorePage() {
 
         {/* Tags Content */}
         <TabsContent value="tags" className="mt-6">
-          <h2 className="text-2xl font-bold mb-6">Popular Tags</h2>
+          <h2 className="text-2xl font-bold text-foreground mb-6">Popular Tags</h2>
           <div className="flex flex-wrap gap-3">
             {popularTags.map((tag) => (
               <Button
@@ -124,7 +124,7 @@ export default function ExplorePage() {
                 className="rounded-full px-4 py-2 text-sm"
               >
                 <span className="font-semibold">{tag.name}</span>
-                <span className="ml-2 text-gray-500">
+                <span className="ml-2 text-muted-foreground">
                   {tag.posts.toLocaleString()} posts
                 </span>
               </Button>
