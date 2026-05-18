@@ -29,7 +29,6 @@ const LogoutButton = () => {
       );
     } finally {
       disconnectSocket();
-      await new Promise((r) => setTimeout(r, 5000));
       dispatch(logout());
     }
   };
@@ -37,7 +36,7 @@ const LogoutButton = () => {
   return (
     <div className="px-6">
       <button
-        href="/"
+        type="button"
         onClick={logoutHandler}
         className="flex items-center gap-4 p-3 rounded-lg hover:bg-red-50 transition-colors duration-200 w-full cursor-pointer"
       >

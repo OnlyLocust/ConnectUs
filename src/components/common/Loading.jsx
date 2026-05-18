@@ -1,16 +1,24 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 
-export default function Loading() {
+export default function Loading({ fullscreen = false }) {
   return (
-    <div className="fixed inset-0 flex items-center justify-center">
+    <div
+      className={cn(
+        "flex items-center justify-center",
+        fullscreen
+          ? "fixed inset-0 z-50 bg-background/80 backdrop-blur-sm"
+          : "min-h-[40vh] w-full py-12"
+      )}
+    >
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         className="flex flex-col items-center gap-4"
       >
-        <div className="flex items-center justify-center gap-2 h-10">
+        <motion.div className="flex items-center justify-center gap-2 h-10">
           {[0, 1, 2].map((i) => (
             <motion.div
               key={i}
@@ -24,23 +32,23 @@ export default function Loading() {
                 repeatType: "loop",
                 duration: 1.2,
                 delay: i * 0.2,
-                ease: "easeInOut"
+                ease: "easeInOut",
               }}
             />
           ))}
-        </div>
+        </motion.div>
 
-        <motion.p 
-          className="text-gray-600 font-medium text-sm"
+        <motion.p
+          className="text-muted-foreground font-medium text-sm"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
         >
-          Preparing your Page...
+          Loading...
         </motion.p>
 
-        <motion.div 
-          className="h-1 w-32 bg-gray-200 rounded-full overflow-hidden"
+        <motion.div
+          className="h-1 w-32 bg-muted rounded-full overflow-hidden"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
@@ -53,7 +61,7 @@ export default function Loading() {
               duration: 2,
               repeat: Infinity,
               repeatType: "reverse",
-              ease: "easeInOut"
+              ease: "easeInOut",
             }}
           />
         </motion.div>

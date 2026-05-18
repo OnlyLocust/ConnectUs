@@ -2,7 +2,7 @@ import React from "react";
 
 const PostImage = ({image = '#', caption="Post image"}) => {
   return (
-    <div className="w-full bg-gray-50 overflow-hidden rounded-md">
+    <div className="w-full bg-muted overflow-hidden rounded-md">
       <img
         src={image }
         alt={caption }

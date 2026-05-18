@@ -18,17 +18,20 @@ const MessageInput = ({ recvId }) => {
   }, []);
 
   const sendMessage = async () => {
-    dispatch(addChat({ message, isSender: true }));
+    const text = message.trim();
+    if (!text) return;
+
+    dispatch(addChat({ message: text, isSender: true }));
     setMessage("");
     try {
       const res = await axios.post(
         `${API_URL}/chat/send/${recvId}`,
-        { message },
+        { message: text },
         { withCredentials: true }
       );
 
       if (res.data.success) {
-        sendMessageToSocket(recvId, message);
+        sendMessageToSocket(recvId, text);
       } else {
         throw new Error("Message sending failed");
       }
@@ -52,7 +55,12 @@ const MessageInput = ({ recvId }) => {
           className="flex-1"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          onKeyPress={(e) => e.key === "Enter" && sendMessage()}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              sendMessage();
+            }
+          }}
         />
         <Button variant="ghost" size="icon" onClick={comingSoon}>
           <Smile className="h-5 w-5" />

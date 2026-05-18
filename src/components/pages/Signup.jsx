@@ -19,7 +19,7 @@ const Signup = () => {
           <h2 className="text-2xl font-semibold text-center">
             Welcome New User
           </h2>
-          <p className="text-sm text-center text-gray-500">
+          <p className="text-sm text-center text-muted-foreground">
             Create Your Account
           </p>
         </CardHeader>
@@ -34,7 +34,7 @@ const Signup = () => {
         </CardContent>
 
         <CardFooter className="flex justify-center">
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-muted-foreground">
             Already have an account?{" "}
             <Link
               href="/"

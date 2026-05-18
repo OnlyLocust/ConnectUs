@@ -5,6 +5,7 @@ import { initiateSocket } from "@/lib/socket";
 import Header from "../common/LeftSideBar/Header";
 import LogoutButton from "../common/LeftSideBar/LogoutButton";
 import SideNavs from "../common/LeftSideBar/SideNavs";
+import ThemeToggle from "../common/ThemeToggle";
 import { setIsMobileMenuOpen } from "@/store/uiSlice";
 
 const LeftSideBar = () => {
@@ -26,7 +27,7 @@ const LeftSideBar = () => {
       {/* Sidebar */}
       <aside
         className={`
-          fixed top-0 left-0 z-40 h-screen bg-white border-r p-6
+          fixed top-0 left-0 z-40 h-screen bg-sidebar text-sidebar-foreground border-r border-sidebar-border p-6
           transition-transform duration-300 ease-in-out
           w-[300px] 
           ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"}
@@ -38,12 +39,15 @@ const LeftSideBar = () => {
           <Header />
           <SideNavs user={user} />
         </div>
-        <LogoutButton />
+        <div className="space-y-1">
+          <ThemeToggle variant="sidebar" />
+          <LogoutButton />
+        </div>
       </aside>
 
 
       {!isHideHam && (
-        <div className="md:hidden fixed bottom-4 right-4 z-50">
+        <div className="md:hidden fixed bottom-20 right-4 z-50">
           <button
             className="relative bg-gradient-to-br from-rose-400 via-fuchsia-500 to-indigo-500 
                    text-white shadow-lg rounded-full p-2.5 border border-white/20 

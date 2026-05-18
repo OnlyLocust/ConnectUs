@@ -38,10 +38,9 @@ export default function MessagesPage() {
 
   useEffect(() => {
     return () => {
-      // This runs when path changes
       dispatch(setIsHide(false));
     };
-  }, [pathname]);
+  }, [pathname, dispatch]);
 
   useEffect(() => {
     dispatch(setIsHide(false));
@@ -68,22 +67,21 @@ export default function MessagesPage() {
       }
     };
     getChatUsers();
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch(setIsHide(isMobileChatView));
-  }, [isMobileChatView]);
+  }, [isMobileChatView, dispatch]);
 
   const setViewHam = (isChatView) => {
     setIsMobileChatView(isChatView);
-    // dispatch(setIsHide(hideHam));
   };
 
   return (
-    <div className="flex h-screen border rounded-lg overflow-hidden">
+    <div className="flex h-[calc(100dvh-1rem)] sm:h-[calc(100dvh-2rem)] border rounded-lg overflow-hidden max-w-full mx-1 sm:mx-2">
       <div
-        className={`w-full md:w-1/3 border-r bg-gray-50 ${
-          isMobileChatView ? "hidden md:block" : "block"
+        className={`w-full md:w-1/3 min-h-0 flex flex-col border-r bg-muted/30 shrink-0 ${
+          isMobileChatView ? "hidden md:flex" : "flex"
         }`}
       >
         <SearchBox searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
@@ -101,7 +99,7 @@ export default function MessagesPage() {
       </div>
 
       <div
-        className={`flex-col w-full h-[90%] md:w-2/3 bg-white sm:h-full ${
+        className={`flex flex-col flex-1 min-h-0 min-w-0 bg-background ${
           isMobileChatView ? "flex" : "hidden md:flex"
         }`}
       >
@@ -112,7 +110,7 @@ export default function MessagesPage() {
               chatUsers={chatUsers}
               onBack={() => setViewHam(false)}
             />
-            <div className="flex-1 overflow-hidden">
+            <div className="flex-1 min-h-0 overflow-hidden">
               <ChatArea recvId={recvId} activeChat={activeChat} />
             </div>
             <MessageInput recvId={recvId} />

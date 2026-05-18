@@ -27,7 +27,7 @@ const AllUsersChat = ({filteredChats , activeChat, setActiveChat, loading }) => 
           {filteredChats.map((chat) => (
             <div
               key={chat._id}
-              className={`flex items-center p-4 border-b cursor-pointer hover:bg-gray-100 ${activeChat === chat._id ? 'bg-blue-50' : ''}`}
+              className={`flex items-center p-4 border-b border-border cursor-pointer hover:bg-accent ${activeChat === chat._id ? 'bg-primary/10' : ''}`}
               onClick={() => {
                 setActiveChat(chat._id);
                 setRecv(chat.member._id)
@@ -43,11 +43,11 @@ const AllUsersChat = ({filteredChats , activeChat, setActiveChat, loading }) => 
               <div className="flex-1 min-w-0">
                 <div className="flex justify-between items-center">
                   <h3 className="font-medium truncate">{chat.member.username}</h3>
-                  <span className="text-xs text-gray-500">
+                  <span className="text-xs text-muted-foreground">
                     {formatDistanceToNow(chat.updatedAt, { addSuffix: true })}
                   </span>
                 </div>
-                <p className="text-sm text-gray-500 truncate">
+                <p className="text-sm text-muted-foreground truncate">
                   {chat.lastMessage}
                 </p>
               </div>

@@ -74,13 +74,13 @@ const ChatArea = ({ recvId, activeChat }) => {
           >
             <div
               className={`max-w-xs md:max-w-md rounded-lg px-4 py-2 ${
-                msg.isSender ? "bg-blue-500 text-white" : "bg-gray-100"
+                msg.isSender ? "bg-blue-500 text-white" : "bg-muted text-foreground"
               }`}
             >
               <p>{msg.message}</p>
               <p
                 className={`text-xs mt-1 ${
-                  msg.isSender ? "text-blue-100" : "text-gray-500"
+                  msg.isSender ? "text-blue-100" : "text-muted-foreground"
                 }`}
               >
                 {formatDistanceToNow(msg.createdAt, { addSuffix: true })}

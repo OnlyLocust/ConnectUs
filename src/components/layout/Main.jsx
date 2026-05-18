@@ -95,7 +95,7 @@ const Main = () => {
   }, [loading, hasMore, skip]);
 
   return (
-    <main className="flex-1 max-w-[600px] mx-auto px-4 py-6 h-screen overflow-y-auto hide-scrollbar">
+    <main className="flex-1 max-w-[600px] mx-auto px-4 py-6 w-full min-h-0 max-h-[calc(100dvh-1rem)] overflow-y-auto hide-scrollbar">
       <div className="flex flex-col gap-6">
         {loading && initialLoad ? (
           <Loading />
@@ -115,10 +115,10 @@ const Main = () => {
         className="h-10 mt-4 flex items-center justify-center"
       >
         {loading && !initialLoad && (
-          <span className="text-gray-500">Loading more posts...</span>
+          <span className="text-muted-foreground">Loading more posts...</span>
         )}
         {!hasMore && posts.length > 0 && (
-          <span className="text-gray-400">No more posts to show</span>
+          <span className="text-muted-foreground">No more posts to show</span>
         )}
       </div>
     </main>

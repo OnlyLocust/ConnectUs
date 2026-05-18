@@ -39,7 +39,7 @@ const RightSideBar = () => {
   return (
     <aside className="w-[300px] hidden lg:block p-6 fixed right-0 top-0 h-screen overflow-y-auto">
       <Link
-        href={`/home/user/profile/${user._id}`}
+        href={user?._id ? `/home/user/profile/${user._id}` : "/home"}
         className="flex justify-between items-center mb-8 pt-4 cursor-pointer"
       >
         <SuggestUser
@@ -52,11 +52,11 @@ const RightSideBar = () => {
       {/* Suggestions Section */}
       <div className="mb-6">
         <div className="flex justify-between items-center mb-4">
-          <p className="text-sm font-semibold text-gray-500">
+          <p className="text-sm font-semibold text-muted-foreground">
             Suggestions For You
           </p>
           <button
-            className="text-xs font-semibold text-gray-900 hover:text-gray-700"
+            className="text-xs font-semibold text-foreground hover:text-muted-foreground"
             onClick={seeAllHandler}
           >
             See All
@@ -68,7 +68,7 @@ const RightSideBar = () => {
           <Link
             href={`/home/user/profile/${suggest?._id}`}
             key={suggest._id}
-            className="flex justify-between items-center mb-4 hover:bg-gray-50 p-2 rounded-lg transition-colors cursor-pointer"
+            className="flex justify-between items-center mb-4 hover:bg-accent p-2 rounded-lg transition-colors cursor-pointer"
           >
             <SuggestUser
               profilePicture={suggest?.profilePicture}

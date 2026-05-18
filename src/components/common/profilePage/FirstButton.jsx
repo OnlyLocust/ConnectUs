@@ -13,18 +13,9 @@ import { API_URL } from "@/constants/constant";
 
 const FirstButton = ({ userId, id }) => {
   const dispatch = useDispatch();
-
-  if (userId === id) {
-    return (
-      <Link href="/home/edit/profile">
-        <Button variant="outline" className="cursor-pointer">
-          Edit Profile
-        </Button>
-      </Link>
-    );
-  }
-
-  const userFollowing = useSelector((state) => state.auth.user.following);
+  const userFollowing = useSelector(
+    (state) => state.auth.user?.following ?? []
+  );
   const isFollowing = useMemo(
     () => userFollowing.includes(id),
     [userFollowing, id]
@@ -64,6 +55,16 @@ const FirstButton = ({ userId, id }) => {
       );
     }
   }, [dispatch, id]);
+
+  if (userId === id) {
+    return (
+      <Link href="/home/edit/profile">
+        <Button variant="outline" className="cursor-pointer">
+          Edit Profile
+        </Button>
+      </Link>
+    );
+  }
 
   return isFollowing ? (
     <Button variant="default" size="sm" className="gap-1" onClick={followUser}>

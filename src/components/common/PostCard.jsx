@@ -45,11 +45,16 @@ const PostCard = ({ post, type }) => {
     location,
   } = post;
 
-  const isLiked = useMemo(() => likes.includes(user._id), [likes, user._id]);
+  const userId = user?._id;
+  const isLiked = useMemo(
+    () => (userId ? likes.includes(userId) : false),
+    [likes, userId]
+  );
   const likeCount = likes.length;
   const isBookmarked = useMemo(
-    () => user.bookmarks.some((bookmark) => bookmark._id === postId),
-    [user.bookmarks, postId]
+    () =>
+      user?.bookmarks?.some((bookmark) => bookmark._id === postId) ?? false,
+    [user?.bookmarks, postId]
   );
 
   const commentHandler = useCallback((e) => {
@@ -86,7 +91,7 @@ const PostCard = ({ post, type }) => {
   }, [dispatch, isBookmarked, postId, image, likeCount, comments.length]);
 
   const likePost = useCallback(async () => {
-    const actionPayload = { doLike: !isLiked, userId: user._id };
+    const actionPayload = { doLike: !isLiked, userId };
     const postActionPayload = { postId, ...actionPayload };
 
     if (type === "single") {
@@ -103,7 +108,7 @@ const PostCard = ({ post, type }) => {
       );
       if (!res.data.success) throw new Error("Post Like Failed");
       else {
-        if (!isLiked && authorId !== user._id) {
+        if (!isLiked && authorId !== userId) {
           notify(authorId);
           await axios.post(
             `${API_URL}/notification/send/${authorId}`,
@@ -118,13 +123,13 @@ const PostCard = ({ post, type }) => {
         : dispatch(setPostLike({ ...postActionPayload, doLike: isLiked }));
       toast.error("Post Like Failed");
     }
-  }, [dispatch, isLiked, postId, type, user._id]);
+  }, [dispatch, isLiked, postId, type, userId]);
 
   const commentPost = useCallback(async () => {
     if (!comment.trim()) return toast.error("Comment cannot be empty");
 
     const payload = {
-      username: user.username,
+      username: user?.username ?? "",
       text: comment,
       postId,
     };
@@ -142,7 +147,7 @@ const PostCard = ({ post, type }) => {
       );
       if (!res.data.success) throw new Error(res.data.message);
       else {
-        if (authorId !== user._id) {
+        if (authorId !== userId) {
           notify(authorId);
           await axios.post(
             `${API_URL}/notification/send/${authorId}`,
@@ -158,7 +163,7 @@ const PostCard = ({ post, type }) => {
         : dispatch(removePostComment({ postId }));
       toast.error("Error posting a comment");
     }
-  }, [comment, dispatch, postId, type, user.username]);
+  }, [comment, dispatch, postId, type, user?.username, userId]);
 
   const sendPost = useCallback(() => {
     toast.error("This feature unavailable");
@@ -170,7 +175,7 @@ const PostCard = ({ post, type }) => {
   );
 
   return (
-    <Card className="w-full max-w-xl mx-auto rounded-lg shadow-sm border border-gray-100 mb-6 p-3">
+    <Card className="w-full max-w-xl mx-auto rounded-lg shadow-sm border border-border mb-6 p-3">
       <div className="flex items-center justify-between px-3 py-1">
         <div className="flex items-center gap-3">
           <ShowAvatar
@@ -181,11 +186,11 @@ const PostCard = ({ post, type }) => {
           <div>
             <p className="text-sm font-semibold">
               {username}{" "}
-              {authorId === user._id && (
+              {authorId === userId && (
                 <Badge variant="secondary">author</Badge>
               )}
             </p>
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-muted-foreground">
               {location || "Somewhere on Earth"} • {formattedDate}
             </p>
           </div>
@@ -195,11 +200,11 @@ const PostCard = ({ post, type }) => {
           username={username}
           profilePicture={profilePicture}
           userId={authorId}
-          id={user._id}
+          id={userId}
           postId={postId}
-          userFollowing={user.following}
+          userFollowing={user?.following ?? []}
         >
-          <button className="text-gray-500 hover:text-gray-700 hover:scale-105">
+          <button className="text-muted-foreground hover:text-foreground hover:scale-105">
             <MoreHorizontal size={20} />
           </button>
         </Options>
@@ -223,10 +228,16 @@ const PostCard = ({ post, type }) => {
               <span className="text-sm">{likeCount}</span>
             </button>
 
-            <button className="flex items-center gap-1" aria-label="Comments">
-              <MessageCircle className="w-5 h-5" />
-              <span className="text-sm">{comments.length}</span>
-            </button>
+            <Comments comments={comments}>
+              <button
+                type="button"
+                className="flex items-center gap-1"
+                aria-label="Comments"
+              >
+                <MessageCircle className="w-5 h-5" />
+                <span className="text-sm">{comments.length}</span>
+              </button>
+            </Comments>
 
             <button
               className="flex items-center gap-1 cursor-pointer"
@@ -242,7 +253,7 @@ const PostCard = ({ post, type }) => {
             aria-label={isBookmarked ? "Remove bookmark" : "Add bookmark"}
           >
             {isBookmarked ? (
-              <FaBookmark className="w-5 h-5 text-gray-800" />
+              <FaBookmark className="w-5 h-5 text-foreground" />
             ) : (
               <FaRegBookmark className="w-5 h-5" />
             )}
@@ -256,14 +267,14 @@ const PostCard = ({ post, type }) => {
 
         {comments.length > 0 && (
           <Comments comments={comments}>
-            <button className="text-sm text-gray-500 mb-1 cursor-pointer">
+            <button className="text-sm text-muted-foreground mb-1 cursor-pointer">
               View all {comments.length} comments
             </button>
           </Comments>
         )}
 
         {/* Timestamp */}
-        <p className="text-xs text-gray-400 uppercase mt-2">{formattedDate}</p>
+        <p className="text-xs text-muted-foreground uppercase mt-2">{formattedDate}</p>
       </div>
 
       <CommentInput

@@ -29,7 +29,7 @@ const SignupForm = () => {
 
   useEffect(() => {
     router.prefetch("/home");
-  });
+  }, [router]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

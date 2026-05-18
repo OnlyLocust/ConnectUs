@@ -59,10 +59,10 @@ const SideNavs = ({user }) => {
           <ShowAvatar profilePicture={user?.profilePicture} username={user?.username} size={8} isUser={true}/>
         ),
         text: "Profile",
-        path: `/home/user/profile/${user._id}`,
+        path: user?._id ? `/home/user/profile/${user._id}` : "/home",
       },
     ],
-    [user?.profilePicture, user?.username, notRead]
+    [user?._id, user?.profilePicture, user?.username, notRead]
   );
 
   return (

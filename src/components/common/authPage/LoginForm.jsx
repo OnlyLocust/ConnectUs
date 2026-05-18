@@ -64,7 +64,7 @@ const LoginForm = () => {
     if (!formData.password) {
       newErrors.password = "Password is required";
       valid = false;
-    } else if (formData.password.length < 4) {
+    } else if (formData.password.length < 6) {
       newErrors.password = "Password must be at least 6 characters";
       valid = false;
     }

@@ -3,11 +3,11 @@ import React from 'react'
 
 const layout = ({ children }) => {
   return (
-    <div>
+    <div className="min-h-screen flex">
       <LeftSideBar />
-      <div className="md:pl-[250px] xl:pl-[300px]">
+      <main className="flex-1 min-w-0 md:pl-[300px] w-full">
         {children}
-      </div>
+      </main>
     </div>
   )
 }

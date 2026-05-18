@@ -18,12 +18,12 @@ const Login = () => {
       <Card className="shadow-lg">
         <CardHeader className="space-y-1">
           <h2 className="text-2xl font-semibold text-center">Welcome back</h2>
-          <p className="text-sm text-center text-gray-500">
+          <p className="text-sm text-center text-muted-foreground">
             Enter your credentials to access your account
           </p>
         </CardHeader>
 
-        <CardContent className="spac  e-y-4">
+        <CardContent className="space-y-4">
           <LoginForm />
 
           <Separator className="my-6" />
@@ -32,7 +32,7 @@ const Login = () => {
         </CardContent>
 
         <CardFooter className="flex justify-center">
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-muted-foreground">
             Don't have an account?{" "}
             <Link
               href="/signup"

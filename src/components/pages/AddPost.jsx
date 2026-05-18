@@ -100,7 +100,7 @@ export default function AddPost() {
 
   return (
     <div className="min-h-screen flex flex-col items-center p-4 bg-gray-50">
-      <Card className="w-full max-w-2xl rounded-lg shadow-sm bg-white">
+      <Card className="w-full max-w-2xl rounded-lg shadow-sm">
         <CardContent className="p-6 space-y-4">
           <ProfileHeader
             isLoading={isLoading}

@@ -105,8 +105,8 @@ export default function NotificationsPage() {
                     key={notification._id}
                     className={`p-4 rounded-lg ${
                       i < notRead && activeTab === "all"
-                        ? "bg-gray-100 border border-blue-100"
-                        : "bg-white border"
+                        ? "bg-muted border border-primary/20"
+                        : "bg-card border border-border"
                     }`}
                   >
                     <NotificationCard

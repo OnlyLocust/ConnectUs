@@ -16,7 +16,7 @@ const PostsShow = ({ posts }) => {
             <img
               src={post.image}
               alt={`Post ${i}`}
-              className="w-full h-[100px] md:h-[300px] object-cover transition-all duration-300 group-hover:brightness-75"
+              className="w-full h-[140px] sm:h-[200px] md:h-[300px] object-cover transition-all duration-300 group-hover:brightness-75"
             />
 
 

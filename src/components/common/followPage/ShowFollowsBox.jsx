@@ -20,9 +20,11 @@ const ShowFollowsBox = ({ user, userId }) => {
 
   const followUser = async () => {
     try {
-      const res = await axios.patch(`${API_URL}/follow/${user._id}`, {
-        withCredentials: true,
-      });
+      const res = await axios.patch(
+        `${API_URL}/follow/${user._id}`,
+        {},
+        { withCredentials: true }
+      );
 
       if (res.data.success) {
         toast.success(res.data.message);
@@ -44,7 +46,7 @@ const ShowFollowsBox = ({ user, userId }) => {
   return (
     <TableRow>
       <TableCell>
-        <Link href={`/home/user/profile${user._id == userId ? "" : `/${user._id}`}`} className="flex items-center gap-4">
+        <Link href={`/home/user/profile/${user._id}`} className="flex items-center gap-4">
           <ShowAvatar
             profilePicture={user.profilePicture}
             username={user.username}
@@ -72,7 +74,7 @@ const ShowFollowsBox = ({ user, userId }) => {
             variant={"outline"}
             size="sm"
             className="gap-1"
-            disable={"true"}
+            disabled
           >
             You
           </Button>

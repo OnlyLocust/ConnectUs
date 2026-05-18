@@ -14,13 +14,13 @@ const SideItem = ({path,text,icon ,notRead  }) => {
   return (
     <Link
       href={path}
-      className="flex items-center gap-4 p-3 rounded-lg hover:bg-gray-50 transition-colors duration-200 cursor-pointer"
+      className="flex items-center gap-4 p-3 rounded-lg hover:bg-sidebar-accent transition-colors duration-200 cursor-pointer"
       onClick={() => setMobileView(false)}
     >
-      <span className="text-gray-700">{icon}</span>
-      <span className="font-medium text-gray-800">{text}</span>
+      <span className="text-sidebar-foreground">{icon}</span>
+      <span className="font-medium text-sidebar-foreground">{text}</span>
       {text === "Notifications" && notRead > 0 && (
-        <span className="bg-red-500 ring-2 ring-white px-2 rounded-full text-white">
+        <span className="bg-red-500 ring-2 ring-background px-2 rounded-full text-white">
           {notRead}
         </span>
       )}

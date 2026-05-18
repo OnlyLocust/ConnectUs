@@ -18,7 +18,7 @@ const PostTab = ({selectedTab, postLength, bookmarkLength ,setSelectedTab}) => {
         selectedTab === tab[0]
         
           ? "text-black font-bold"
-          : "text-gray-500 hover:text-black"
+          : "text-muted-foreground hover:text-foreground"
       }`}
         >
           {tab[0]} {tab[1]}

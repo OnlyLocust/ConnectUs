@@ -19,7 +19,7 @@ const ProfilePage = () => {
   const params = useParams();
   const id = params.id;
   const dispatch = useDispatch();
-  const userId = useSelector((state) => state.auth.user._id);
+  const userId = useSelector((state) => state.auth.user?._id);
   const [selectedTab, setSelectedTab] = useState("Posts");
   const recv = useSelector((state) => state.recv.receiver);
   const [isMobileView, setMobileView] = useState(false);
@@ -54,19 +54,20 @@ const ProfilePage = () => {
     getUser();
 
     return () => dispatch(removeRecv());
-  }, []);
+  }, [dispatch, id]);
 
   return recv ? (
     <div className="max-w-4xl mx-auto p-2 sm:p-6">
 
-      <div className="flex flex-col sm:flex-row items-center mb-10 bg-white shadow-md rounded-lg p-4 md:p-6 gap-4 sm:gap-10">
+      <div className="flex flex-col sm:flex-row items-center mb-10 bg-card text-card-foreground border border-border shadow-md rounded-lg p-4 md:p-6 gap-4 sm:gap-10">
         <div className="flex flex-row flex-1 gap-4 sm:gap-6 items-center w-full">
 
-          <div className={` ${isMobileView ? 'h-20 w-20' : 'h-32 w-32'}sm:h-32 sm:w-32 flex-shrink-0`}>
+          <div className="flex-shrink-0">
             <ShowAvatar
               profilePicture={recv.profilePicture}
               username={recv.username}
-              size={isMobileView ? 20 : 32} 
+              size={isMobileView ? 20 : 32}
+              isUser
             />
           </div>
 

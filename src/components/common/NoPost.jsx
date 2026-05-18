@@ -19,12 +19,12 @@ const NoPosts = ({
 
 }) => {
   return (
-    <div className="animate-fadeIn flex flex-col items-center justify-center p-6 text-center bg-white rounded-lg border border-gray-100 shadow-sm">
+    <div className="animate-fadeIn flex flex-col items-center justify-center p-6 text-center bg-card rounded-lg border border-border shadow-sm">
       <div className="mb-4 p-4 bg-gray-50 rounded-full">{icon}</div>
 
-      <h3 className="text-lg font-medium text-gray-900 mb-1">{title}</h3>
+      <h3 className="text-lg font-medium text-foreground mb-1">{title}</h3>
 
-      <p className="text-gray-500 mb-6 max-w-md">{description}</p>
+      <p className="text-muted-foreground mb-6 max-w-md">{description}</p>
 
     </div>
   );
