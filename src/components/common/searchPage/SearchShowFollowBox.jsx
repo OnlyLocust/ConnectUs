@@ -20,39 +20,56 @@ const SearchShowFollowBox = ({ user }) => {
   const isFollowing = meUserFollowing.includes(user._id);
 
   const followUser = async (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    try {
-      const res = await axios.patch(
-        `${API_URL}/follow/${user._id}`,
-        {},
-        { withCredentials: true }
-      );
+  e.preventDefault();
+  e.stopPropagation();
 
-      if (res.data.success) {
-        toast.success(res.data.message);
+  try {
+    const res = await axios.patch(
+      `${API_URL}/follow/${user._id}`,
+      {},
+      { withCredentials: true }
+    );
 
-        const follow = res.data.follow;
-        if (follow) {
-          notify(user._id);
-          await axios.post(
-            `${API_URL}/notification/send/${user._id}`,
-            { action: "follow" },
-            { withCredentials: true }
-          );
-        }
-        dispatch(followRecv({ follow, recvId: user._id }));
-      } else {
-        throw new Error(res.data.message || "Failed to follow / unfollow user");
-      }
-    } catch (error) {
-      toast.error(
-        error.response?.data?.message ||
-          error.message ||
-          "Failed to follow user"
+    if (!res.data.success) {
+      throw new Error(
+        res.data.message || "Failed to follow / unfollow user"
       );
     }
-  };
+
+    const follow = res.data.follow;
+
+    // instant redux update
+    dispatch(
+      followRecv({
+        follow,
+        recvId: user._id,
+      })
+    );
+
+    toast.success(res.data.message);
+
+    // background side effects
+    if (follow) {
+      notify(user._id);
+
+      axios
+        .post(
+          `${API_URL}/notification/send/${user._id}`,
+          { action: "follow" },
+          { withCredentials: true }
+        )
+        .catch((err) => {
+          console.error("Notification failed:", err);
+        });
+    }
+  } catch (error) {
+    toast.error(
+      error.response?.data?.message ||
+        error.message ||
+        "Failed to follow user"
+    );
+  }
+};
 
   return (
     <div className="flex items-center px-4 py-2 hover:bg-muted/50 transition-colors rounded-lg gap-3">

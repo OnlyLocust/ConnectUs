@@ -53,36 +53,68 @@ const Options = ({
   };
 
   const followUser = async () => {
-    dispatch(followRecv({ follow: !isFollowing, recvId: userId }));
-    try {
-      const res = await axios.patch(`${API_URL}/follow/${userId}`, {
-        withCredentials: true,
-      });
+  // optimistic update
+  dispatch(
+    followRecv({
+      follow: !isFollowing,
+      recvId: userId,
+    })
+  );
 
-      if (res.data.success) {
-        toast.success(res.data.message);
+  try {
+    const res = await axios.patch(
+      `${API_URL}/follow/${userId}`,
+      {},
+      { withCredentials: true }
+    );
 
-        const follow = res.data.follow;
-        if (follow) {
-          notify(userId);
-          await axios.post(
-            `${API_URL}/notification/send/${userId}`,
-            { action: "follow" },
-            { withCredentials: true }
-          );
-        }
-      } else {
-        dispatch(followRecv({ follow: isFollowing, recvId: userId }));
-        throw new Error(res.data.message || "Failed to follow user");
-      }
-    } catch (error) {
-      toast.error(
-        error.response?.data?.message ||
-          error.message ||
-          "Failed to fetch posts"
-      );
+    if (!res.data.success) {
+      throw new Error(res.data.message || "Failed to follow user");
     }
-  };
+
+    const follow = res.data.follow;
+
+    toast.success(res.data.message);
+
+    // sync actual backend state
+    dispatch(
+      followRecv({
+        follow,
+        recvId: userId,
+      })
+    );
+
+    // background side effects
+    if (follow) {
+      notify(userId);
+
+      axios
+        .post(
+          `${API_URL}/notification/send/${userId}`,
+          { action: "follow" },
+          { withCredentials: true }
+        )
+        .catch((err) => {
+          console.error("Notification failed:", err);
+        });
+    }
+
+  } catch (error) {
+    // rollback optimistic update
+    dispatch(
+      followRecv({
+        follow: isFollowing,
+        recvId: userId,
+      })
+    );
+
+    toast.error(
+      error.response?.data?.message ||
+      error.message ||
+      "Failed to follow user"
+    );
+  }
+};
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

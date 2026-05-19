@@ -22,39 +22,46 @@ const FirstButton = ({ userId, id }) => {
   );
 
   const followUser = useCallback(async () => {
-    try {
-      const res = await axios.patch(
-        `${API_URL}/follow/${id}`,
-        {},
-        { withCredentials: true }
-      );
+  try {
+    const res = await axios.patch(
+      `${API_URL}/follow/${id}`,
+      {},
+      { withCredentials: true }
+    );
 
-      if (res.data.success) {
-        toast.success(res.data.message);
-
-        const follow = res.data.follow;
-        if (follow) {
-          notify(id);
-          await axios.post(
-            `${API_URL}/notification/send/${id}`,
-            { action: "follow" },
-            { withCredentials: true }
-          );
-        }
-
-        dispatch(setFollower({ follow }));
-        dispatch(followRecv({ follow, recvId: id }));
-      } else {
-        throw new Error(res.data.message || "Failed to follow user");
-      }
-    } catch (error) {
-      toast.error(
-        error.response?.data?.message ||
-          error.message ||
-          "Failed to follow user"
-      );
+    if (!res.data.success) {
+      throw new Error(res.data.message || "Failed to follow user");
     }
-  }, [dispatch, id]);
+
+    const follow = res.data.follow;
+
+    // instant redux update
+    dispatch(setFollower({ follow }));
+    dispatch(followRecv({ follow, recvId: id }));
+
+    toast.success(res.data.message);
+
+    // background side effects
+    if (follow) {
+      notify(id);
+
+      axios.post(
+        `${API_URL}/notification/send/${id}`,
+        { action: "follow" },
+        { withCredentials: true }
+      ).catch((err) => {
+        console.error("Notification failed:", err);
+      });
+    }
+
+  } catch (error) {
+    toast.error(
+      error.response?.data?.message ||
+      error.message ||
+      "Failed to follow user"
+    );
+  }
+}, [dispatch, id]);
 
   if (userId === id) {
     return (
