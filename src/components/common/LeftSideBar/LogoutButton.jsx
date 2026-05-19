@@ -13,25 +13,24 @@ const LogoutButton = () => {
   const router = useRouter();
 
   const logoutHandler = async () => {
-    try {
-      const res = await axios.get(`${API_URL}/auth/logout`, {
-        withCredentials: true,
-      });
-      if (res.data.success) {
-        router.push("/");
-        toast.success("Logout successful");
-      } else {
-        throw new Error(res.data.message || "Logout failed");
-      }
-    } catch (error) {
-      toast.error(
-        error.response?.data?.message || error.message || "Logout failed"
-      );
-    } finally {
-      disconnectSocket();
-      dispatch(logout());
-    }
-  };
+  try {
+    dispatch(logout());
+    disconnectSocket();
+
+    router.replace("/");
+
+    toast.success("Logout successful");
+
+    axios.get(`${API_URL}/auth/logout`, {
+      withCredentials: true,
+    }).catch((err) => {
+      console.error("Logout API failed:", err);
+    });
+
+  } catch (error) {
+    toast.error("Logout failed");
+  }
+};
 
   return (
     <div className="px-6">
