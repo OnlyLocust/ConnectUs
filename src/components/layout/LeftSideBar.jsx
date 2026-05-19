@@ -29,7 +29,7 @@ const LeftSideBar = () => {
         className={`
           fixed top-0 left-0 z-40 h-screen bg-sidebar text-sidebar-foreground border-r border-sidebar-border p-6
           transition-transform duration-300 ease-in-out
-          w-[300px] 
+          w-[360px] 
           ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"}
           md:translate-x-0 md:flex
           flex-col justify-between

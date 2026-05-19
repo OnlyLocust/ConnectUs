@@ -37,7 +37,7 @@ const RightSideBar = () => {
   }, []);
 
   return (
-    <aside className="w-[300px] hidden lg:block p-6 fixed right-0 top-0 h-screen overflow-y-auto">
+    <aside className="w-[360px] hidden lg:block p-6 fixed right-0 top-0 h-screen overflow-y-auto">
       <Link
         href={user?._id ? `/home/user/profile/${user._id}` : "/home"}
         className="flex justify-between items-center mb-8 pt-4 cursor-pointer"

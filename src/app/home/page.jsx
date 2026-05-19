@@ -11,7 +11,7 @@ const page = () => {
       </div>
 
       {/* Right sidebar */}
-      <div className="hidden xl:block flex-1 max-w-[300px]">
+      <div className="hidden xl:block flex-1 max-w-[320px]">
         <RightSideBar />
       </div>
     </div>
