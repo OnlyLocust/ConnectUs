@@ -91,7 +91,7 @@ const SignupForm = () => {
         dispatch(setAuth(res.data.user));
 
         setTimeout(() => {
-          router.push("/home");
+          router.replace("/home");
         }, 1000);
         
       } else {

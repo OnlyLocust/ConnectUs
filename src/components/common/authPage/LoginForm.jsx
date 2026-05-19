@@ -90,7 +90,7 @@ const LoginForm = () => {
         dispatch(setNotRead({ type: "set", notRead: res.data.notRead }));
 
         setTimeout(() => {
-          router.push("/home");
+          router.replace("/home");
         }, 1000);
 
       } else {
