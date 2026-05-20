@@ -1,6 +1,6 @@
-﻿"use client";
+"use client";
 
-import React from "react";
+import React, { useMemo } from "react";
 import {
   Dialog,
   DialogContent,
@@ -11,7 +11,7 @@ import {
 import { ScrollArea } from "../../ui/scroll-area";
 
 const Comments = ({ children, comments }) => {
-  const commentsAll = comments.slice().reverse();
+  const commentsAll = useMemo(() => [...comments].reverse(), [comments]);
 
   return (
     <Dialog>
@@ -25,7 +25,7 @@ const Comments = ({ children, comments }) => {
           <div className="space-y-4 mt-2">
             {commentsAll.length > 0 ? (
               commentsAll.map((comment, index) => (
-                <div key={index} className="border p-3 rounded-md flex gap-2">
+                <div key={comment._id || index} className="border p-3 rounded-md flex gap-2">
                   <p className="text-sm font-semibold">
                     {comment.author?.username}
                   </p>

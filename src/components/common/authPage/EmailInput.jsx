@@ -13,7 +13,7 @@ const EmailInput = ({value,onChange,errors}) => {
             id="email"
             name="email"
             type="email"
-            placeholder="your@email.com"
+            placeholder="example@email.com"
             value={value}
             onChange={onChange}
             className={`pl-10 ${errors ? "border-red-500" : ""}`}

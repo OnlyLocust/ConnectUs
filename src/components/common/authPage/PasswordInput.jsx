@@ -13,7 +13,7 @@ const PasswordInput = ({value,onChange,errors}) => {
           id="password"
           name="password"
           type="password"
-          placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+          placeholder="******************"
           value={value}
           onChange={onChange}
           className={`pl-10 ${errors ? "border-red-500" : ""}`}

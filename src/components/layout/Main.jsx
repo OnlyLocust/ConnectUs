@@ -69,13 +69,18 @@ const Main = () => {
     fetchPosts();
   }, []);
 
+  const fetchPostsRef = useRef(fetchPosts);
+  useEffect(() => {
+    fetchPostsRef.current = fetchPosts;
+  }, [fetchPosts]);
+
   useEffect(() => {
     if (initialLoad) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && hasMore && !loading) {
-          fetchPosts();
+        if (entries[0].isIntersecting) {
+          fetchPostsRef.current();
         }
       },
       { threshold: 0.1 } // Trigger when 10% of the element is visible
@@ -92,7 +97,7 @@ const Main = () => {
         observer.unobserve(currentObserverRef);
       }
     };
-  }, [loading, hasMore, skip]);
+  }, [initialLoad]);
 
   return (
     <main className="flex-1 max-w-[600px] mx-auto px-4 py-6 w-full min-h-0 max-h-[calc(100dvh-1rem)] overflow-y-auto hide-scrollbar">

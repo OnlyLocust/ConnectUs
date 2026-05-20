@@ -32,8 +32,6 @@ const PostCard = ({ post, type }) => {
 
   const user = useSelector((state) => state.auth.user);
 
-  const [comment, setComment] = useState("");
-
   const {
     _id: postId,
     image,
@@ -56,10 +54,6 @@ const PostCard = ({ post, type }) => {
       user?.bookmarks?.some((bookmark) => bookmark._id === postId) ?? false,
     [user?.bookmarks, postId]
   );
-
-  const commentHandler = useCallback((e) => {
-    setComment(e.target.value);
-  }, []);
 
   const bookmarkPost = useCallback(async () => {
     const actionPayload = {
@@ -110,11 +104,11 @@ const PostCard = ({ post, type }) => {
       else {
         if (!isLiked && authorId !== userId) {
           notify(authorId);
-          await axios.post(
+          axios.post(
             `${API_URL}/notification/send/${authorId}`,
             { action: "like" },
             { withCredentials: true }
-          );
+          ).catch((err) => console.error("Notification error:", err));
         }
       }
     } catch (error) {
@@ -125,20 +119,18 @@ const PostCard = ({ post, type }) => {
     }
   }, [dispatch, isLiked, postId, type, userId]);
 
-  const commentPost = useCallback(async () => {
-    if (!comment.trim()) return toast.error("Comment cannot be empty");
+  const commentPost = useCallback(async (commentText) => {
+    if (!commentText || !commentText.trim()) return toast.error("Comment cannot be empty");
 
     const payload = {
       username: user?.username ?? "",
-      text: comment,
+      text: commentText,
       postId,
     };
 
     type === "single"
       ? dispatch(setRecvOnePostComment(payload))
       : dispatch(setPostComment(payload));
-
-      setComment("");
     try {
       const res = await axios.patch(
         `${API_URL}/post/comment/${postId}`,
@@ -149,11 +141,11 @@ const PostCard = ({ post, type }) => {
       else {
         if (authorId !== userId) {
           notify(authorId);
-          await axios.post(
+          axios.post(
             `${API_URL}/notification/send/${authorId}`,
             { action: "comment" },
             { withCredentials: true }
-          );
+          ).catch((err) => console.error("Notification error:", err));
         }
       }
 
@@ -163,7 +155,7 @@ const PostCard = ({ post, type }) => {
         : dispatch(removePostComment({ postId }));
       toast.error("Error posting a comment");
     }
-  }, [comment, dispatch, postId, type, user?.username, userId]);
+  }, [dispatch, postId, type, user?.username, userId, authorId]);
 
   const sendPost = useCallback(() => {
     toast.error("This feature unavailable");
@@ -278,8 +270,6 @@ const PostCard = ({ post, type }) => {
       </div>
 
       <CommentInput
-        comment={comment}
-        commentHandler={commentHandler}
         commentPost={commentPost}
       />
     </Card>
