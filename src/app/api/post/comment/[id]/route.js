@@ -1,10 +1,11 @@
 import Comment from "@/models/comment.model";
 import Post from "@/models/post.model";
 import { NextResponse } from "next/server";
+import { createAndSendNotification } from "@/app/api/utils/notification";
 
 export const PATCH = async (req, { params }) => {
     try {
-    const id = req.headers.get('userId');
+        const id = req.headers.get('userId');
 
         const {text} = await req.json();
         if (!text || text.trim() === '') {
@@ -27,13 +28,16 @@ export const PATCH = async (req, { params }) => {
         })
 
        const post = await Post.findByIdAndUpdate(
-  postId,
-  { $push: { comments: comment._id } },
-  { new: true }
-);
+          postId,
+          { $push: { comments: comment._id } },
+          { new: true }
+       );
 
+       if (post) {
+           await createAndSendNotification(id, post.author, "comment");
+       }
 
-        return NextResponse.json({ message: 'Comment added successfully', success: true, comment }, { status: 200 });
+       return NextResponse.json({ message: 'Comment added successfully', success: true, comment }, { status: 200 });
 
     } catch (error) {
         return NextResponse.json({ message: error.message, success: false }, { status: 500 });

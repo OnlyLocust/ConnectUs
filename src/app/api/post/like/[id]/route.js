@@ -1,10 +1,11 @@
 import Post from "@/models/post.model";
 import { NextResponse } from "next/server";
+import { createAndSendNotification } from "@/app/api/utils/notification";
 
 export const PATCH = async (req, { params }) => {
     try {
         const {id : postId} = await params;
-    const id = req.headers.get('userId');
+        const id = req.headers.get('userId');
         if (!id) {
             return NextResponse.json({ message: 'Unauthorized', success: false }, { status: 401 });
         }
@@ -15,9 +16,16 @@ export const PATCH = async (req, { params }) => {
         const { like } = await req.json();
         const post = await Post.findById(postId);
 
+        if (!post) {
+            return NextResponse.json({ message: 'Post not found', success: false }, { status: 404 });
+        }
+
         if(like == 'like'){
             post.likes.push(id);
             await post.save();
+
+            await createAndSendNotification(id, post.author, "like");
+
             return NextResponse.json({ message: 'Like successful', success: true }, { status: 200 });
         }
         else{

@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { toast } from "sonner";
 import { followRecv } from "@/store/authSlice";
-import { notify } from "@/lib/socket";
 import { Button } from "@/components/ui/button";
 import ShowAvatar from "../ShowAvatar";
 import { API_URL } from "@/constants/constant";
@@ -47,21 +46,6 @@ const SearchShowFollowBox = ({ user }) => {
     );
 
     toast.success(res.data.message);
-
-    // background side effects
-    if (follow) {
-      notify(user._id);
-
-      axios
-        .post(
-          `${API_URL}/notification/send/${user._id}`,
-          { action: "follow" },
-          { withCredentials: true }
-        )
-        .catch((err) => {
-          console.error("Notification failed:", err);
-        });
-    }
   } catch (error) {
     toast.error(
       error.response?.data?.message ||

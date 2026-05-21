@@ -1,5 +1,6 @@
 import User from "@/models/user.model";
 import { NextResponse } from "next/server";
+import { createAndSendNotification } from "../../utils/notification";
 
 export const PATCH = async (req, { params }) => {
   try {
@@ -64,6 +65,9 @@ export const PATCH = async (req, { params }) => {
 
       await currentUser.save();
       await user.save();
+
+      await createAndSendNotification(id, userId, "follow");
+
       return NextResponse.json(
         { message: "Followed successfully", success: true, follow: true },
         { status: 200 }

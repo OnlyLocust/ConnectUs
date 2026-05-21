@@ -1,6 +1,5 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { notify } from "@/lib/socket";
 import { followRecv } from "@/store/authSlice";
 import { setFollower } from "@/store/recvSlice";
 import axios from "axios";
@@ -40,19 +39,6 @@ const FirstButton = ({ userId, id }) => {
     dispatch(followRecv({ follow, recvId: id }));
 
     toast.success(res.data.message);
-
-    // background side effects
-    if (follow) {
-      notify(id);
-
-      axios.post(
-        `${API_URL}/notification/send/${id}`,
-        { action: "follow" },
-        { withCredentials: true }
-      ).catch((err) => {
-        console.error("Notification failed:", err);
-      });
-    }
 
   } catch (error) {
     toast.error(

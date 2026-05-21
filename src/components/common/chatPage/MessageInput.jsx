@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { sendMessageToSocket } from "@/lib/socket";
 import { addChat, removeChat } from "@/store/chatSlice";
 import axios from "axios";
 import { Paperclip, Send, Smile } from "lucide-react";
@@ -30,9 +29,7 @@ const MessageInput = ({ recvId }) => {
         { withCredentials: true }
       );
 
-      if (res.data.success) {
-        sendMessageToSocket(recvId, text);
-      } else {
+      if (!res.data.success) {
         throw new Error("Message sending failed");
       }
     } catch (error) {

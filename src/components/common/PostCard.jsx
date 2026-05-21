@@ -21,7 +21,6 @@ import {
 } from "@/store/recvSlice";
 import Options from "./PostCard/Options";
 import { Badge } from "../ui/badge";
-import { notify } from "@/lib/socket";
 import ShowAvatar from "./ShowAvatar";
 import PostImage from "./PostCard/PostImage";
 import CommentInput from "./PostCard/CommentInput";
@@ -101,16 +100,6 @@ const PostCard = ({ post, type }) => {
         { withCredentials: true }
       );
       if (!res.data.success) throw new Error("Post Like Failed");
-      else {
-        if (!isLiked && authorId !== userId) {
-          notify(authorId);
-          axios.post(
-            `${API_URL}/notification/send/${authorId}`,
-            { action: "like" },
-            { withCredentials: true }
-          ).catch((err) => console.error("Notification error:", err));
-        }
-      }
     } catch (error) {
       type === "single"
         ? dispatch(setRecvOnePostLike({ ...actionPayload, doLike: isLiked }))
@@ -138,24 +127,13 @@ const PostCard = ({ post, type }) => {
         { withCredentials: true }
       );
       if (!res.data.success) throw new Error(res.data.message);
-      else {
-        if (authorId !== userId) {
-          notify(authorId);
-          axios.post(
-            `${API_URL}/notification/send/${authorId}`,
-            { action: "comment" },
-            { withCredentials: true }
-          ).catch((err) => console.error("Notification error:", err));
-        }
-      }
-
     } catch (error) {
       type === "single"
         ? dispatch(removeRecvOnePostComment())
         : dispatch(removePostComment({ postId }));
       toast.error("Error posting a comment");
     }
-  }, [dispatch, postId, type, user?.username, userId, authorId]);
+  }, [dispatch, postId, type, user?.username, userId]);
 
   const sendPost = useCallback(() => {
     toast.error("This feature unavailable");

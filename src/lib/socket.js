@@ -55,27 +55,6 @@
     }
   };
 
-  export const sendMessageToSocket = (recvId, message) => {
-    if (socket) {
-      socket.emit("send", {
-        recvId,
-        message,
-        createdAt: Date.now(),
-      });
-    } else {
-      console.warn("❌ Disconnnected from server ......!!!");
-    }
-  };
-
-  export const notify = (recvId) => {
-    if (socket) {
-      socket.emit("notify", {
-        recvId
-      });
-    } else {
-      console.warn("❌ Disconnnected from server ......!!!");
-    }
-  }
 
   export const askOnline = () => {
     if(socket){

@@ -13,7 +13,6 @@ import axios from "axios";
 import { toast } from "sonner";
 import { followRecv, removePost } from "@/store/authSlice";
 import Link from "next/link";
-import { notify } from "@/lib/socket";
 import ShowAvatar from "../ShowAvatar";
 import { API_URL } from "@/constants/constant";
 
@@ -83,21 +82,6 @@ const Options = ({
         recvId: userId,
       })
     );
-
-    // background side effects
-    if (follow) {
-      notify(userId);
-
-      axios
-        .post(
-          `${API_URL}/notification/send/${userId}`,
-          { action: "follow" },
-          { withCredentials: true }
-        )
-        .catch((err) => {
-          console.error("Notification failed:", err);
-        });
-    }
 
   } catch (error) {
     // rollback optimistic update

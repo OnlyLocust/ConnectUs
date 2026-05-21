@@ -21,6 +21,7 @@ app.prepare().then(async () => {
 
 
   let onlineUsers = new Map();
+  global.onlineUsers = onlineUsers;
 
   const io = new Server(server, {
     cors: {
@@ -28,9 +29,13 @@ app.prepare().then(async () => {
       methods: ['GET', 'POST'],
     },
   })
+  global.io = io;
 
   io.on('connection', (socket) => {
     const { userId } = socket.handshake.query;
+    if (userId) {
+      socket.join(userId);
+    }
     const userSocket = socket.id
     onlineUsers.set(userId, socket.id);
 
@@ -38,12 +43,7 @@ app.prepare().then(async () => {
 
     socket.on('send' , (data) => {
       const {recvId , message , createdAt} = data
-      // const recvSocket = users[recvId]
-      const recvSocket = onlineUsers.get(recvId)
-      if(recvSocket){
-        io.to(recvSocket).emit('get', {userId, message ,createdAt})
-      }
-      
+      io.to(recvId).emit('get', {userId, message ,createdAt})
     })
 
     socket.on('get-users',() => {
@@ -55,12 +55,7 @@ app.prepare().then(async () => {
 
     socket.on('notify' , (data) => {
       const {recvId} = data
-      const recvSocket = onlineUsers.get(recvId)
-
-      if(recvSocket){
-        io.to(recvSocket).emit('notification', {})
-      }
-
+      io.to(recvId).emit('notification', {})
     })
 
     socket.on('disconnect', () => {

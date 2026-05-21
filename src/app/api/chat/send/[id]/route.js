@@ -38,6 +38,14 @@ export const POST = async (req,{params}) => {
 
     await chat.save()
 
+    if (global.io) {
+      global.io.to(recvId).emit('get', {
+        userId,
+        message: addMessage.message,
+        createdAt: addMessage.createdAt
+      });
+    }
+
     return NextResponse.json({chat,success:true},{status:200})
 
 
