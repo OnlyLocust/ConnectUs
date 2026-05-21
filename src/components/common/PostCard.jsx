@@ -14,11 +14,6 @@ import {
   setPostLike,
 } from "@/store/postSlice";
 import { setPostBookmark } from "@/store/authSlice";
-import {
-  removeRecvOnePostComment,
-  setRecvOnePostComment,
-  setRecvOnePostLike,
-} from "@/store/recvSlice";
 import Options from "./PostCard/Options";
 import { Badge } from "../ui/badge";
 import ShowAvatar from "./ShowAvatar";
@@ -87,11 +82,7 @@ const PostCard = ({ post, type }) => {
     const actionPayload = { doLike: !isLiked, userId };
     const postActionPayload = { postId, ...actionPayload };
 
-    if (type === "single") {
-      dispatch(setRecvOnePostLike(actionPayload));
-    } else {
-      dispatch(setPostLike(postActionPayload));
-    }
+    dispatch(setPostLike(postActionPayload));
 
     try {
       const res = await axios.patch(
@@ -101,12 +92,10 @@ const PostCard = ({ post, type }) => {
       );
       if (!res.data.success) throw new Error("Post Like Failed");
     } catch (error) {
-      type === "single"
-        ? dispatch(setRecvOnePostLike({ ...actionPayload, doLike: isLiked }))
-        : dispatch(setPostLike({ ...postActionPayload, doLike: isLiked }));
+      dispatch(setPostLike({ ...postActionPayload, doLike: isLiked }));
       toast.error("Post Like Failed");
     }
-  }, [dispatch, isLiked, postId, type, userId]);
+  }, [dispatch, isLiked, postId, userId]);
 
   const commentPost = useCallback(async (commentText) => {
     if (!commentText || !commentText.trim()) return toast.error("Comment cannot be empty");
@@ -117,9 +106,7 @@ const PostCard = ({ post, type }) => {
       postId,
     };
 
-    type === "single"
-      ? dispatch(setRecvOnePostComment(payload))
-      : dispatch(setPostComment(payload));
+    dispatch(setPostComment(payload));
     try {
       const res = await axios.patch(
         `${API_URL}/post/comment/${postId}`,
@@ -128,12 +115,10 @@ const PostCard = ({ post, type }) => {
       );
       if (!res.data.success) throw new Error(res.data.message);
     } catch (error) {
-      type === "single"
-        ? dispatch(removeRecvOnePostComment())
-        : dispatch(removePostComment({ postId }));
+      dispatch(removePostComment({ postId }));
       toast.error("Error posting a comment");
     }
-  }, [dispatch, postId, type, user?.username, userId]);
+  }, [dispatch, postId, user?.username]);
 
   const sendPost = useCallback(() => {
     toast.error("This feature unavailable");

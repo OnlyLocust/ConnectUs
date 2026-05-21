@@ -65,6 +65,11 @@ export const DELETE = async (req, { params }) => {
     );
 
     await user.save();
+
+    if (global.io) {
+      global.io.emit("post-delete", { postId });
+    }
+
     return NextResponse.json(
       { message: "Post deleted successfully", success: true },
       { status: 200 }

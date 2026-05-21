@@ -54,6 +54,10 @@ export const PATCH = async (req, { params }) => {
       await currentUser.save();
       await user.save();
 
+      if (global.io) {
+        global.io.emit("follow-user", { followerId: id, followingId: userId, follow: false });
+      }
+
       return NextResponse.json(
         { message: "Unfollowed successfully", success: true, follow: false },
         { status: 200 }
@@ -67,6 +71,10 @@ export const PATCH = async (req, { params }) => {
       await user.save();
 
       await createAndSendNotification(id, userId, "follow");
+
+      if (global.io) {
+        global.io.emit("follow-user", { followerId: id, followingId: userId, follow: true });
+      }
 
       return NextResponse.json(
         { message: "Followed successfully", success: true, follow: true },

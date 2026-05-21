@@ -29,8 +29,13 @@ export const createAndSendNotification = async (actorId, recvId, action) => {
       },
     });
 
-    if (global.io) {
-      global.io.to(recvId.toString()).emit("notification");
+    const populatedNotification = await Notification.findById(notification._id).populate(
+      "actor",
+      "username profilePicture"
+    );
+
+    if (global.io && populatedNotification) {
+      global.io.to(recvId.toString()).emit("notification", populatedNotification);
     }
   } catch (error) {
     console.error("Error creating/sending notification:", error);

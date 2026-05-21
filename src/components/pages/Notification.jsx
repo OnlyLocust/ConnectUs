@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Bell, UserPlus, Heart, MessageSquare } from "lucide-react";
@@ -6,7 +6,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { setNotifications } from "@/store/notificationSlice";
+import { setNotifications, setIsNotification } from "@/store/notificationSlice";
 import { toast } from "sonner";
 import NoNotification from "../common/notificationPage/NoNotification";
 import Settings from "../common/notificationPage/Settings";
@@ -26,6 +26,7 @@ export default function NotificationsPage() {
   const notRead = useSelector((state) => state.auth.notRead);
 
   useEffect(() => {
+    dispatch(setIsNotification(true));
     const getNotifications = async () => {
       try {
         setLoading(true);
@@ -47,7 +48,11 @@ export default function NotificationsPage() {
     };
 
     getNotifications();
-  }, []);
+
+    return () => {
+      dispatch(setIsNotification(false));
+    };
+  }, [dispatch]);
 
   const [activeTab, setActiveTab] = useState("all");
 

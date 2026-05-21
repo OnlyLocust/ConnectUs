@@ -12,35 +12,68 @@ const postSlice = createSlice({
     addPosts: (state, action) => {
       state.posts = [...state.posts, ...action.payload];
     },
-    setPostComment: (state, action) => {
-      const { postId, username, text } = action.payload;
-      const comment = {
-        text,
-        post: postId,
-        author: {
-          username,
-        },
-      };
-
-      const post = state.posts.find((post) => post._id === postId);
-      if (!post) return; // optionally handle missing post
-
-      post.comments = [...post.comments, comment];
+    prependPost: (state, action) => {
+      const post = action.payload;
+      if (!state.posts.some((p) => p._id === post._id)) {
+        state.posts = [post, ...state.posts];
+      }
     },
-    removePostComment: (state,action) => {
-      const {postId} = action.payload
+    setPostComment: (state, action) => {
+      const { postId, username, text, comment } = action.payload;
+
       const post = state.posts.find((post) => post._id === postId);
-      if (!post) return; // optionally handle missing post
-      post.comments.pop()
+      if (!post) return;
+
+      if (comment) {
+        if (comment._id && post.comments.some((c) => c._id === comment._id)) {
+          return;
+        }
+
+        const optComment = post.comments.find(
+          (c) => !c._id && c.text === comment.text && c.author?.username === comment.author?.username
+        );
+
+        if (optComment) {
+          optComment._id = comment._id;
+          optComment.author = comment.author;
+          optComment.createdAt = comment.createdAt;
+        } else {
+          post.comments = [...post.comments, comment];
+        }
+      } else {
+        const optimisticComment = {
+          text,
+          post: postId,
+          author: {
+            username,
+          },
+        };
+        post.comments = [...post.comments, optimisticComment];
+      }
+    },
+    removePostComment: (state, action) => {
+      const { postId } = action.payload;
+      const post = state.posts.find((post) => post._id === postId);
+      if (!post) return;
+
+      const lastIndex = [...post.comments].reverse().findIndex((c) => !c._id);
+      if (lastIndex !== -1) {
+        const targetIndex = post.comments.length - 1 - lastIndex;
+        post.comments.splice(targetIndex, 1);
+      } else {
+        post.comments.pop();
+      }
     },
     setPostLike: (state, action) => {
       const { postId, userId, doLike } = action.payload;
 
       const post = state.posts.find((post) => post._id === postId);
-      if (!post) return; // optionally handle post not found
+      if (!post) return;
 
       if (doLike) {
-        post.likes = [...post.likes, userId];
+        if (!post.likes.includes(userId)) {
+          post.likes = [...post.likes, userId];
+        }
       } else {
         post.likes = post.likes.filter((id) => id !== userId);
       }
@@ -52,6 +85,13 @@ const postSlice = createSlice({
   },
 });
 
-export const { setPosts,addPosts, setPostComment, setPostLike, deletePost, removePostComment } =
-  postSlice.actions;
+export const {
+  setPosts,
+  addPosts,
+  prependPost,
+  setPostComment,
+  setPostLike,
+  deletePost,
+  removePostComment,
+} = postSlice.actions;
 export default postSlice.reducer;

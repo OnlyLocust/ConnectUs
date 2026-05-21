@@ -25,7 +25,7 @@ export const PATCH = async (req, { params }) => {
             text,
             author: id,
             post: postId
-        })
+        });
 
        const post = await Post.findByIdAndUpdate(
           postId,
@@ -33,11 +33,17 @@ export const PATCH = async (req, { params }) => {
           { new: true }
        );
 
+       const populatedComment = await Comment.findById(comment._id).populate("author", "username profilePicture");
+
        if (post) {
            await createAndSendNotification(id, post.author, "comment");
        }
 
-       return NextResponse.json({ message: 'Comment added successfully', success: true, comment }, { status: 200 });
+       if (global.io) {
+           global.io.emit("post-comment", { postId, comment: populatedComment });
+       }
+
+       return NextResponse.json({ message: 'Comment added successfully', success: true, comment: populatedComment }, { status: 200 });
 
     } catch (error) {
         return NextResponse.json({ message: error.message, success: false }, { status: 500 });

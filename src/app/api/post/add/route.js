@@ -50,8 +50,14 @@ export const POST = async (req) => {
       user.posts.push(post._id);
       await user.save();
 
+      const populatedPost = await Post.findById(post._id).populate("author", "username profilePicture");
+
+      if (global.io) {
+        global.io.emit("post-create", populatedPost);
+      }
+
       return NextResponse.json(
-        { message: "Post created successfully", success: true, post },
+        { message: "Post created successfully", success: true, post: populatedPost },
         { status: 201 }
       );
     } else {

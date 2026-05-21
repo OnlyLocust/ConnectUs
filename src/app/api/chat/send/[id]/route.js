@@ -40,7 +40,14 @@ export const POST = async (req,{params}) => {
 
     if (global.io) {
       global.io.to(recvId).emit('get', {
+        _id: addMessage._id.toString(),
         userId,
+        message: addMessage.message,
+        createdAt: addMessage.createdAt
+      });
+      global.io.to(userId).emit('sent', {
+        messageId: addMessage._id.toString(),
+        recvId,
         message: addMessage.message,
         createdAt: addMessage.createdAt
       });

@@ -26,11 +26,20 @@ export const PATCH = async (req, { params }) => {
 
             await createAndSendNotification(id, post.author, "like");
 
+            if (global.io) {
+                global.io.emit("post-like", { postId, userId: id, doLike: true });
+            }
+
             return NextResponse.json({ message: 'Like successful', success: true }, { status: 200 });
         }
         else{
             post.likes = post.likes.filter(like => like.toString() != id);
             await post.save();
+
+            if (global.io) {
+                global.io.emit("post-like", { postId, userId: id, doLike: false });
+            }
+
             return NextResponse.json({ message: 'Unlike successful', success: true }, { status: 200 });
         }
 

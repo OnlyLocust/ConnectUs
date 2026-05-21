@@ -76,6 +76,79 @@ const authSlice = createSlice({
       else return
     },
   },
+  extraReducers: (builder) => {
+    builder
+      .addCase("posts/setPostLike", (state, action) => {
+        const { postId, userId, doLike } = action.payload;
+        if (state.user) {
+          if (state.user.posts) {
+            const p = state.user.posts.find((p) => p._id === postId);
+            if (p) {
+              if (doLike) {
+                p.likeCount = (p.likeCount || 0) + 1;
+              } else {
+                p.likeCount = Math.max(0, (p.likeCount || 0) - 1);
+              }
+            }
+          }
+          if (state.user.bookmarks) {
+            const p = state.user.bookmarks.find((p) => p._id === postId);
+            if (p) {
+              if (doLike) {
+                p.likeCount = (p.likeCount || 0) + 1;
+              } else {
+                p.likeCount = Math.max(0, (p.likeCount || 0) - 1);
+              }
+            }
+          }
+        }
+      })
+      .addCase("posts/setPostComment", (state, action) => {
+        const { postId } = action.payload;
+        if (state.user) {
+          if (state.user.posts) {
+            const p = state.user.posts.find((p) => p._id === postId);
+            if (p) {
+              p.commentCount = (p.commentCount || 0) + 1;
+            }
+          }
+          if (state.user.bookmarks) {
+            const p = state.user.bookmarks.find((p) => p._id === postId);
+            if (p) {
+              p.commentCount = (p.commentCount || 0) + 1;
+            }
+          }
+        }
+      })
+      .addCase("posts/removePostComment", (state, action) => {
+        const { postId } = action.payload;
+        if (state.user) {
+          if (state.user.posts) {
+            const p = state.user.posts.find((p) => p._id === postId);
+            if (p) {
+              p.commentCount = Math.max(0, (p.commentCount || 0) - 1);
+            }
+          }
+          if (state.user.bookmarks) {
+            const p = state.user.bookmarks.find((p) => p._id === postId);
+            if (p) {
+              p.commentCount = Math.max(0, (p.commentCount || 0) - 1);
+            }
+          }
+        }
+      })
+      .addCase("posts/deletePost", (state, action) => {
+        const { postId } = action.payload;
+        if (state.user) {
+          if (state.user.posts) {
+            state.user.posts = state.user.posts.filter((p) => p._id !== postId);
+          }
+          if (state.user.bookmarks) {
+            state.user.bookmarks = state.user.bookmarks.filter((p) => p._id !== postId);
+          }
+        }
+      });
+  },
 });
 
 export const {
