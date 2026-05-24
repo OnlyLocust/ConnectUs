@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import Message from "./message.model";
-import User from "./user.model";
+import Message from "./message.model.js";
+import User from "./user.model.js";
 
 const chatSchema = new mongoose.Schema(
   {
