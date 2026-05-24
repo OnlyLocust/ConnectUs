@@ -14,6 +14,7 @@ import FirstButton from "@/components/common/profilePage/FirstButton";
 import { useParams } from "next/navigation";
 import ShowAvatar from "../common/ShowAvatar";
 import { API_URL } from "@/constants/constant";
+import { formatDistanceToNow } from "date-fns";
 
 const ProfilePage = () => {
   const params = useParams();
@@ -73,9 +74,34 @@ const ProfilePage = () => {
 
 
           <div className="flex-1 w-full text-left">
-            <h2 className="text-xl md:text-2xl font-semibold mb-2">
-              {recv?.username || "some one"}
-            </h2>
+            <div className="flex items-center gap-2 mb-1">
+              <h2 className="text-xl md:text-2xl font-semibold">
+                {recv?.username || "some one"}
+              </h2>
+              {recv?.online && (
+                <span className="flex h-2.5 w-2.5 relative">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
+                </span>
+              )}
+            </div>
+            <div className="mb-2">
+              {recv?.online ? (
+                <span className="text-xs font-semibold text-green-500 animate-pulse">Online</span>
+              ) : recv?.lastSeen ? (
+                <span className="text-xs text-muted-foreground">
+                  {(() => {
+                    try {
+                      return `Last active ${formatDistanceToNow(new Date(recv.lastSeen), { addSuffix: true })}`;
+                    } catch (e) {
+                      return "Offline";
+                    }
+                  })()}
+                </span>
+              ) : (
+                <span className="text-xs text-muted-foreground">Offline</span>
+              )}
+            </div>
             <div className="">
               <FollowDetails
                 postLength={recv?.posts.length || 0}

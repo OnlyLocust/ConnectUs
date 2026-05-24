@@ -3,13 +3,14 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { setRecvId } from '@/store/chatSlice';
 import { formatDistanceToNow } from 'date-fns';
 import React from 'react'
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Loader from './Loader';
 import ShowAvatar from '../ShowAvatar';
 
 const AllUsersChat = ({filteredChats , activeChat, setActiveChat, loading }) => {
 
   const dispatch = useDispatch()
+  const typingUsers = useSelector((state) => state.chat.typingUsers || {});
 
   const setRecv = (id) => {
     dispatch(setRecvId(id))
@@ -47,9 +48,15 @@ const AllUsersChat = ({filteredChats , activeChat, setActiveChat, loading }) => 
                     {formatDistanceToNow(chat.updatedAt, { addSuffix: true })}
                   </span>
                 </div>
-                <p className="text-sm text-muted-foreground truncate">
-                  {chat.lastMessage}
-                </p>
+                {typingUsers[chat.member._id] ? (
+                  <p className="text-sm text-green-500 font-semibold animate-pulse">
+                    typing...
+                  </p>
+                ) : (
+                  <p className="text-sm text-muted-foreground truncate">
+                    {chat.lastMessage}
+                  </p>
+                )}
               </div>
               {chat.notRead > 0 && (
                 <Badge className="ml-2 bg-blue-500 text-white rounded-full h-5 w-5 flex items-center justify-center">

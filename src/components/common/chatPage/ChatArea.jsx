@@ -13,6 +13,8 @@ import { API_URL } from "@/constants/constant";
 const ChatArea = ({ recvId, activeChat }) => {
   const dispatch = useDispatch();
   const messages = useSelector((state) => state.chat.chats);
+  const typingUsers = useSelector((state) => state.chat.typingUsers || {});
+  const isTyping = typingUsers[recvId];
   const [loading, setLoading] = useState(false);
 
   const bottomRef = useRef(null); // 👈 ref for auto-scroll
@@ -60,7 +62,7 @@ const ChatArea = ({ recvId, activeChat }) => {
     if (bottomRef.current) {
       bottomRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [messages]);
+  }, [messages, isTyping]);
 
   return loading ? (
     <Loader />
@@ -88,6 +90,16 @@ const ChatArea = ({ recvId, activeChat }) => {
             </div>
           </div>
         ))}
+
+        {isTyping && (
+          <div className="flex justify-start items-center">
+            <div className="bg-muted text-foreground rounded-lg px-4 py-3 flex items-center gap-1">
+              <span className="w-2 h-2 bg-foreground/60 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+              <span className="w-2 h-2 bg-foreground/60 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+              <span className="w-2 h-2 bg-foreground/60 rounded-full animate-bounce"></span>
+            </div>
+          </div>
+        )}
 
         <div ref={bottomRef} />
       </div>

@@ -1,9 +1,12 @@
-﻿import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { ArrowLeft, MoreVertical } from "lucide-react";
 import React from "react";
 import ShowAvatar from "../ShowAvatar";
+import { useSelector } from "react-redux";
+import { formatDistanceToNow } from "date-fns";
 
 const ChatHeader = ({ activeChat, chatUsers, onBack }) => {
+  const typingUsers = useSelector((state) => state.chat.typingUsers || {});
   const chatUser = chatUsers.find((c) => c._id === activeChat);
 
   if (!chatUser?.member) {
@@ -37,7 +40,21 @@ const ChatHeader = ({ activeChat, chatUsers, onBack }) => {
         <div className="min-w-0">
           <h3 className="font-medium truncate">{chatUser.member.username}</h3>
           <p className="text-xs text-muted-foreground">
-            {chatUser.member.online ? "Online" : "Offline"}
+            {typingUsers[chatUser.member._id] ? (
+              <span className="text-green-500 font-semibold animate-pulse">typing...</span>
+            ) : chatUser.member.online ? (
+              "Online"
+            ) : chatUser.member.lastSeen ? (
+              (() => {
+                try {
+                  return `Last active ${formatDistanceToNow(new Date(chatUser.member.lastSeen), { addSuffix: true })}`;
+                } catch (e) {
+                  return "Offline";
+                }
+              })()
+            ) : (
+              "Offline"
+            )}
           </p>
         </div>
       </div>
