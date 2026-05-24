@@ -17,27 +17,18 @@ const SearchShowFollowBox = ({ user }) => {
     (state) => state.auth.user?.following ?? []
   );
   const isFollowing = meUserFollowing.includes(user._id);
+  const [followLoading, setFollowLoading] = React.useState(false);
 
   const followUser = async (e) => {
-  e.preventDefault();
-  e.stopPropagation();
+    e.preventDefault();
+    e.stopPropagation();
 
-  try {
-    const res = await axios.patch(
-      `${API_URL}/follow/${user._id}`,
-      {},
-      { withCredentials: true }
-    );
+    if (followLoading) return;
+    setFollowLoading(true);
 
-    if (!res.data.success) {
-      throw new Error(
-        res.data.message || "Failed to follow / unfollow user"
-      );
-    }
+    const follow = !isFollowing;
 
-    const follow = res.data.follow;
-
-    // instant redux update
+    // Instant optimistic update
     dispatch(
       followRecv({
         follow,
@@ -45,15 +36,38 @@ const SearchShowFollowBox = ({ user }) => {
       })
     );
 
-    toast.success(res.data.message);
-  } catch (error) {
-    toast.error(
-      error.response?.data?.message ||
-        error.message ||
-        "Failed to follow user"
-    );
-  }
-};
+    try {
+      const res = await axios.patch(
+        `${API_URL}/follow/${user._id}`,
+        {},
+        { withCredentials: true }
+      );
+
+      if (!res.data.success) {
+        throw new Error(
+          res.data.message || "Failed to follow / unfollow user"
+        );
+      }
+
+      toast.success(res.data.message);
+    } catch (error) {
+      // Rollback on error
+      dispatch(
+        followRecv({
+          follow: isFollowing,
+          recvId: user._id,
+        })
+      );
+
+      toast.error(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to follow user"
+      );
+    } finally {
+      setFollowLoading(false);
+    }
+  };
 
   return (
     <div className="flex items-center px-4 py-2 hover:bg-muted/50 transition-colors rounded-lg gap-3">

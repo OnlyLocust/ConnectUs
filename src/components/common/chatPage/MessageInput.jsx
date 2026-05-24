@@ -67,12 +67,14 @@ const MessageInput = ({ recvId }) => {
       getSocket()?.emit("typing", { recvId, isTyping: false });
     }
 
-    dispatch(addChat({ message: text, isSender: true }));
+    const optimisticId = `opt-msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
+    dispatch(addChat({ message: text, isSender: true, optimisticId }));
     setMessage("");
     try {
       const res = await axios.post(
         `${API_URL}/chat/send/${recvId}`,
-        { message: text },
+        { message: text, optimisticId },
         { withCredentials: true }
       );
 
@@ -80,7 +82,7 @@ const MessageInput = ({ recvId }) => {
         throw new Error("Message sending failed");
       }
     } catch (error) {
-      dispatch(removeChat());
+      dispatch(removeChat({ optimisticId }));
       toast.error(
         error.message || error.data.message || "Failed to send message"
       );

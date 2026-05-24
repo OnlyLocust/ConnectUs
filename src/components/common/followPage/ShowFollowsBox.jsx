@@ -14,11 +14,20 @@ import { API_URL } from "@/constants/constant";
 
 const ShowFollowsBox = ({ user, userId }) => {
   const dispatch = useDispatch();
+  const [followLoading, setFollowLoading] = React.useState(false);
 
   const meUserFollowing = useSelector((state) => state.auth.user.following);
   const isFollowing = meUserFollowing.includes(user._id);
 
   const followUser = async () => {
+    if (followLoading) return;
+    setFollowLoading(true);
+
+    const follow = !isFollowing;
+
+    // Instant optimistic update
+    dispatch(followRecv({ follow, recvId: user._id }));
+
     try {
       const res = await axios.patch(
         `${API_URL}/follow/${user._id}`,
@@ -26,20 +35,22 @@ const ShowFollowsBox = ({ user, userId }) => {
         { withCredentials: true }
       );
 
-      if (res.data.success) {
-        toast.success(res.data.message);
-
-        const follow = res.data.follow;
-        dispatch(followRecv({ follow, recvId: user._id }));
-      } else {
-        throw new Error(res.data.message || "Failed to follow / unfollow user");
+      if (!res.data.success) {
+        throw new Error(res.data.message || "Failed to follow/unfollow user");
       }
+
+      toast.success(res.data.message);
     } catch (error) {
+      // Rollback on error
+      dispatch(followRecv({ follow: isFollowing, recvId: user._id }));
+
       toast.error(
         error.response?.data?.message ||
           error.message ||
-          "Failed to fetch posts"
+          "Failed to follow/unfollow user"
       );
+    } finally {
+      setFollowLoading(false);
     }
   };
 

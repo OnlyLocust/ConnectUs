@@ -25,6 +25,8 @@ const PostCard = ({ post, type }) => {
   const dispatch = useDispatch();
 
   const user = useSelector((state) => state.auth.user);
+  const [likeLoading, setLikeLoading] = useState(false);
+  const [bookmarkLoading, setBookmarkLoading] = useState(false);
 
   const {
     _id: postId,
@@ -50,6 +52,9 @@ const PostCard = ({ post, type }) => {
   );
 
   const bookmarkPost = useCallback(async () => {
+    if (bookmarkLoading) return;
+    setBookmarkLoading(true);
+
     const actionPayload = {
       postId,
       doBookmark: !isBookmarked,
@@ -75,10 +80,15 @@ const PostCard = ({ post, type }) => {
         })
       );
       toast.error("Bookmark Failed");
+    } finally {
+      setBookmarkLoading(false);
     }
-  }, [dispatch, isBookmarked, postId, image, likeCount, comments.length]);
+  }, [dispatch, isBookmarked, postId, image, likeCount, comments.length, bookmarkLoading]);
 
   const likePost = useCallback(async () => {
+    if (likeLoading) return;
+    setLikeLoading(true);
+
     const actionPayload = { doLike: !isLiked, userId };
     const postActionPayload = { postId, ...actionPayload };
 
@@ -94,28 +104,33 @@ const PostCard = ({ post, type }) => {
     } catch (error) {
       dispatch(setPostLike({ ...postActionPayload, doLike: isLiked }));
       toast.error("Post Like Failed");
+    } finally {
+      setLikeLoading(false);
     }
-  }, [dispatch, isLiked, postId, userId]);
+  }, [dispatch, isLiked, postId, userId, likeLoading]);
 
   const commentPost = useCallback(async (commentText) => {
     if (!commentText || !commentText.trim()) return toast.error("Comment cannot be empty");
+
+    const optimisticId = `opt-comment-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
     const payload = {
       username: user?.username ?? "",
       text: commentText,
       postId,
+      optimisticId,
     };
 
     dispatch(setPostComment(payload));
     try {
       const res = await axios.patch(
         `${API_URL}/post/comment/${postId}`,
-        { text: payload.text },
+        { text: payload.text, optimisticId },
         { withCredentials: true }
       );
       if (!res.data.success) throw new Error(res.data.message);
     } catch (error) {
-      dispatch(removePostComment({ postId }));
+      dispatch(removePostComment({ postId, optimisticId }));
       toast.error("Error posting a comment");
     }
   }, [dispatch, postId, user?.username]);
