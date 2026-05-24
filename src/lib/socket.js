@@ -46,20 +46,15 @@
       socket.on("sent", (data) => {
         const activeRecv = store.getState().chat.recv;
         if (activeRecv === data.recvId) {
-          const chats = store.getState().chat.chats;
-          const hasOptimistic = chats.some(
-            (msg) => msg.isSender && msg.message === data.message && !msg._id
+          store.dispatch(
+            addChat({
+              _id: data.messageId,
+              message: data.message,
+              isSender: true,
+              createdAt: data.createdAt,
+              optimisticId: data.optimisticId,
+            })
           );
-          if (!hasOptimistic) {
-            store.dispatch(
-              addChat({
-                _id: data.messageId,
-                message: data.message,
-                isSender: true,
-                createdAt: data.createdAt,
-              })
-            );
-          }
         }
       });
 
@@ -104,11 +99,16 @@
       });
 
       socket.on("post-like", (data) => {
-        const currentUser = store.getState().auth.user;
-        if (currentUser && currentUser._id === data.userId) {
-          return;
+        const posts = store.getState().posts.posts;
+        const post = posts.find((p) => p._id === data.postId);
+        const recvPost = store.getState().recv.recvPost;
+        
+        const isPostLiked = post && post.likes.includes(data.userId);
+        const isRecvPostLiked = recvPost && recvPost._id === data.postId && recvPost.likes.includes(data.userId);
+
+        if ((post && isPostLiked !== data.doLike) || (recvPost && isRecvPostLiked !== data.doLike) || (!post && !recvPost)) {
+          store.dispatch(setPostLike(data));
         }
-        store.dispatch(setPostLike(data));
       });
 
       socket.on("post-comment", (data) => {
@@ -127,7 +127,9 @@
         const currentUser = store.getState().auth.user;
         const viewedRecv = store.getState().recv.receiver;
 
-        if (currentUser && currentUser._id === data.followerId) {
+        const isCurrentlyFollowing = currentUser && currentUser.following && currentUser.following.includes(data.followingId);
+
+        if (isCurrentlyFollowing !== data.follow) {
           store.dispatch(followRecv({ recvId: data.followingId, follow: data.follow }));
         }
 
