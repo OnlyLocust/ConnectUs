@@ -30,49 +30,53 @@ export const GET = async (req,{params}) => {
                 },
               },
               {
-                $project: {
-                  _id: 1,
-                  username: 1,
-                  profilePicture: 1,
-                  followerCount: { $size: { $ifNull: ["$followers", []] } },
-                  followingCount: { $size: { $ifNull: ["$following", []] } },
-                  bio:1,
-                  gender:1,
-                  posts: {
-                    $map: {
-                      input: "$posts",
-                      as: "post",
-                      in: {
-                        _id: "$$post._id",
-                        image: "$$post.image",
-                        likeCount: { $size: "$$post.likes" },
-                        commentCount: { $size: "$$post.comments" },
+                  $project: {
+                    _id: 1,
+                    username: 1,
+                    profilePicture: 1,
+                    lastSeen: 1,
+                    followerCount: { $size: { $ifNull: ["$followers", []] } },
+                    followingCount: { $size: { $ifNull: ["$following", []] } },
+                    bio:1,
+                    gender:1,
+                    posts: {
+                      $map: {
+                        input: "$posts",
+                        as: "post",
+                        in: {
+                          _id: "$$post._id",
+                          image: "$$post.image",
+                          likeCount: { $size: "$$post.likes" },
+                          commentCount: { $size: "$$post.comments" },
+                        },
                       },
                     },
-                  },
-                  bookmarks: {
-                    $map: {
-                      input: "$bookmarks",
-                      as: "post",
-                      in: {
-                        _id: "$$post._id",
-                        image: "$$post.image",
-                        likeCount: { $size: "$$post.likes" },
-                        commentCount: { $size: "$$post.comments" },
+                    bookmarks: {
+                      $map: {
+                        input: "$bookmarks",
+                        as: "post",
+                        in: {
+                          _id: "$$post._id",
+                          image: "$$post.image",
+                          likeCount: { $size: "$$post.likes" },
+                          commentCount: { $size: "$$post.comments" },
+                        },
                       },
                     },
                   },
                 },
-              },
-            ]);
-        
-            const user = userWithCounts[0]; // because aggregate returns array
-
-        if(!user){
-            return NextResponse.json({message:'User not found', success:false}, {status:404})
-        }
-
-        return NextResponse.json({user, success:true}, {status:200})
+              ]);
+          
+              const user = userWithCounts[0]; // because aggregate returns array
+          
+          if(!user){
+              return NextResponse.json({message:'User not found', success:false}, {status:404})
+          }
+  
+          // Append online status from global.onlineUsers
+          user.online = global.onlineUsers ? global.onlineUsers.has(userId.toString()) : false;
+  
+          return NextResponse.json({user, success:true}, {status:200})
         
     } catch (error) {
         return NextResponse.json({message:error.message, success:false}, {status:500})    

@@ -16,7 +16,8 @@ export async function GET(req) {
       {
         $project: {
           username: 1,
-          profilePicture: 1
+          profilePicture: 1,
+          lastSeen: 1
         }
       }
     ]);

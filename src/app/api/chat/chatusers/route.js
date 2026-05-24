@@ -6,7 +6,7 @@ export const GET = async (req) => {
     const id = req.headers.get("userId");
     const chats = await Chat.find({ members: id })
       .select(`members lastMessage updatedAt notRead`)
-      .populate("members", "name username profilePicture");
+      .populate("members", "name username profilePicture lastSeen");
 
     const chatUsers = chats.map((chat) => {
       if (chat.members[0]._id.toString() === id) {
@@ -16,6 +16,7 @@ export const GET = async (req) => {
             _id: chat.members[1]._id,
             username: chat.members[1].username,
             profilePicture: chat.members[1].profilePicture,
+            lastSeen: chat.members[1].lastSeen,
           },
           lastMessage: chat.lastMessage,
           updatedAt: chat.updatedAt,
@@ -28,6 +29,7 @@ export const GET = async (req) => {
             _id: chat.members[0]._id,
             username: chat.members[0].username,
             profilePicture: chat.members[0].profilePicture,
+            lastSeen: chat.members[0].lastSeen,
           },
           lastMessage: chat.lastMessage,
           updatedAt: chat.updatedAt,

@@ -2,10 +2,10 @@
   import dotenv from "dotenv";
   dotenv.config();
   import { store } from "@/store/store";
-  import { addChat, addOnline, removeOnline, setNotReadMessage, setOnline } from "@/store/chatSlice";
+  import { addChat, addOnline, removeOnline, setNotReadMessage, setOnline, setTyping } from "@/store/chatSlice";
   import { setNotRead, followRecv } from "@/store/authSlice";
   import { setPostLike, setPostComment, deletePost, prependPost } from "@/store/postSlice";
-  import { setFollower } from "@/store/recvSlice";
+  import { setFollower, updateReceiverPresence } from "@/store/recvSlice";
   import { addNotification } from "@/store/notificationSlice";
 
   let socket;
@@ -19,11 +19,15 @@
 
       socket.on("connect", () => {
         console.log("✅ connected to server !!!!");
+        socket.emit("get-users", {});
       });
 
       socket.on("get", (data) => {
         const recv = store.getState().chat.recv;
-
+        
+        // Clear typing indicator for the sender when they send a message
+        store.dispatch(setTyping({ userId: data.userId, isTyping: false }));
+ 
         if (recv === data.userId) {
           store.dispatch(
             addChat({
@@ -66,12 +70,31 @@
       socket.on('user-online' ,(data) => {
         const {userId} = data;
         store.dispatch(addOnline(userId))
+        store.dispatch(updateReceiverPresence({ userId, online: true }))
       })
 
       socket.on('user-offline' ,(data) => {
-        const {userId} = data;
-        store.dispatch(removeOnline(userId))
+        const {userId, lastSeen} = data;
+        store.dispatch(removeOnline({ userId, lastSeen }))
+        store.dispatch(updateReceiverPresence({ userId, online: false, lastSeen }))
       })
+
+      socket.on("user-typing", (data) => {
+        const { userId, isTyping } = data;
+        store.dispatch(setTyping({ userId, isTyping }));
+        
+        // Auto-expire typing indicator after 5 seconds of inactivity as a fail-safe
+        if (isTyping) {
+          if (!socket.typingTimeouts) socket.typingTimeouts = {};
+          if (socket.typingTimeouts[userId]) {
+            clearTimeout(socket.typingTimeouts[userId]);
+          }
+          socket.typingTimeouts[userId] = setTimeout(() => {
+            store.dispatch(setTyping({ userId, isTyping: false }));
+            delete socket.typingTimeouts[userId];
+          }, 5000);
+        }
+      });
 
       socket.on("notification", (data) => {
         store.dispatch(setNotRead({ type: "inc" }));
@@ -130,6 +153,11 @@
 
   export const disconnectSocket = () => {
     if (socket) {
+      if (socket.typingTimeouts) {
+        Object.values(socket.typingTimeouts).forEach(clearTimeout);
+        socket.typingTimeouts = {};
+      }
+      socket.off(); // Remove all listeners
       socket.disconnect();
       socket = null;
     }
