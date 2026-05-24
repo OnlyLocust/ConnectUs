@@ -16,15 +16,48 @@ const chatSlice = createSlice({
       state.chats = action.payload;
     },
     addChat: (state, action) => {
-      const { message, isSender, createdAt } = action.payload;
+      const { _id, message, isSender, createdAt, optimisticId } = action.payload;
+
+      // Reconcile by optimisticId first
+      if (optimisticId) {
+        const optMsg = state.chats.find((m) => m.optimisticId === optimisticId);
+        if (optMsg) {
+          optMsg._id = _id;
+          optMsg.createdAt = createdAt || optMsg.createdAt;
+          return;
+        }
+      }
+
+      // Check if already present by _id
+      if (_id && state.chats.some((m) => m._id === _id)) {
+        return;
+      }
+
+      // Fallback matching for sender messages without ids
+      if (_id && isSender) {
+        const optMsg = state.chats.find((m) => !m._id && m.isSender && m.message === message);
+        if (optMsg) {
+          optMsg._id = _id;
+          optMsg.createdAt = createdAt || optMsg.createdAt;
+          return;
+        }
+      }
+
       state.chats.push({
+        _id,
         message,
         isSender,
         createdAt: createdAt || Date.now(),
+        optimisticId,
       });
     },
-    removeChat: (state) => {
-      state.chats.pop();
+    removeChat: (state, action) => {
+      const { optimisticId } = action.payload || {};
+      if (optimisticId) {
+        state.chats = state.chats.filter((m) => m.optimisticId !== optimisticId);
+      } else {
+        state.chats.pop();
+      }
     },
     setRecvId: (state, action) => {
       const id = action.payload;

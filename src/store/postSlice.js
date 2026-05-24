@@ -19,7 +19,7 @@ const postSlice = createSlice({
       }
     },
     setPostComment: (state, action) => {
-      const { postId, username, text, comment } = action.payload;
+      const { postId, username, text, comment, optimisticId } = action.payload;
 
       const post = state.posts.find((post) => post._id === postId);
       if (!post) return;
@@ -29,9 +29,15 @@ const postSlice = createSlice({
           return;
         }
 
-        const optComment = post.comments.find(
-          (c) => !c._id && c.text === comment.text && c.author?.username === comment.author?.username
-        );
+        let optComment = null;
+        if (optimisticId) {
+          optComment = post.comments.find((c) => c.optimisticId === optimisticId);
+        }
+        if (!optComment) {
+          optComment = post.comments.find(
+            (c) => !c._id && c.text === comment.text && c.author?.username === comment.author?.username
+          );
+        }
 
         if (optComment) {
           optComment._id = comment._id;
@@ -47,21 +53,26 @@ const postSlice = createSlice({
           author: {
             username,
           },
+          optimisticId,
         };
         post.comments = [...post.comments, optimisticComment];
       }
     },
     removePostComment: (state, action) => {
-      const { postId } = action.payload;
+      const { postId, optimisticId } = action.payload;
       const post = state.posts.find((post) => post._id === postId);
       if (!post) return;
 
-      const lastIndex = [...post.comments].reverse().findIndex((c) => !c._id);
-      if (lastIndex !== -1) {
-        const targetIndex = post.comments.length - 1 - lastIndex;
-        post.comments.splice(targetIndex, 1);
+      if (optimisticId) {
+        post.comments = post.comments.filter((c) => c.optimisticId !== optimisticId);
       } else {
-        post.comments.pop();
+        const lastIndex = [...post.comments].reverse().findIndex((c) => !c._id);
+        if (lastIndex !== -1) {
+          const targetIndex = post.comments.length - 1 - lastIndex;
+          post.comments.splice(targetIndex, 1);
+        } else {
+          post.comments.pop();
+        }
       }
     },
     setPostLike: (state, action) => {

@@ -21,18 +21,21 @@ const authSlice = createSlice({
       const { postId, doBookmark, image, likeCount, commentCount } =
         action.payload;
       if (doBookmark) {
-        const bookMark = {
-          _id: postId,
-          image,
-          likeCount,
-          commentCount,
-        };
-
-        state.user.bookmarks.push(bookMark);
+        if (state.user && !state.user.bookmarks.some((mark) => mark._id === postId)) {
+          const bookMark = {
+            _id: postId,
+            image,
+            likeCount,
+            commentCount,
+          };
+          state.user.bookmarks.push(bookMark);
+        }
       } else {
-        state.user.bookmarks = state.user.bookmarks.filter(
-          (mark) => mark._id !== postId
-        );
+        if (state.user) {
+          state.user.bookmarks = state.user.bookmarks.filter(
+            (mark) => mark._id !== postId
+          );
+        }
       }
     },
     setPost: (state, action) => {
@@ -53,11 +56,15 @@ const authSlice = createSlice({
     followRecv: (state, action) => {
       const { recvId, follow } = action.payload;
       if (follow) {
-        state.user.following = [...state.user.following, recvId];
+        if (state.user && !state.user.following.includes(recvId)) {
+          state.user.following = [...state.user.following, recvId];
+        }
       } else {
-        state.user.following = state.user.following.filter(
-          (id) => id !== recvId
-        );
+        if (state.user) {
+          state.user.following = state.user.following.filter(
+            (id) => id !== recvId
+          );
+        }
       }
     },
 

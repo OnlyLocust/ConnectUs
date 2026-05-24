@@ -103,15 +103,21 @@ const recvSlice = createSlice({
         }
       })
       .addCase("posts/setPostComment", (state, action) => {
-        const { postId, username, text, comment } = action.payload;
+        const { postId, username, text, comment, optimisticId } = action.payload;
         if (state.recvPost && state.recvPost._id === postId) {
           if (comment) {
             if (comment._id && state.recvPost.comments.some((c) => c._id === comment._id)) {
               return;
             }
-            const optComment = state.recvPost.comments.find(
-              (c) => !c._id && c.text === comment.text && c.author?.username === comment.author?.username
-            );
+            let optComment = null;
+            if (optimisticId) {
+              optComment = state.recvPost.comments.find((c) => c.optimisticId === optimisticId);
+            }
+            if (!optComment) {
+              optComment = state.recvPost.comments.find(
+                (c) => !c._id && c.text === comment.text && c.author?.username === comment.author?.username
+              );
+            }
             if (optComment) {
               optComment._id = comment._id;
               optComment.author = comment.author;
@@ -126,6 +132,7 @@ const recvSlice = createSlice({
               author: {
                 username,
               },
+              optimisticId,
             };
             state.recvPost.comments = [...state.recvPost.comments, optimisticComment];
           }
@@ -146,14 +153,18 @@ const recvSlice = createSlice({
         }
       })
       .addCase("posts/removePostComment", (state, action) => {
-        const { postId } = action.payload;
+        const { postId, optimisticId } = action.payload;
         if (state.recvPost && state.recvPost._id === postId) {
-          const lastIndex = [...state.recvPost.comments].reverse().findIndex((c) => !c._id);
-          if (lastIndex !== -1) {
-            const targetIndex = state.recvPost.comments.length - 1 - lastIndex;
-            state.recvPost.comments.splice(targetIndex, 1);
+          if (optimisticId) {
+            state.recvPost.comments = state.recvPost.comments.filter((c) => c.optimisticId !== optimisticId);
           } else {
-            state.recvPost.comments.pop();
+            const lastIndex = [...state.recvPost.comments].reverse().findIndex((c) => !c._id);
+            if (lastIndex !== -1) {
+              const targetIndex = state.recvPost.comments.length - 1 - lastIndex;
+              state.recvPost.comments.splice(targetIndex, 1);
+            } else {
+              state.recvPost.comments.pop();
+            }
           }
         }
         if (state.receiver) {
