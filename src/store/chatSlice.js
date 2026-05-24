@@ -6,6 +6,7 @@ const chatSlice = createSlice({
     chatUsers: [],
     recv: null,
     chats: [],
+    typingUsers: {},
   },
   reducers: {
     setUserChats: (state, action) => {
@@ -68,7 +69,7 @@ const chatSlice = createSlice({
       );
     },
     removeOnline: (state, action) => {
-      const userId = action.payload;
+      const { userId, lastSeen } = action.payload;
 
       state.chatUsers = state.chatUsers.map((chat) =>
         chat.member._id === userId
@@ -77,10 +78,18 @@ const chatSlice = createSlice({
               member: {
                 ...chat.member,
                 online: false,
+                lastSeen: lastSeen || chat.member.lastSeen || new Date().toISOString(),
               },
             }
           : chat
       );
+    },
+    setTyping: (state, action) => {
+      const { userId, isTyping } = action.payload;
+      state.typingUsers = {
+        ...state.typingUsers,
+        [userId]: isTyping,
+      };
     },
     setNotReadMessage: (state, action) => {
       const id = action.payload;
@@ -106,6 +115,7 @@ export const {
   setOnline,
   addOnline,
   removeOnline,
-  setNotReadMessage
+  setNotReadMessage,
+  setTyping
 } = chatSlice.actions;
 export default chatSlice.reducer;

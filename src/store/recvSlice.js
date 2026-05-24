@@ -56,6 +56,15 @@ const recvSlice = createSlice({
     removeRecvPost: (state) => {
       state.recvPost = null;
     },
+    updateReceiverPresence: (state, action) => {
+      const { userId, online, lastSeen } = action.payload;
+      if (state.receiver && state.receiver._id === userId) {
+        state.receiver.online = online;
+        if (lastSeen !== undefined) {
+          state.receiver.lastSeen = lastSeen;
+        }
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -198,6 +207,7 @@ export const {
   setRecvOnePostLike,
   setRecvOnePostComment,
   removeRecvPost,
-  removeRecvOnePostComment
+  removeRecvOnePostComment,
+  updateReceiverPresence
 } = recvSlice.actions;
 export default recvSlice.reducer;
