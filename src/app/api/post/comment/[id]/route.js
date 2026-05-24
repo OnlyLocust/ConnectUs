@@ -7,7 +7,7 @@ export const PATCH = async (req, { params }) => {
     try {
         const id = req.headers.get('userId');
 
-        const {text} = await req.json();
+        const { text, optimisticId } = await req.json();
         if (!text || text.trim() === '') {
             return NextResponse.json({ message: 'Comment text is required', success: false }, { status: 400 });
         }
@@ -40,10 +40,10 @@ export const PATCH = async (req, { params }) => {
        }
 
        if (global.io) {
-           global.io.emit("post-comment", { postId, comment: populatedComment });
+           global.io.emit("post-comment", { postId, comment: populatedComment, optimisticId });
        }
 
-       return NextResponse.json({ message: 'Comment added successfully', success: true, comment: populatedComment }, { status: 200 });
+       return NextResponse.json({ message: 'Comment added successfully', success: true, comment: populatedComment, optimisticId }, { status: 200 });
 
     } catch (error) {
         return NextResponse.json({ message: error.message, success: false }, { status: 500 });

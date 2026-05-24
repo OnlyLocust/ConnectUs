@@ -6,7 +6,7 @@ export const POST = async (req,{params}) => {
   try {
     const { id: recvId } = await params;
     const userId = req.headers.get("userId");
-    const {message} = await req.json()
+    const {message, optimisticId} = await req.json()
 
     const addMessage = await Message.create({
         sender:userId,
@@ -49,11 +49,12 @@ export const POST = async (req,{params}) => {
         messageId: addMessage._id.toString(),
         recvId,
         message: addMessage.message,
-        createdAt: addMessage.createdAt
+        createdAt: addMessage.createdAt,
+        optimisticId
       });
     }
 
-    return NextResponse.json({chat,success:true},{status:200})
+    return NextResponse.json({chat,success:true, optimisticId},{status:200})
 
 
   } catch (error) {
