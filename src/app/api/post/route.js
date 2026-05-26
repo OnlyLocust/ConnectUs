@@ -15,10 +15,15 @@ export const GET = async (req) => {
     }
 
     const { searchParams } = new URL(req.url);
-    const skip = parseInt(searchParams.get("skip")) || 0;
+    const before = searchParams.get("before");
     const limit = parseInt(searchParams.get("limit")) || 4;
 
-    const posts = await Post.find()
+    let query = {};
+    if (before) {
+      query.createdAt = { $lt: new Date(before) };
+    }
+
+    let queryExec = Post.find(query)
       .populate("author", "username profilePicture")
       .populate({
         path: "comments",
@@ -27,9 +32,14 @@ export const GET = async (req) => {
           select: "username profilePicture", // select needed fields
         },
       })
-      .sort({ createdAt: -1 })
-      .skip(skip * skipValue)
-      .limit(limit);
+      .sort({ createdAt: -1 });
+
+    if (!before) {
+      const skip = parseInt(searchParams.get("skip")) || 0;
+      queryExec = queryExec.skip(skip * skipValue);
+    }
+
+    const posts = await queryExec.limit(limit);
 
 
     return NextResponse.json(
