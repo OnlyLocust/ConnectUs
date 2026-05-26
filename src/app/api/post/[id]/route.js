@@ -67,7 +67,12 @@ export const DELETE = async (req, { params }) => {
     await user.save();
 
     if (global.io) {
-      global.io.emit("post-delete", { postId });
+      global.io.to(`post:${postId}`).emit("post-delete", { postId });
+      global.io.to(id).emit("post-delete", { postId });
+      const followers = user.followers ? user.followers.map((f) => f.toString()) : [];
+      followers.forEach((followerId) => {
+        global.io.to(followerId).emit("post-delete", { postId });
+      });
     }
 
     return NextResponse.json(

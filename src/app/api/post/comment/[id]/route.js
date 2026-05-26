@@ -40,7 +40,7 @@ export const PATCH = async (req, { params }) => {
        }
 
        if (global.io) {
-           global.io.emit("post-comment", { postId, comment: populatedComment, optimisticId });
+           global.io.to(`post:${postId}`).emit("post-comment", { postId, comment: populatedComment, optimisticId });
        }
 
        return NextResponse.json({ message: 'Comment added successfully', success: true, comment: populatedComment, optimisticId }, { status: 200 });

@@ -53,7 +53,11 @@ export const POST = async (req) => {
       const populatedPost = await Post.findById(post._id).populate("author", "username profilePicture");
 
       if (global.io) {
-        global.io.emit("post-create", populatedPost);
+        global.io.to(id).emit("post-create", populatedPost);
+        const followers = user.followers ? user.followers.map((f) => f.toString()) : [];
+        followers.forEach((followerId) => {
+          global.io.to(followerId).emit("post-create", populatedPost);
+        });
       }
 
       return NextResponse.json(
