@@ -55,7 +55,10 @@ export const PATCH = async (req, { params }) => {
       await user.save();
 
       if (global.io) {
-        global.io.emit("follow-user", { followerId: id, followingId: userId, follow: false });
+        const rooms = [id, userId, `profile:${id}`, `profile:${userId}`];
+        rooms.forEach((roomName) => {
+          global.io.to(roomName).emit("follow-user", { followerId: id, followingId: userId, follow: false });
+        });
       }
 
       return NextResponse.json(
@@ -73,7 +76,10 @@ export const PATCH = async (req, { params }) => {
       await createAndSendNotification(id, userId, "follow");
 
       if (global.io) {
-        global.io.emit("follow-user", { followerId: id, followingId: userId, follow: true });
+        const rooms = [id, userId, `profile:${id}`, `profile:${userId}`];
+        rooms.forEach((roomName) => {
+          global.io.to(roomName).emit("follow-user", { followerId: id, followingId: userId, follow: true });
+        });
       }
 
       return NextResponse.json(
