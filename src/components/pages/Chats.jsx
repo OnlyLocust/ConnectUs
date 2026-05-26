@@ -16,6 +16,7 @@ import { askOnline } from "@/lib/socket";
 import { API_URL } from "@/constants/constant";
 import { setIsHide } from "@/store/uiSlice";
 import { usePathname } from "next/navigation";
+import { joinChatRoom, leaveChatRoom } from "@/lib/socket";
 
 export default function MessagesPage() {
   const dispatch = useDispatch();
@@ -27,6 +28,15 @@ export default function MessagesPage() {
   const [activeChat, setActiveChat] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [isMobileChatView, setIsMobileChatView] = useState(false);
+
+  useEffect(() => {
+    if (activeChat) {
+      joinChatRoom(activeChat);
+      return () => {
+        leaveChatRoom(activeChat);
+      };
+    }
+  }, [activeChat]);
 
   const filteredChats = useMemo(() => {
     const term = searchTerm.toLowerCase().trim();

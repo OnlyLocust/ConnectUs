@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useCallback, useMemo, memo } from "react";
+import React, { useState, useCallback, useMemo, memo, useEffect } from "react";
 import { Card } from "../ui/card";
 import { Heart, MessageCircle, Send, MoreHorizontal } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -20,6 +20,7 @@ import ShowAvatar from "./ShowAvatar";
 import PostImage from "./PostCard/PostImage";
 import CommentInput from "./PostCard/CommentInput";
 import { API_URL } from "@/constants/constant";
+import { joinPostRoom, leavePostRoom } from "@/lib/socket";
 
 const PostCard = ({ post, type }) => {
   const dispatch = useDispatch();
@@ -40,6 +41,15 @@ const PostCard = ({ post, type }) => {
   } = post;
 
   const userId = user?._id;
+
+  useEffect(() => {
+    if (postId) {
+      joinPostRoom(postId);
+      return () => {
+        leavePostRoom(postId);
+      };
+    }
+  }, [postId]);
   const isLiked = useMemo(
     () => (userId ? likes.includes(userId) : false),
     [likes, userId]

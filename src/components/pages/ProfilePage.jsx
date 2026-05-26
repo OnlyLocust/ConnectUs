@@ -15,6 +15,7 @@ import { useParams } from "next/navigation";
 import ShowAvatar from "../common/ShowAvatar";
 import { API_URL } from "@/constants/constant";
 import { formatDistanceToNow } from "date-fns";
+import { joinProfileRoom, leaveProfileRoom } from "@/lib/socket";
 
 const ProfilePage = () => {
   const params = useParams();
@@ -24,6 +25,15 @@ const ProfilePage = () => {
   const [selectedTab, setSelectedTab] = useState("Posts");
   const recv = useSelector((state) => state.recv.receiver);
   const [isMobileView, setMobileView] = useState(false);
+
+  useEffect(() => {
+    if (id) {
+      joinProfileRoom(id);
+      return () => {
+        leaveProfileRoom(id);
+      };
+    }
+  }, [id]);
 
   useEffect(() => {
     if (window.innerWidth < 768) {
