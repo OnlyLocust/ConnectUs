@@ -103,6 +103,42 @@ app.prepare().then(async () => {
       io.to(recvId).emit('notification', {})
     })
 
+    socket.on('join-post', ({ postId }) => {
+      if (postId) {
+        socket.join(`post:${postId}`);
+      }
+    });
+
+    socket.on('leave-post', ({ postId }) => {
+      if (postId) {
+        socket.leave(`post:${postId}`);
+      }
+    });
+
+    socket.on('join-profile', ({ profileId }) => {
+      if (profileId) {
+        socket.join(`profile:${profileId}`);
+      }
+    });
+
+    socket.on('leave-profile', ({ profileId }) => {
+      if (profileId) {
+        socket.leave(`profile:${profileId}`);
+      }
+    });
+
+    socket.on('join-chat', ({ chatId }) => {
+      if (chatId) {
+        socket.join(`chat:${chatId}`);
+      }
+    });
+
+    socket.on('leave-chat', ({ chatId }) => {
+      if (chatId) {
+        socket.leave(`chat:${chatId}`);
+      }
+    });
+
     socket.on('disconnect', async () => {
       const userSockets = onlineUsers.get(userId);
       if (userSockets) {

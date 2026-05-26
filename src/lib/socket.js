@@ -8,6 +8,9 @@
   import { setFollower, updateReceiverPresence } from "@/store/recvSlice";
   import { addNotification } from "@/store/notificationSlice";
 
+  let activePostRooms = new Set();
+  let activeProfileRoom = null;
+  let activeChatRoom = null;
   let socket;
 
   export const initiateSocket = (userId) => {
@@ -20,6 +23,21 @@
       socket.on("connect", () => {
         console.log("✅ connected to server !!!!");
         socket.emit("get-users", {});
+
+        // Re-join active post rooms
+        activePostRooms.forEach((postId) => {
+          socket.emit("join-post", { postId });
+        });
+
+        // Re-join active profile room
+        if (activeProfileRoom) {
+          socket.emit("join-profile", { profileId: activeProfileRoom });
+        }
+
+        // Re-join active chat room
+        if (activeChatRoom) {
+          socket.emit("join-chat", { chatId: activeChatRoom });
+        }
       });
 
       socket.on("get", (data) => {
@@ -162,5 +180,60 @@
       socket.off(); // Remove all listeners
       socket.disconnect();
       socket = null;
+    }
+    activePostRooms.clear();
+    activeProfileRoom = null;
+    activeChatRoom = null;
+  };
+
+  export const joinPostRoom = (postId) => {
+    if (!postId) return;
+    activePostRooms.add(postId);
+    if (socket && socket.connected) {
+      socket.emit("join-post", { postId });
+    }
+  };
+
+  export const leavePostRoom = (postId) => {
+    if (!postId) return;
+    activePostRooms.delete(postId);
+    if (socket && socket.connected) {
+      socket.emit("leave-post", { postId });
+    }
+  };
+
+  export const joinProfileRoom = (profileId) => {
+    if (!profileId) return;
+    activeProfileRoom = profileId;
+    if (socket && socket.connected) {
+      socket.emit("join-profile", { profileId });
+    }
+  };
+
+  export const leaveProfileRoom = (profileId) => {
+    if (!profileId) return;
+    if (activeProfileRoom === profileId) {
+      activeProfileRoom = null;
+    }
+    if (socket && socket.connected) {
+      socket.emit("leave-profile", { profileId });
+    }
+  };
+
+  export const joinChatRoom = (chatId) => {
+    if (!chatId) return;
+    activeChatRoom = chatId;
+    if (socket && socket.connected) {
+      socket.emit("join-chat", { chatId });
+    }
+  };
+
+  export const leaveChatRoom = (chatId) => {
+    if (!chatId) return;
+    if (activeChatRoom === chatId) {
+      activeChatRoom = null;
+    }
+    if (socket && socket.connected) {
+      socket.emit("leave-chat", { chatId });
     }
   };
