@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import PostCard from "../common/PostCard";
 import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,42 +15,62 @@ const Main = () => {
   const posts = useSelector((state) => state.posts.posts);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const [skip, setSkip] = useState(0);
   const observerRef = useRef(null);
+  const abortControllerRef = useRef(null);
   const [initialLoad, setInitialLoad] = useState(true);
 
-  const fetchPosts = async () => {
-    if (loading || !hasMore) return;
+  const fetchPosts = useCallback(async (isInitial = false) => {
+    if (loading) return;
+    if (!isInitial && !hasMore) return;
 
     setLoading(true);
+
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
     try {
-      const res = await axios.get(`${API_URL}/post?skip=${skip}&limit=4`, {
+      const before = (!isInitial && posts.length > 0) ? posts[posts.length - 1].createdAt : "";
+      const url = before
+        ? `${API_URL}/post?before=${encodeURIComponent(before)}&limit=4`
+        : `${API_URL}/post?limit=4`;
+
+      const res = await axios.get(url, {
         withCredentials: true,
+        signal: controller.signal,
       });
 
       if (res.data.success) {
         const newPosts = res.data.posts || [];
 
         if (newPosts.length === 0) {
-          setHasMore(false);
+          if (!isInitial) {
+            setHasMore(false);
+          } else {
+            dispatch(setPosts([]));
+          }
           return;
         }
 
-        if (skip === 0) {
+        if (isInitial || !before) {
           dispatch(setPosts(newPosts));
+          setHasMore(true);
         } else {
           dispatch(addPosts(newPosts));
         }
 
-        setSkip(skip + 1);
-
         if (newPosts.length < 4) {
           setHasMore(false);
+        } else {
+          setHasMore(true);
         }
       } else {
         throw new Error(res.data.message || "Failed to fetch posts");
       }
     } catch (error) {
+      if (axios.isCancel(error)) return;
       toast.error(
         error.response?.data?.message ||
           error.message ||
@@ -58,15 +78,17 @@ const Main = () => {
       );
     } finally {
       setLoading(false);
-      // initialLoad.current = false;
       setInitialLoad(false);
     }
-  };
+  }, [posts, loading, hasMore, dispatch]);
 
   useEffect(() => {
-    setSkip(0);
-    setHasMore(true);
-    fetchPosts();
+    fetchPosts(true);
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
   }, []);
 
   const fetchPostsRef = useRef(fetchPosts);
@@ -75,7 +97,7 @@ const Main = () => {
   }, [fetchPosts]);
 
   useEffect(() => {
-    if (initialLoad) return;
+    if (initialLoad || !hasMore) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -83,7 +105,7 @@ const Main = () => {
           fetchPostsRef.current();
         }
       },
-      { threshold: 0.1 } // Trigger when 10% of the element is visible
+      { threshold: 0.1 }
     );
 
     const currentObserverRef = observerRef.current;
@@ -97,7 +119,7 @@ const Main = () => {
         observer.unobserve(currentObserverRef);
       }
     };
-  }, [initialLoad]);
+  }, [initialLoad, hasMore]);
 
   return (
     <main className="flex-1 max-w-[600px] mx-auto px-4 py-6 w-full min-h-0 max-h-[calc(100dvh-1rem)] overflow-y-auto hide-scrollbar">
