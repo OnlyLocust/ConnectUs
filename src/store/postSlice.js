@@ -10,7 +10,9 @@ const postSlice = createSlice({
       state.posts = action.payload;
     },
     addPosts: (state, action) => {
-      state.posts = [...state.posts, ...action.payload];
+      const existingIds = new Set(state.posts.map((p) => p._id));
+      const newPosts = action.payload.filter((p) => !existingIds.has(p._id));
+      state.posts = [...state.posts, ...newPosts];
     },
     prependPost: (state, action) => {
       const post = action.payload;
