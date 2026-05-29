@@ -1,7 +1,7 @@
 import Comment from "@/models/comment.model";
 import Post from "@/models/post.model";
 import { NextResponse } from "next/server";
-import { createAndSendNotification } from "@/app/api/utils/notification";
+import { eventBus, EVENTS } from "@/app/api/utils/eventBus";
 
 export const PATCH = async (req, { params }) => {
     try {
@@ -35,13 +35,13 @@ export const PATCH = async (req, { params }) => {
 
        const populatedComment = await Comment.findById(comment._id).populate("author", "username profilePicture");
 
-       if (post) {
-           await createAndSendNotification(id, post.author, "comment");
-       }
-
-       if (global.io) {
-           global.io.to(`post:${postId}`).emit("post-comment", { postId, comment: populatedComment, optimisticId });
-       }
+       eventBus.emit(EVENTS.COMMENT_ADDED, {
+           postId,
+           actorId: id,
+           recipientId: post ? post.author : null,
+           comment: populatedComment,
+           optimisticId,
+       });
 
        return NextResponse.json({ message: 'Comment added successfully', success: true, comment: populatedComment, optimisticId }, { status: 200 });
 

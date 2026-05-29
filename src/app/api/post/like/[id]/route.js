@@ -1,6 +1,6 @@
 import Post from "@/models/post.model";
 import { NextResponse } from "next/server";
-import { createAndSendNotification } from "@/app/api/utils/notification";
+import { eventBus, EVENTS } from "@/app/api/utils/eventBus";
 
 export const PATCH = async (req, { params }) => {
     try {
@@ -24,11 +24,12 @@ export const PATCH = async (req, { params }) => {
             post.likes.push(id);
             await post.save();
 
-            await createAndSendNotification(id, post.author, "like");
-
-            if (global.io) {
-                global.io.to(`post:${postId}`).emit("post-like", { postId, userId: id, doLike: true });
-            }
+            eventBus.emit(EVENTS.POST_LIKED, {
+                postId,
+                actorId: id,
+                recipientId: post.author,
+                doLike: true,
+            });
 
             return NextResponse.json({ message: 'Like successful', success: true }, { status: 200 });
         }
@@ -36,9 +37,12 @@ export const PATCH = async (req, { params }) => {
             post.likes = post.likes.filter(like => like.toString() != id);
             await post.save();
 
-            if (global.io) {
-                global.io.to(`post:${postId}`).emit("post-like", { postId, userId: id, doLike: false });
-            }
+            eventBus.emit(EVENTS.POST_LIKED, {
+                postId,
+                actorId: id,
+                recipientId: post.author,
+                doLike: false,
+            });
 
             return NextResponse.json({ message: 'Unlike successful', success: true }, { status: 200 });
         }

@@ -2,6 +2,7 @@ import Post from "@/models/post.model";
 import User from "@/models/user.model";
 import { NextResponse } from "next/server";
 import cloudinary from "@/utils/cloudinary";
+import { eventBus, EVENTS } from "@/app/api/utils/eventBus";
 
 export const POST = async (req) => {
   try {
@@ -52,13 +53,11 @@ export const POST = async (req) => {
 
       const populatedPost = await Post.findById(post._id).populate("author", "username profilePicture");
 
-      if (global.io) {
-        global.io.to(id).emit("post-create", populatedPost);
-        const followers = user.followers ? user.followers.map((f) => f.toString()) : [];
-        followers.forEach((followerId) => {
-          global.io.to(followerId).emit("post-create", populatedPost);
-        });
-      }
+      eventBus.emit(EVENTS.POST_CREATED, {
+        authorId: id,
+        post: populatedPost,
+        followers: user.followers ? user.followers.map((f) => f.toString()) : [],
+      });
 
       return NextResponse.json(
         { message: "Post created successfully", success: true, post: populatedPost },

@@ -3,6 +3,7 @@ import Post from "@/models/post.model";
 import { NextResponse } from "next/server";
 import Comment from "@/models/comment.model";
 import cloudinary, { getPublicIdFromUrl } from "@/utils/cloudinary";
+import { eventBus, EVENTS } from "@/app/api/utils/eventBus";
 
 
 
@@ -66,14 +67,11 @@ export const DELETE = async (req, { params }) => {
 
     await user.save();
 
-    if (global.io) {
-      global.io.to(`post:${postId}`).emit("post-delete", { postId });
-      global.io.to(id).emit("post-delete", { postId });
-      const followers = user.followers ? user.followers.map((f) => f.toString()) : [];
-      followers.forEach((followerId) => {
-        global.io.to(followerId).emit("post-delete", { postId });
-      });
-    }
+    eventBus.emit(EVENTS.POST_DELETED, {
+      postId,
+      authorId: id,
+      followers: user.followers ? user.followers.map((f) => f.toString()) : [],
+    });
 
     return NextResponse.json(
       { message: "Post deleted successfully", success: true },
