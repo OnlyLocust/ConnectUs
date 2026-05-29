@@ -4,8 +4,8 @@
   import { store } from "@/store/store";
   import { addChat, addOnline, removeOnline, setNotReadMessage, setOnline, setTyping, resetNotReadMessage, setUserChats, setChats } from "@/store/chatSlice";
   import { setNotRead, followRecv } from "@/store/authSlice";
-  import { setPostLike, setPostComment, deletePost, prependPost } from "@/store/postSlice";
-  import { setFollower, updateReceiverPresence } from "@/store/recvSlice";
+  import { setPostLike, setPostComment, deletePost, prependPost, reconcilePosts } from "@/store/postSlice";
+  import { setFollower, updateReceiverPresence, reconcileRecvPost } from "@/store/recvSlice";
   import { addNotification, setNotifications } from "@/store/notificationSlice";
   import axios from "axios";
   import { API_URL } from "@/constants/constant";
@@ -15,84 +15,162 @@
   let activeChatRoom = null;
   let receivedNotificationIds = new Set();
   let socket;
+  let resyncAbortController = null;
 
   export const initiateSocket = (userId) => {
-    if (!socket) {
-      socket = io(process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:3000", {
-        query: { userId },
-        transports: ["websocket"],
+    if (socket) {
+      if (!socket.connected) {
+        console.log("🔄 Reconnecting existing socket instance...");
+        socket.connect();
+      }
+      return;
+    }
+
+    socket = io(process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:3000", {
+      query: { userId },
+      transports: ["websocket"],
+      reconnection: true,
+      reconnectionAttempts: Infinity,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
+      randomizationFactor: 0.5,
+      timeout: 15000,
+    });
+
+    socket.on("connect_error", (error) => {
+      console.error("❌ Socket connection error:", error);
+    });
+
+    socket.on("disconnect", (reason) => {
+      console.warn("⚠️ Socket disconnected. Reason:", reason);
+      if (resyncAbortController) {
+        resyncAbortController.abort();
+        resyncAbortController = null;
+      }
+    });
+
+    socket.on("connect", () => {
+      console.log("✅ Socket connected to server!");
+      
+      // Abort any outstanding resynchronization API calls from previous connection sessions
+      if (resyncAbortController) {
+        resyncAbortController.abort();
+      }
+      resyncAbortController = new AbortController();
+      const signal = resyncAbortController.signal;
+
+      socket.emit("get-users", {});
+
+      // Re-join active post rooms
+      activePostRooms.forEach((postId) => {
+        socket.emit("join-post", { postId });
       });
 
-      socket.on("connect", () => {
-        console.log("✅ connected to server !!!!");
-        socket.emit("get-users", {});
+      // Re-join active profile room
+      if (activeProfileRoom) {
+        socket.emit("join-profile", { profileId: activeProfileRoom });
+      }
 
-        // Re-join active post rooms
-        activePostRooms.forEach((postId) => {
-          socket.emit("join-post", { postId });
-        });
+      // Re-join active chat room
+      if (activeChatRoom) {
+        socket.emit("join-chat", { chatId: activeChatRoom });
+      }
 
-        // Re-join active profile room
-        if (activeProfileRoom) {
-          socket.emit("join-profile", { profileId: activeProfileRoom });
+      // Helper to handle API errors and ignore cancellation errors
+      const handleCatch = (context) => (err) => {
+        if (axios.isCancel(err)) {
+          console.log(`Cancelled resync request for: ${context}`);
+        } else {
+          console.error(`Failed to sync ${context} on connect:`, err);
         }
+      };
 
-        // Re-join active chat room
-        if (activeChatRoom) {
-          socket.emit("join-chat", { chatId: activeChatRoom });
+      // Fetch up-to-date user details (to sync unread notification count on connect/reconnect)
+      axios.get(`${API_URL}/user`, {
+        withCredentials: true,
+        signal,
+      }).then((res) => {
+        if (res.data.success && res.data.user) {
+          const notRead = res.data.user.notifications?.notRead || 0;
+          store.dispatch(setNotRead({ type: "set", notRead }));
         }
+      }).catch(handleCatch("notifications count"));
 
-        // Fetch up-to-date user details (to sync unread notification count on connect/reconnect)
-        axios.get(`${API_URL}/user`, {
+      // If currently viewing notifications page, refresh the notifications list to fetch missed events
+      const isNotification = store.getState().notification.isNotification;
+      if (isNotification) {
+        axios.get(`${API_URL}/notification/get`, {
           withCredentials: true,
-        }).then((res) => {
-          if (res.data.success && res.data.user) {
-            const notRead = res.data.user.notifications?.notRead || 0;
-            store.dispatch(setNotRead({ type: "set", notRead }));
-          }
-        }).catch((err) => {
-          console.error("Failed to sync notifications count on connect:", err);
-        });
-
-        // If currently viewing notifications page, refresh the notifications list to fetch missed events
-        const isNotification = store.getState().notification.isNotification;
-        if (isNotification) {
-          axios.get(`${API_URL}/notification/get`, {
-            withCredentials: true,
-          }).then((res) => {
-            if (res.data.success) {
-              store.dispatch(setNotifications(res.data.notifications));
-            }
-          }).catch((err) => {
-            console.error("Failed to sync notifications list on connect:", err);
-          });
-        }
-
-        // Reconnect recovery for active chat messages
-        const activeRecv = store.getState().chat.recv;
-        if (activeRecv) {
-          axios.get(`${API_URL}/chat/${activeRecv}`, {
-            withCredentials: true,
-          }).then((res) => {
-            if (res.data.success) {
-              store.dispatch(setChats(res.data.messages));
-            }
-          }).catch((err) => {
-            console.error("Failed to sync chat messages on connect:", err);
-          });
-        }
-
-        // Reconnect recovery for sidebar chat users list
-        axios.get(`${API_URL}/chat/chatusers`, {
-          withCredentials: true,
+          signal,
         }).then((res) => {
           if (res.data.success) {
-            store.dispatch(setUserChats(res.data.chatUsers));
+            store.dispatch(setNotifications(res.data.notifications));
           }
-        }).catch((err) => {
-          console.error("Failed to sync chat users on connect:", err);
-        });
-      });
+        }).catch(handleCatch("notifications list"));
+      }
+
+      // Reconnect recovery for active chat messages
+      const activeRecv = store.getState().chat.recv;
+      if (activeRecv) {
+        axios.get(`${API_URL}/chat/${activeRecv}`, {
+          withCredentials: true,
+          signal,
+        }).then((res) => {
+          if (res.data.success) {
+            store.dispatch(setChats(res.data.messages));
+          }
+        }).catch(handleCatch("chat messages"));
+      }
+
+      // Reconnect recovery for sidebar chat users list
+      axios.get(`${API_URL}/chat/chatusers`, {
+        withCredentials: true,
+        signal,
+      }).then((res) => {
+        if (res.data.success) {
+          store.dispatch(setUserChats(res.data.chatUsers));
+        }
+      }).catch(handleCatch("chat users list"));
+
+      // Reconnect recovery for home feed posts
+      const homePosts = store.getState().posts.posts;
+      if (homePosts && homePosts.length > 0) {
+        const fetchLimit = Math.max(10, homePosts.length);
+        axios.get(`${API_URL}/post?limit=${fetchLimit}`, {
+          withCredentials: true,
+          signal,
+        }).then((res) => {
+          if (res.data.success) {
+            store.dispatch(reconcilePosts(res.data.posts));
+          }
+        }).catch(handleCatch("home feed posts"));
+      }
+
+      // Reconnect recovery for active profile details
+      if (activeProfileRoom) {
+        axios.get(`${API_URL}/get/${activeProfileRoom}`, {
+          withCredentials: true,
+          signal,
+        }).then((res) => {
+          if (res.data.success) {
+            store.dispatch(setRecv(res.data.user));
+          }
+        }).catch(handleCatch("profile details"));
+      }
+
+      // Reconnect recovery for active single post detail view
+      const recvPost = store.getState().recv.recvPost;
+      if (recvPost) {
+        axios.get(`${API_URL}/post/${recvPost._id}`, {
+          withCredentials: true,
+          signal,
+        }).then((res) => {
+          if (res.data.success) {
+            store.dispatch(reconcileRecvPost(res.data.post));
+          }
+        }).catch(handleCatch("single post detail"));
+      }
+    });
 
       socket.on("get", (data) => {
         const recv = store.getState().chat.recv;
@@ -241,7 +319,6 @@
           }
         }
       });
-    }
   };
 
 
@@ -256,6 +333,10 @@
   export const getSocket = () => socket;
 
   export const disconnectSocket = () => {
+    if (resyncAbortController) {
+      resyncAbortController.abort();
+      resyncAbortController = null;
+    }
     if (socket) {
       if (socket.typingTimeouts) {
         Object.values(socket.typingTimeouts).forEach(clearTimeout);
