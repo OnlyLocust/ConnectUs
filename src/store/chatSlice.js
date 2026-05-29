@@ -13,7 +13,9 @@ const chatSlice = createSlice({
       state.chatUsers = action.payload;
     },
     setChats: (state, action) => {
-      state.chats = action.payload;
+      state.chats = [...action.payload].sort(
+        (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+      );
     },
     addChat: (state, action) => {
       const { _id, message, isSender, createdAt, optimisticId } = action.payload;
@@ -24,6 +26,8 @@ const chatSlice = createSlice({
         if (optMsg) {
           optMsg._id = _id;
           optMsg.createdAt = createdAt || optMsg.createdAt;
+          // Re-sort to maintain correct order if timestamp changed
+          state.chats.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
           return;
         }
       }
@@ -39,6 +43,7 @@ const chatSlice = createSlice({
         if (optMsg) {
           optMsg._id = _id;
           optMsg.createdAt = createdAt || optMsg.createdAt;
+          state.chats.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
           return;
         }
       }
@@ -50,6 +55,7 @@ const chatSlice = createSlice({
         createdAt: createdAt || Date.now(),
         optimisticId,
       });
+      state.chats.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
     },
     removeChat: (state, action) => {
       const { optimisticId } = action.payload || {};
@@ -58,6 +64,17 @@ const chatSlice = createSlice({
       } else {
         state.chats.pop();
       }
+    },
+    resetNotReadMessage: (state, action) => {
+      const id = action.payload;
+      state.chatUsers = state.chatUsers.map((chat) =>
+        chat.member._id === id
+          ? {
+              ...chat,
+              notRead: 0,
+            }
+          : chat
+      );
     },
     setRecvId: (state, action) => {
       const id = action.payload;
@@ -149,6 +166,7 @@ export const {
   addOnline,
   removeOnline,
   setNotReadMessage,
-  setTyping
+  setTyping,
+  resetNotReadMessage,
 } = chatSlice.actions;
 export default chatSlice.reducer;
