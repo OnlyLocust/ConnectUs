@@ -164,7 +164,7 @@ const PostCard = ({ post, type }) => {
             size={10}
           />
           <div>
-            <p className="text-sm font-semibold">
+            <p className="text-sm font-semibold hover:underline cursor-pointer transition-all duration-200">
               {username}{" "}
               {authorId === userId && (
                 <Badge variant="secondary">author</Badge>
@@ -196,7 +196,9 @@ const PostCard = ({ post, type }) => {
         <div className="flex justify-between items-center mb-2">
           <div className="flex gap-4">
             <button
-              className="flex items-center gap-1"
+              className={`flex items-center gap-1 transition-all duration-200 ease-in-out hover:scale-115 active:scale-90 ${
+                isLiked ? "text-red-500" : "text-muted-foreground hover:text-red-500"
+              }`}
               onClick={likePost}
               aria-label={isLiked ? "Unlike post" : "Like post"}
             >
@@ -211,7 +213,7 @@ const PostCard = ({ post, type }) => {
             <Comments comments={comments}>
               <button
                 type="button"
-                className="flex items-center gap-1"
+                className="flex items-center gap-1 transition-all duration-200 ease-in-out hover:scale-115 active:scale-90 text-muted-foreground hover:text-blue-500"
                 aria-label="Comments"
               >
                 <MessageCircle className="w-5 h-5" />
@@ -220,7 +222,7 @@ const PostCard = ({ post, type }) => {
             </Comments>
 
             <button
-              className="flex items-center gap-1 cursor-pointer"
+              className="flex items-center gap-1 cursor-pointer transition-all duration-200 ease-in-out hover:scale-115 active:scale-90 text-muted-foreground hover:text-green-500"
               aria-label="Share"
               onClick={sendPost}
             >
@@ -229,6 +231,9 @@ const PostCard = ({ post, type }) => {
           </div>
 
           <button
+            className={`transition-all duration-200 ease-in-out hover:scale-115 active:scale-90 ${
+              isBookmarked ? "text-foreground" : "text-muted-foreground hover:text-yellow-600"
+            }`}
             onClick={bookmarkPost}
             aria-label={isBookmarked ? "Remove bookmark" : "Add bookmark"}
           >
