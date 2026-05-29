@@ -64,8 +64,14 @@ export const PATCH = async (req) => {
       });
 
       if (user.profilePicture) {
-        const publicId = getPublicIdFromUrl(user.profilePicture);
-        await cloudinary.uploader.destroy(publicId);        
+        try {
+          const publicId = getPublicIdFromUrl(user.profilePicture);
+          if (publicId) {
+            await cloudinary.uploader.destroy(publicId);        
+          }
+        } catch (err) {
+          console.error("Failed to delete profile picture from Cloudinary:", err);
+        }
       }
 
       user.profilePicture = result.secure_url;

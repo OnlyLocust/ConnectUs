@@ -47,12 +47,14 @@ export const DELETE = async (req, { params }) => {
     }
 
     // remove image from cloudinary
-
-    const publicId = getPublicIdFromUrl(deletedPost.image);
-    if (publicId) {
-      await cloudinary.uploader.destroy(publicId);
+    try {
+      const publicId = getPublicIdFromUrl(deletedPost.image);
+      if (publicId) {
+        await cloudinary.uploader.destroy(publicId);
+      }
+    } catch (cloudinaryError) {
+      console.error("Failed to delete image from Cloudinary:", cloudinaryError);
     }
-    else throw new Error("Failed to delete image")
   
     // to be done in future
 
