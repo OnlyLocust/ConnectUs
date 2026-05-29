@@ -95,6 +95,68 @@ const postSlice = createSlice({
       const { postId } = action.payload;
       state.posts = state.posts.filter((post) => post._id !== postId);
     },
+    reconcilePosts: (state, action) => {
+      const latestPosts = action.payload;
+      if (!latestPosts || latestPosts.length === 0) return;
+
+      const existingPosts = state.posts;
+      const latestMap = new Map(latestPosts.map((p) => [p._id, p]));
+
+      // Determine timestamp bounds of the fetched batch
+      const timestamps = latestPosts.map((p) => new Date(p.createdAt).getTime());
+      const newestTime = Math.max(...timestamps);
+      const oldestTime = Math.min(...timestamps);
+
+      const updatedPosts = [];
+
+      // Prepend any new posts from the payload that are newer than our newest existing post
+      const newestExistingTime = existingPosts.length > 0
+        ? new Date(existingPosts[0].createdAt).getTime()
+        : 0;
+
+      const newerPosts = latestPosts.filter((p) => new Date(p.createdAt).getTime() > newestExistingTime);
+      updatedPosts.push(...newerPosts);
+
+      // Reconcile existing posts
+      for (const existingPost of existingPosts) {
+        const postTime = new Date(existingPost.createdAt).getTime();
+        if (latestMap.has(existingPost._id)) {
+          const serverPost = latestMap.get(existingPost._id);
+          
+          // Preserve client-side optimistic comments
+          const optimisticComments = existingPost.comments.filter((c) => c.optimisticId && !c._id);
+          const mergedComments = [...serverPost.comments];
+          
+          optimisticComments.forEach((opt) => {
+            if (!mergedComments.some((c) => c.optimisticId === opt.optimisticId || c.text === opt.text)) {
+              mergedComments.push(opt);
+            }
+          });
+
+          updatedPosts.push({
+            ...serverPost,
+            comments: mergedComments,
+          });
+        } else {
+          // If the post falls within the fetched timeframe but is missing, it was deleted on the server
+          const wasDeleted = postTime >= oldestTime && postTime <= newestTime;
+          if (!wasDeleted) {
+            updatedPosts.push(existingPost);
+          }
+        }
+      }
+
+      // Sort posts by createdAt descending
+      updatedPosts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+      // Deduplicate by ID
+      const seenIds = new Set();
+      state.posts = updatedPosts.filter((p) => {
+        if (seenIds.has(p._id)) return false;
+        seenIds.add(p._id);
+        return true;
+      });
+    },
   },
 });
 
@@ -106,5 +168,6 @@ export const {
   setPostLike,
   deletePost,
   removePostComment,
+  reconcilePosts,
 } = postSlice.actions;
 export default postSlice.reducer;

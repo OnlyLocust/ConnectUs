@@ -13,7 +13,25 @@ const chatSlice = createSlice({
       state.chatUsers = action.payload;
     },
     setChats: (state, action) => {
-      state.chats = [...action.payload].sort(
+      const serverMessages = action.payload || [];
+      const existingChats = state.chats || [];
+
+      // Preserve client-side optimistic messages (pending sending)
+      const optimisticChats = existingChats.filter((c) => c.optimisticId && !c._id);
+
+      const mergedChats = [...serverMessages];
+
+      optimisticChats.forEach((opt) => {
+        // Only keep the optimistic message if it hasn't been resolved in the server response yet
+        const isResolved = serverMessages.some(
+          (m) => m._id === opt._id || (opt.optimisticId && m.optimisticId === opt.optimisticId)
+        );
+        if (!isResolved) {
+          mergedChats.push(opt);
+        }
+      });
+
+      state.chats = mergedChats.sort(
         (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
       );
     },

@@ -56,6 +56,25 @@ const recvSlice = createSlice({
     removeRecvPost: (state) => {
       state.recvPost = null;
     },
+    reconcileRecvPost: (state, action) => {
+      const serverPost = action.payload;
+      if (!state.recvPost || state.recvPost._id !== serverPost._id) {
+        state.recvPost = serverPost;
+        return;
+      }
+      // Preserve optimistic comments
+      const optimisticComments = state.recvPost.comments.filter((c) => c.optimisticId && !c._id);
+      const mergedComments = [...serverPost.comments];
+      optimisticComments.forEach((opt) => {
+        if (!mergedComments.some((c) => c.optimisticId === opt.optimisticId || c.text === opt.text)) {
+          mergedComments.push(opt);
+        }
+      });
+      state.recvPost = {
+        ...serverPost,
+        comments: mergedComments,
+      };
+    },
     updateReceiverPresence: (state, action) => {
       const { userId, online, lastSeen } = action.payload;
       if (state.receiver && state.receiver._id === userId) {
@@ -219,6 +238,7 @@ export const {
   setRecvOnePostComment,
   removeRecvPost,
   removeRecvOnePostComment,
-  updateReceiverPresence
+  updateReceiverPresence,
+  reconcileRecvPost,
 } = recvSlice.actions;
 export default recvSlice.reducer;
