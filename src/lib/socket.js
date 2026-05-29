@@ -2,15 +2,18 @@
   import dotenv from "dotenv";
   dotenv.config();
   import { store } from "@/store/store";
-  import { addChat, addOnline, removeOnline, setNotReadMessage, setOnline, setTyping } from "@/store/chatSlice";
+  import { addChat, addOnline, removeOnline, setNotReadMessage, setOnline, setTyping, resetNotReadMessage, setUserChats, setChats } from "@/store/chatSlice";
   import { setNotRead, followRecv } from "@/store/authSlice";
   import { setPostLike, setPostComment, deletePost, prependPost } from "@/store/postSlice";
   import { setFollower, updateReceiverPresence } from "@/store/recvSlice";
-  import { addNotification } from "@/store/notificationSlice";
+  import { addNotification, setNotifications } from "@/store/notificationSlice";
+  import axios from "axios";
+  import { API_URL } from "@/constants/constant";
 
   let activePostRooms = new Set();
   let activeProfileRoom = null;
   let activeChatRoom = null;
+  let receivedNotificationIds = new Set();
   let socket;
 
   export const initiateSocket = (userId) => {
@@ -38,6 +41,57 @@
         if (activeChatRoom) {
           socket.emit("join-chat", { chatId: activeChatRoom });
         }
+
+        // Fetch up-to-date user details (to sync unread notification count on connect/reconnect)
+        axios.get(`${API_URL}/user`, {
+          withCredentials: true,
+        }).then((res) => {
+          if (res.data.success && res.data.user) {
+            const notRead = res.data.user.notifications?.notRead || 0;
+            store.dispatch(setNotRead({ type: "set", notRead }));
+          }
+        }).catch((err) => {
+          console.error("Failed to sync notifications count on connect:", err);
+        });
+
+        // If currently viewing notifications page, refresh the notifications list to fetch missed events
+        const isNotification = store.getState().notification.isNotification;
+        if (isNotification) {
+          axios.get(`${API_URL}/notification/get`, {
+            withCredentials: true,
+          }).then((res) => {
+            if (res.data.success) {
+              store.dispatch(setNotifications(res.data.notifications));
+            }
+          }).catch((err) => {
+            console.error("Failed to sync notifications list on connect:", err);
+          });
+        }
+
+        // Reconnect recovery for active chat messages
+        const activeRecv = store.getState().chat.recv;
+        if (activeRecv) {
+          axios.get(`${API_URL}/chat/${activeRecv}`, {
+            withCredentials: true,
+          }).then((res) => {
+            if (res.data.success) {
+              store.dispatch(setChats(res.data.messages));
+            }
+          }).catch((err) => {
+            console.error("Failed to sync chat messages on connect:", err);
+          });
+        }
+
+        // Reconnect recovery for sidebar chat users list
+        axios.get(`${API_URL}/chat/chatusers`, {
+          withCredentials: true,
+        }).then((res) => {
+          if (res.data.success) {
+            store.dispatch(setUserChats(res.data.chatUsers));
+          }
+        }).catch((err) => {
+          console.error("Failed to sync chat users on connect:", err);
+        });
       });
 
       socket.on("get", (data) => {
@@ -55,6 +109,17 @@
               createdAt: data.createdAt,
             })
           );
+
+          // Reset unread count automatically since we are actively viewing this chat
+          const chatUsers = store.getState().chat.chatUsers;
+          const activeChat = chatUsers.find((chat) => chat.member._id === data.userId);
+          if (activeChat) {
+            axios.patch(`${API_URL}/chat/notread/${activeChat._id}`, {}, {
+              withCredentials: true,
+            }).catch((err) => {
+              console.error("Failed to mark message as read in real-time:", err);
+            });
+          }
         }
         else{
           store.dispatch(setNotReadMessage(data.userId.toString()));
@@ -110,10 +175,29 @@
       });
 
       socket.on("notification", (data) => {
+        if (data && data._id) {
+          if (receivedNotificationIds.has(data._id)) {
+            return;
+          }
+          receivedNotificationIds.add(data._id);
+          if (receivedNotificationIds.size > 100) {
+            const firstKey = receivedNotificationIds.values().next().value;
+            receivedNotificationIds.delete(firstKey);
+          }
+        }
+
         store.dispatch(setNotRead({ type: "inc" }));
         if (data) {
           store.dispatch(addNotification(data));
         }
+      });
+
+      socket.on("notification-reset", () => {
+        store.dispatch(setNotRead({ type: "reset" }));
+      });
+
+      socket.on("chat-read", (data) => {
+        store.dispatch(resetNotReadMessage(data.recvId));
       });
 
       socket.on("post-like", (data) => {
@@ -184,6 +268,7 @@
     activePostRooms.clear();
     activeProfileRoom = null;
     activeChatRoom = null;
+    receivedNotificationIds.clear();
   };
 
   export const joinPostRoom = (postId) => {
