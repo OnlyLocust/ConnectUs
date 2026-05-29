@@ -69,27 +69,32 @@ const ChatArea = ({ recvId, activeChat }) => {
   ) : (
     <ScrollArea className="h-full px-4 py-2">
       <div className="space-y-4">
-        {messages?.map((msg) => (
-          <div
-            key={msg._id || msg.createdAt}
-            className={`flex ${msg.isSender ? "justify-end" : "justify-start"}`}
-          >
+        {messages?.map((msg) => {
+          const isPending = msg.optimisticId && !msg._id;
+          return (
             <div
-              className={`max-w-xs md:max-w-md rounded-lg px-4 py-2 ${
-                msg.isSender ? "bg-blue-500 text-white" : "bg-muted text-foreground"
-              }`}
+              key={msg._id || msg.optimisticId || msg.createdAt}
+              className={`flex ${msg.isSender ? "justify-end" : "justify-start"}`}
             >
-              <p>{msg.message}</p>
-              <p
-                className={`text-xs mt-1 ${
-                  msg.isSender ? "text-blue-100" : "text-muted-foreground"
+              <div
+                className={`max-w-xs md:max-w-md rounded-lg px-4 py-2 transition-opacity duration-300 ${
+                  isPending ? "opacity-60" : "opacity-100"
+                } ${
+                  msg.isSender ? "bg-blue-500 text-white" : "bg-muted text-foreground"
                 }`}
               >
-                {formatDistanceToNow(msg.createdAt, { addSuffix: true })}
-              </p>
+                <p>{msg.message}</p>
+                <p
+                  className={`text-xs mt-1 ${
+                    msg.isSender ? "text-blue-100" : "text-muted-foreground"
+                  }`}
+                >
+                  {formatDistanceToNow(msg.createdAt, { addSuffix: true })}
+                </p>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
 
         {isTyping && (
           <div className="flex justify-start items-center">

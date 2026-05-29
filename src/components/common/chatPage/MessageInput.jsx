@@ -78,13 +78,23 @@ const MessageInput = ({ recvId }) => {
         { withCredentials: true }
       );
 
-      if (!res.data.success) {
+      if (res.data.success) {
+        dispatch(
+          addChat({
+            _id: res.data.messageId,
+            message: text,
+            isSender: true,
+            createdAt: res.data.createdAt,
+            optimisticId,
+          })
+        );
+      } else {
         throw new Error("Message sending failed");
       }
     } catch (error) {
       dispatch(removeChat({ optimisticId }));
       toast.error(
-        error.message || error.data.message || "Failed to send message"
+        error.message || error.response?.data?.message || "Failed to send message"
       );
     }
   };
