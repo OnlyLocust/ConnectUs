@@ -1,6 +1,7 @@
 import Chat from "@/models/chat.model";
 import Message from "@/models/message.model";
 import { NextResponse } from "next/server";
+import { eventBus, EVENTS } from "@/app/api/utils/eventBus";
 
 export const POST = async (req,{params}) => {
   try {
@@ -38,21 +39,14 @@ export const POST = async (req,{params}) => {
 
     await chat.save()
 
-    if (global.io) {
-      global.io.to(recvId).emit('get', {
-        _id: addMessage._id.toString(),
-        userId,
-        message: addMessage.message,
-        createdAt: addMessage.createdAt
-      });
-      global.io.to(userId).emit('sent', {
-        messageId: addMessage._id.toString(),
-        recvId,
-        message: addMessage.message,
-        createdAt: addMessage.createdAt,
-        optimisticId
-      });
-    }
+    eventBus.emit(EVENTS.MESSAGE_SENT, {
+      messageId: addMessage._id.toString(),
+      senderId: userId,
+      receiverId: recvId,
+      message: addMessage.message,
+      createdAt: addMessage.createdAt,
+      optimisticId,
+    });
 
     return NextResponse.json({
       chat,

@@ -1,15 +1,20 @@
 import Chat from "@/models/chat.model";
 import { NextResponse } from "next/server";
+import { eventBus, EVENTS } from "@/app/api/utils/eventBus";
 
 export const PATCH = async (req, { params }) => {
   try {
-    const { id: chatId } = params;
+    const { id: chatId } = await params;
     const userId = req.headers.get("userId");
+
+    if (!userId) {
+      return NextResponse.json({ message: "Unauthorized", success: false }, { status: 401 });
+    }
 
     const chat = await Chat.findById(chatId);
 
     if (!chat) {
-      return NextResponse.json({ message: "No chat found", success: false }, { status: 404 });
+      return NextResponse.json({ message: "Chat not found", success: false }, { status: 404 });
     }
 
     // Set notRead[userId] = 0
@@ -19,9 +24,7 @@ export const PATCH = async (req, { params }) => {
 
     const recvId = chat.members.find((m) => m.toString() !== userId)?.toString();
 
-    if (global.io) {
-      global.io.to(userId).emit("chat-read", { chatId, recvId });
-    }
+    eventBus.emit(EVENTS.MESSAGE_READ, { chatId, userId, recvId });
 
     return NextResponse.json({ message: "Marked as read", success: true }, { status: 200 });
   } catch (error) {
