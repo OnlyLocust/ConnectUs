@@ -1,5 +1,6 @@
 import User from "@/models/user.model";
 import { NextResponse } from "next/server";
+import { eventBus, EVENTS } from "@/app/api/utils/eventBus";
 
 export const PATCH = async (req) => {
   const userId = req.headers.get("userId");
@@ -10,9 +11,7 @@ export const PATCH = async (req) => {
       },
     });
 
-    if (global.io) {
-      global.io.to(userId).emit("notification-reset");
-    }
+    eventBus.emit(EVENTS.NOTIFICATION_RESET, { userId });
 
     return NextResponse.json({success:true},{status:200})
   } catch (error) {

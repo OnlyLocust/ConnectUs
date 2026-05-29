@@ -1,6 +1,6 @@
 import User from "@/models/user.model";
 import { NextResponse } from "next/server";
-import { createAndSendNotification } from "../../utils/notification";
+import { eventBus, EVENTS } from "../../utils/eventBus";
 
 export const PATCH = async (req, { params }) => {
   try {
@@ -54,12 +54,7 @@ export const PATCH = async (req, { params }) => {
       await currentUser.save();
       await user.save();
 
-      if (global.io) {
-        const rooms = [id, userId, `profile:${id}`, `profile:${userId}`];
-        rooms.forEach((roomName) => {
-          global.io.to(roomName).emit("follow-user", { followerId: id, followingId: userId, follow: false });
-        });
-      }
+      eventBus.emit(EVENTS.FOLLOW_CREATED, { followerId: id, followingId: userId, follow: false });
 
       return NextResponse.json(
         { message: "Unfollowed successfully", success: true, follow: false },
@@ -73,14 +68,7 @@ export const PATCH = async (req, { params }) => {
       await currentUser.save();
       await user.save();
 
-      await createAndSendNotification(id, userId, "follow");
-
-      if (global.io) {
-        const rooms = [id, userId, `profile:${id}`, `profile:${userId}`];
-        rooms.forEach((roomName) => {
-          global.io.to(roomName).emit("follow-user", { followerId: id, followingId: userId, follow: true });
-        });
-      }
+      eventBus.emit(EVENTS.FOLLOW_CREATED, { followerId: id, followingId: userId, follow: true });
 
       return NextResponse.json(
         { message: "Followed successfully", success: true, follow: true },
