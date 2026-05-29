@@ -54,7 +54,13 @@ export const POST = async (req,{params}) => {
       });
     }
 
-    return NextResponse.json({chat,success:true, optimisticId},{status:200})
+    return NextResponse.json({
+      chat,
+      success: true,
+      optimisticId,
+      messageId: addMessage._id.toString(),
+      createdAt: addMessage.createdAt,
+    }, { status: 200 });
 
 
   } catch (error) {

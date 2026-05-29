@@ -17,6 +17,12 @@ export const PATCH = async (req, { params }) => {
 
     await chat.save();
 
+    const recvId = chat.members.find((m) => m.toString() !== userId)?.toString();
+
+    if (global.io) {
+      global.io.to(userId).emit("chat-read", { chatId, recvId });
+    }
+
     return NextResponse.json({ message: "Marked as read", success: true }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ message: error.message, success: false }, { status: 500 });
