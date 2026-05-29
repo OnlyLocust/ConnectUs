@@ -9,6 +9,11 @@ export const PATCH = async (req) => {
         "notifications.notRead": 0,
       },
     });
+
+    if (global.io) {
+      global.io.to(userId).emit("notification-reset");
+    }
+
     return NextResponse.json({success:true},{status:200})
   } catch (error) {
     return NextResponse.json(
