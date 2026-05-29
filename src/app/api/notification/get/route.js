@@ -10,7 +10,7 @@ export const GET = async (req) => {
     path: "notifications.notification",
     populate: {
       path: "actor",
-      select: "username", // only populate username of actor
+      select: "username profilePicture", // populate username and profilePicture of actor
     },
   });
 
