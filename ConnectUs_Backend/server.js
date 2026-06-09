@@ -4,10 +4,13 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import http from "http";
 import { setupSocket } from "./src/socket/index.js";
+import connectDB from "./src/config/db.js";
 
 dotenv.config();
 
 const app = express();
+
+await connectDB()
 
 app.use(express.json());
 app.use(cookieParser());
