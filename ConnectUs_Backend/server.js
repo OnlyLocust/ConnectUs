@@ -3,18 +3,20 @@ import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import http from "http";
+
 import { setupSocket } from "./src/socket/index.js";
 import connectDB from "./src/config/db.js";
+
+import authRoutes from "./src/routes/auth.routes.js";
 
 dotenv.config();
 
 const app = express();
+const server = http.createServer(app);
 
-await connectDB()
+setupSocket(server);
 
-app.use(express.json());
-app.use(cookieParser());
-
+// Middleware
 app.use(
   cors({
     origin: process.env.FRONTEND_URL,
@@ -22,19 +24,33 @@ app.use(
   })
 );
 
+app.use(express.json());
+app.use(cookieParser());
+
+// Health Check
 app.get("/health", (req, res) => {
-  res.json({
+  res.status(200).json({
     success: true,
     message: "Backend Running",
   });
 });
 
-const server = http.createServer(app);
-
-setupSocket(server);
+// Routes
+app.use("/api/auth", authRoutes);
 
 const PORT = process.env.PORT || 5000;
 
-server.listen(PORT, () => {
-  console.log(`🚀 Server running on ${PORT}`);
-});
+const startServer = async () => {
+  try {
+    await connectDB();
+
+    server.listen(PORT, () => {
+      console.log(`🚀 Server running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error("❌ Failed to start server:", error);
+    process.exit(1);
+  }
+};
+
+startServer();
