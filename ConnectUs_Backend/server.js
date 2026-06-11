@@ -8,7 +8,8 @@ import { setupSocket } from "./src/socket/index.js";
 import connectDB from "./src/config/db.js";
 
 import authRoutes from "./src/routes/auth.routes.js";
-import userRoutes from './src/routes/user.routes.js'
+import userRoutes from './src/routes/user.routes.js';
+import chatRoutes from "./src/routes/chat.routes.js";
 
 dotenv.config();
 
@@ -39,6 +40,7 @@ app.get("/health", (req, res) => {
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/get",userRoutes)
+app.use("/api/chat", chatRoutes);
 
 const PORT = process.env.PORT || 5000;
 
