@@ -11,6 +11,7 @@ import authRoutes from "./src/routes/auth.routes.js";
 import userRoutes from './src/routes/user.routes.js';
 import chatRoutes from "./src/routes/chat.routes.js";
 import postRoutes from "./src/routes/post.routes.js"
+import notificationRoutes from "./src/routes/notification.routes.js"
 
 dotenv.config();
 
@@ -43,6 +44,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/get",userRoutes)
 app.use("/api/chat", chatRoutes);
 app.use("/api/post", postRoutes);
+app.use("/api/notification", notificationRoutes)
 
 const PORT = process.env.PORT || 5000;
 
