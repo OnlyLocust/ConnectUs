@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import EmailInput from "./EmailInput";
 import PasswordInput from "./PasswordInput";
 import UsernameInput from "./UsernameInput";
-import { API_URL } from "@/constants/constant";
+import { NEW_URL } from "@/constants/constant";
 
 const SignupForm = () => {
   const dispatch = useDispatch();
@@ -84,7 +84,7 @@ const SignupForm = () => {
 
     try {
       setIsLoading(true);
-      const res = await axios.post(`${API_URL}/auth/signup`, formData);
+      const res = await axios.post(`${NEW_URL}/auth/signup`, formData);
 
       if (res.data.success) {
         toast.success(res.data.message);

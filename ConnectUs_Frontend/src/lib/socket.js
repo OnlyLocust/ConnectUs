@@ -9,6 +9,7 @@
   import { addNotification, setNotifications } from "@/store/notificationSlice";
   import axios from "axios";
   import { API_URL } from "@/constants/constant";
+  import { NEW_URL } from "@/constants/constant";
 
   let activePostRooms = new Set();
   let activeProfileRoom = null;
@@ -99,7 +100,7 @@
       // If currently viewing notifications page, refresh the notifications list to fetch missed events
       const isNotification = store.getState().notification.isNotification;
       if (isNotification) {
-        axios.get(`${API_URL}/notification/get`, {
+        axios.get(`${NEW_URL}/notification`, {
           withCredentials: true,
           signal,
         }).then((res) => {
@@ -112,7 +113,7 @@
       // Reconnect recovery for active chat messages
       const activeRecv = store.getState().chat.recv;
       if (activeRecv) {
-        axios.get(`${API_URL}/chat/${activeRecv}`, {
+        axios.get(`${NEW_URL}/chat/get/${activeRecv}`, {
           withCredentials: true,
           signal,
         }).then((res) => {
@@ -123,7 +124,7 @@
       }
 
       // Reconnect recovery for sidebar chat users list
-      axios.get(`${API_URL}/chat/chatusers`, {
+      axios.get(`${NEW_URL}/chat/chatusers`, {
         withCredentials: true,
         signal,
       }).then((res) => {
@@ -161,7 +162,7 @@
       // Reconnect recovery for active single post detail view
       const recvPost = store.getState().recv.recvPost;
       if (recvPost) {
-        axios.get(`${API_URL}/post/${recvPost._id}`, {
+        axios.get(`${NEW_URL}/post/get/${recvPost._id}`, {
           withCredentials: true,
           signal,
         }).then((res) => {

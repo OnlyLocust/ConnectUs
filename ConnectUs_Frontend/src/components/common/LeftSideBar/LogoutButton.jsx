@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
-import { API_URL } from "@/constants/constant";
+import { NEW_URL } from "@/constants/constant";
 
 const LogoutButton = () => {
   const dispatch = useDispatch();
@@ -21,7 +21,7 @@ const LogoutButton = () => {
 
     toast.success("Logout successful");
 
-    axios.get(`${API_URL}/auth/logout`, {
+    axios.get(`${NEW_URL}/auth/logout`, {
       withCredentials: true,
     }).catch((err) => {
       console.error("Logout API failed:", err);

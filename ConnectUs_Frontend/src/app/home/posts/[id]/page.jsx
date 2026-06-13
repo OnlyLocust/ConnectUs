@@ -1,6 +1,6 @@
 'use client'
 import PostCard from '@/components/common/PostCard';
-import { API_URL } from '@/constants/constant';
+import { API_URL, NEW_URL } from '@/constants/constant';
 import { removeRecvPost, setRecvOnePost } from '@/store/recvSlice';
 import axios from 'axios';
 import { useParams } from 'next/navigation';
@@ -22,7 +22,7 @@ const page = () => {
           try {
             // const { id: postId } = await params;
     
-            const res = await axios.get(`${API_URL}/post/${postId}`, {
+            const res = await axios.get(`${NEW_URL}/post/get/${postId}`, {
               withCredentials: true,
             });
     

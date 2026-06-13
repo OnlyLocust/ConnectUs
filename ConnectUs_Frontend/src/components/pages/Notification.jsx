@@ -14,6 +14,7 @@ import NotificationCard from "../common/notificationPage/NotificationCard";
 import Header from "../common/notificationPage/Header";
 import LoadingNotifications from "../common/notificationPage/LoadingNotifications";
 import { API_URL } from "@/constants/constant";
+import { NEW_URL } from "@/constants/constant";
 
 export default function NotificationsPage() {
   const dispatch = useDispatch();
@@ -30,7 +31,7 @@ export default function NotificationsPage() {
     const getNotifications = async () => {
       try {
         setLoading(true);
-        const res = await axios.get(`${API_URL}/notification/get`, {
+        const res = await axios.get(`${NEW_URL}/notification`, {
           withCredentials: true,
         });
         if (res.data.success) {

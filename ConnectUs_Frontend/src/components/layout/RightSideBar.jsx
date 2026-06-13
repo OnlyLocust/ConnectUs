@@ -6,7 +6,7 @@ import { setSuggestions } from "@/store/authSlice";
 import { toast } from "sonner";
 import Link from "next/link";
 import SuggestUser from "../common/RightSideBar/SuggestUser";
-import { API_URL } from "@/constants/constant";
+import { NEW_URL } from "@/constants/constant";
 
 const RightSideBar = () => {
   const dispatch = useDispatch();
@@ -16,7 +16,7 @@ const RightSideBar = () => {
   useEffect(() => {
     const getSuggestions = async () => {
       try {
-        const res = await axios.get(`${API_URL}/user/suggestion`, {
+        const res = await axios.get(`${NEW_URL}/user/suggestions`, {
           withCredentials: true,
         });
         if (res.data.success) {

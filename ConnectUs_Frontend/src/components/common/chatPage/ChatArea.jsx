@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import Loader from "./Loader";
 import { API_URL } from "@/constants/constant";
+import { NEW_URL } from "@/constants/constant";
 
 const ChatArea = ({ recvId, activeChat }) => {
   const dispatch = useDispatch();
@@ -23,7 +24,7 @@ const ChatArea = ({ recvId, activeChat }) => {
     const getMessages = async () => {
       setLoading(true);
       try {
-        const res = await axios.get(`${API_URL}/chat/${recvId}`, {
+        const res = await axios.get(`${NEW_URL}/chat/get/${recvId}`, {
           withCredentials: true,
         });
 

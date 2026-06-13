@@ -13,7 +13,7 @@ import ProfileInput from "../common/editProfilePage/ProfileInput";
 import UserInputName from "../common/editProfilePage/UserInputName";
 import SubmitButton from "../common/editProfilePage/SubmitButton";
 import ShowAvatar from "../common/ShowAvatar";
-import { API_URL } from "@/constants/constant";
+import { API_URL, NEW_URL } from "@/constants/constant";
 
 const EditProfile = () => {
   const router = useRouter();
@@ -26,12 +26,15 @@ const EditProfile = () => {
 
   const [formData, setFormData] = useState({
     username: user?.username,
-    gender: user?.gender || 'Other',
+    gender: user?.gender || "Other",
     bio: user?.bio,
-    profilePicture: user?.profilePicture,
   });
 
-  const [previewImage, setPreviewImage] = useState(formData.profilePicture);
+  const [profilePictureFile, setProfilePictureFile] = useState(null);
+
+  const [previewImage, setPreviewImage] = useState(
+    user?.profilePicture
+  );
 
   useEffect(() => {
     router.prefetch(`/home/user/profile/${userId}`);
@@ -53,18 +56,19 @@ const EditProfile = () => {
   };
 
   const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreviewImage(reader.result);
-      };
-      reader.readAsDataURL(file);
-      setFormData((prev) => ({
-        ...prev,
-        profilePicture: file,
-      }));
-    }
+    const file = e.target.files?.[0];
+
+    if (!file) return;
+
+    setProfilePictureFile(file);
+
+    const reader = new FileReader();
+
+    reader.onloadend = () => {
+      setPreviewImage(reader.result);
+    };
+
+    reader.readAsDataURL(file);
   };
 
   const handleSubmit = async (e) => {
@@ -72,23 +76,38 @@ const EditProfile = () => {
 
     try {
       setIsLoading(true);
-      let newForm = new FormData();
+
+      const newForm = new FormData();
+
       newForm.append("username", formData.username);
       newForm.append("gender", formData.gender);
       newForm.append("bio", formData.bio);
-      newForm.append("profilePicture", formData.profilePicture);
 
-      const res = await axios.patch(`${API_URL}/user`, newForm, {
-        withCredentials: true,
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      if (profilePictureFile) {
+        newForm.append(
+          "profilePicture",
+          profilePictureFile
+        );
+      }
+
+      const res = await axios.patch(
+        `${NEW_URL}/user/profile`,
+        newForm,
+        {
+          withCredentials: true,
+        }
+      );
 
       if (res.data.success) {
         dispatch(setAuth(res.data.user));
-        toast.success("Profile updated successfully");
-        router.push(`/home/user/profile/${userId}`);
+
+        toast.success(
+          "Profile updated successfully"
+        );
+
+        router.push(
+          `/home/user/profile/${userId}`
+        );
       } else {
         throw new Error(res.data.message);
       }
@@ -97,6 +116,7 @@ const EditProfile = () => {
         error.response?.data?.message ||
         error.message ||
         "Profile Update failed";
+
       toast.error(errorMessage);
     } finally {
       setIsLoading(false);

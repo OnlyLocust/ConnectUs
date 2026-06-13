@@ -20,6 +20,7 @@ import ShowAvatar from "./ShowAvatar";
 import PostImage from "./PostCard/PostImage";
 import CommentInput from "./PostCard/CommentInput";
 import { API_URL } from "@/constants/constant";
+import { NEW_URL } from "@/constants/constant";
 import { joinPostRoom, leavePostRoom } from "@/lib/socket";
 
 const PostCard = ({ post, type }) => {
@@ -77,7 +78,7 @@ const PostCard = ({ post, type }) => {
 
     try {
       const res = await axios.patch(
-        `${API_URL}/post/bookmark/${postId}`,
+        `${NEW_URL}/post/bookmark/${postId}`,
         {},
         { withCredentials: true }
       );

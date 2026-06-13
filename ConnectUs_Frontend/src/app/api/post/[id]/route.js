@@ -87,110 +87,109 @@ export const DELETE = async (req, { params }) => {
   }
 };
 
-export const PATCH = async (req, { params }) => {
-  try {
-    const { id: postId } = await params;
-    const id = req.headers.get('userId');
-    if (!id) {
-      return NextResponse.json(
-        { message: "Unauthorized", success: false },
-        { status: 401 }
-      );
-    }
+// export const PATCH = async (req, { params }) => {
+//   try {
+//     const { id: postId } = await params;
+//     const id = req.headers.get('userId');
+//     if (!id) {
+//       return NextResponse.json(
+//         { message: "Unauthorized", success: false },
+//         { status: 401 }
+//       );
+//     }
 
-    if (!postId) {
-      return NextResponse.json(
-        { message: "Post ID is required", success: false },
-        { status: 400 }
-      );
-    }
+//     if (!postId) {
+//       return NextResponse.json(
+//         { message: "Post ID is required", success: false },
+//         { status: 400 }
+//       );
+//     }
 
-    const { caption, image } = await req.json();
-    if (!image && !caption) {
-      return NextResponse.json(
-        {
-          message: "At least one field (caption or image) is required",
-          success: false,
-        },
-        { status: 400 }
-      );
-    }
+//     const { caption, image } = await req.json();
+//     if (!image && !caption) {
+//       return NextResponse.json(
+//         {
+//           message: "At least one field (caption or image) is required",
+//           success: false,
+//         },
+//         { status: 400 }
+//       );
+//     }
 
-    const post = await Post.findById(postId);
-    if (!post) {
-      return NextResponse.json(
-        { message: "Post not found", success: false },
-        { status: 404 }
-      );
-    }
+//     const post = await Post.findById(postId);
+//     if (!post) {
+//       return NextResponse.json(
+//         { message: "Post not found", success: false },
+//         { status: 404 }
+//       );
+//     }
 
-    const isHisPost = post.author.toString() === id;
-    if (!isHisPost) {
-      return NextResponse.json(
-        { message: "You can only edit your own posts", success: false },
-        { status: 403 }
-      );
-    }
+//     const isHisPost = post.author.toString() === id;
+//     if (!isHisPost) {
+//       return NextResponse.json(
+//         { message: "You can only edit your own posts", success: false },
+//         { status: 403 }
+//       );
+//     }
 
-    if (caption) post.caption = caption;
-    if (image) post.image = image;
-    await post.save();
+//     if (caption) post.caption = caption;
+//     if (image) post.image = image;
+//     await post.save();
 
-    return NextResponse.json(
-      { message: "Post updated successfully", success: true, post },
-      { status: 200 }
-    );
-  } catch (error) {
-    return NextResponse.json(
-      { message: error.message, success: false },
-      { status: 500 }
-    );
-  }
-};
+//     return NextResponse.json(
+//       { message: "Post updated successfully", success: true, post },
+//       { status: 200 }
+//     );
+//   } catch (error) {
+//     return NextResponse.json(
+//       { message: error.message, success: false },
+//       { status: 500 }
+//     );
+//   }
+// };
 
-export const GET = async (req, { params }) => {
-  try {
-    const { id: postId } = await params;
-    const id = req.headers.get('userId');
-    if (!id) {
-      return NextResponse.json(
-        { message: "Unauthorized", success: false },
-        { status: 401 }
-      );
-    }
+// export const GET = async (req, { params }) => {
+//   try {
+//     const { id: postId } = await params;
+//     const id = req.headers.get('userId');
+//     if (!id) {
+//       return NextResponse.json(
+//         { message: "Unauthorized", success: false },
+//         { status: 401 }
+//       );
+//     }
 
-    if (!postId) {
-      return NextResponse.json(
-        { message: "Post ID is required", success: false },
-        { status: 400 }
-      );
-    }
+//     if (!postId) {
+//       return NextResponse.json(
+//         { message: "Post ID is required", success: false },
+//         { status: 400 }
+//       );
+//     }
 
+//     const post = await Post.findById(postId)
+//       .populate("author", "username profilePicture")
+//       .populate({
+//         path: "comments",
+//         populate: {
+//           path: "author", // populate comment author inside each comment
+//           select: "username profilePicture", // select needed fields
+//         },
+//       })
 
-    const post = await Post.findById(postId)
-      .populate("author", "username profilePicture")
-      .populate({
-        path: "comments",
-        populate: {
-          path: "author", // populate comment author inside each comment
-          select: "username profilePicture", // select needed fields
-        },
-      })
-
-    if (!post) {
-      return NextResponse.json(
-        { message: "Post not found", success: false },
-        { status: 404 }
-      );
-    }
-    return NextResponse.json(
-      { message: "Post fetched successfully", success: true, post },
-      { status: 200 }
-    );
-  } catch (error) {
-    return NextResponse.json(
-      { message: error.message, success: false },
-      { status: 500 }
-    );
-  }
-};
+//     if (!post) {
+//       return NextResponse.json(
+//         { message: "Post not found", success: false },
+//         { status: 404 }
+//       );
+//     }
+//     return NextResponse.json(
+//       { message: "Post fetched successfully", success: true, post },
+//       { status: 200 }
+//     );
+//   } catch (error) {
+//     return NextResponse.json(
+//       { message: error.message, success: false },
+//       { status: 500 }
+//     );
+//   }
+// };

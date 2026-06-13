@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
-import { API_URL } from "@/constants/constant";
+// import { API_URL } from "@/constants/constant";
+import { NEW_URL } from "@/constants/constant";
 
 const SecondButton = ({ userId, id }) => {
   const dispatch = useDispatch();
@@ -14,7 +15,7 @@ const SecondButton = ({ userId, id }) => {
   const startMessage = async () => {
     try {
       const res = await axios.post(
-        `${API_URL}/chat/addchat`,
+        `${NEW_URL}/chat/addchat`,
         { recvId: id },
         { withCredentials: true }
       );

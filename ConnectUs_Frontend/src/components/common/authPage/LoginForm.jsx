@@ -10,7 +10,7 @@ import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import EmailInput from "./EmailInput";
 import PasswordInput from "./PasswordInput";
-import { API_URL } from "@/constants/constant";
+import { NEW_URL } from "@/constants/constant";
 
 const LoginForm = () => {
   const dispatch = useDispatch();
@@ -80,7 +80,7 @@ const LoginForm = () => {
     try {
       setIsLoading(true);
 
-      const res = await axios.post(`${API_URL}/auth/login`, formData, {
+      const res = await axios.post(`${NEW_URL}/auth/login`, formData, {
         withCredentials: true,
       });
 
