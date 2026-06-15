@@ -1,5 +1,5 @@
 import express from "express";
-import { addComment, getHomePosts, getPost, getPosts, likeUnlikePost, toggleBookmark } from "../controllers/post.controller.js";
+import { addComment, deletePost, getHomePosts, getPost, getPosts, likeUnlikePost, toggleBookmark } from "../controllers/post.controller.js";
 import { protect } from "../middleware/auth.js";
 
 const router = express.Router();
@@ -10,5 +10,6 @@ router.patch("/bookmark/:postId",  protect, toggleBookmark);
 router.get("/", protect, getHomePosts);
 router.patch("/comment/:postId", protect, addComment);
 router.patch("/like/:postId",  protect, likeUnlikePost);
+router.delete("/:postId", protect, deletePost);
 
 export default router;
