@@ -1,5 +1,5 @@
 import express from "express";
-import {getFollowers, getFollowing, getMe, getSuggestions, getUsers ,updateProfile} from "../controllers/user.controller.js";
+import {getFollowers, getFollowing, getMe, getSuggestions, getUserProfile, getUsers ,updateProfile} from "../controllers/user.controller.js";
 import { protect } from "../middleware/auth.js"
 import upload from "../middleware/multer.js";
 
@@ -11,5 +11,7 @@ router.get("/suggestions", protect, getSuggestions);
 router.get("/followers/:userId", protect, getFollowers);
 router.get("/following/:userId", protect, getFollowing);
 router.patch("/profile",  protect,  upload.single("profilePicture"),  updateProfile);
+router.get("/get/:id", protect, getUserProfile);
+
 
 export default router;
