@@ -61,35 +61,37 @@ export const deletePost = async (req, res) => {
     }
 
     // Delete image from Cloudinary
-    try {
-      const publicId = getPublicIdFromUrl(deletedPost.image);
-
-      if (publicId) {
-        await cloudinary.uploader.destroy(publicId);
-      }
-    } catch (cloudinaryError) {
-      console.error(
-        "Failed to delete image from Cloudinary:",
-        cloudinaryError
-      );
-    }
 
     // Delete all comments related to the post
-    await Comment.deleteMany({
-      _id: { $in: deletedPost.comments },
-    });
 
     // Remove bookmarks from all users
-    await User.updateMany(
-      { bookmarks: postId },
-      {
-        $pull: {
-          bookmarks: postId,
-        },
-      }
-    );
 
-    await user.save();
+    const cloudinaryPromise = (async () => {
+      try {
+        const publicId = getPublicIdFromUrl(deletedPost.image);
+        if (publicId) {
+          await cloudinary.uploader.destroy(publicId);
+        }
+      } catch (err) {
+        console.error("Cloudinary delete failed:", err);
+      }
+    })();
+
+    await Promise.all([
+      cloudinaryPromise,
+      Comment.deleteMany({
+        _id: { $in: deletedPost.comments },
+      }),
+      User.updateMany(
+        { bookmarks: postId },
+        {
+          $pull: {
+            bookmarks: postId,
+          },
+        }
+      ),
+      user.save(),
+    ]);
 
     eventBus.emit(EVENTS.POST_DELETED, {
       postId,
