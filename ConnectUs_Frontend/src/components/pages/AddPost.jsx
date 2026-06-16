@@ -11,7 +11,7 @@ import ProfileHeader from "../common/addPostPage/ProfileHeader";
 import ImageInput from "../common/addPostPage/ImageInput";
 import SubmitButton from "../common/addPostPage/SubmitButton";
 import CaptionInput from "../common/addPostPage/CaptionInput";
-import { NEW_URL } from "@/constants/constant";
+
 
 export default function AddPost() {
   const dispatch = useDispatch();
@@ -68,7 +68,7 @@ export default function AddPost() {
       formData.append("caption", caption);
 
       const res = await axios.post(
-        `${NEW_URL}/post/add`,
+        `${process.env.NEXT_PUBLIC_API_URL}/post/add`,
         formData,
         { withCredentials: true }
       );

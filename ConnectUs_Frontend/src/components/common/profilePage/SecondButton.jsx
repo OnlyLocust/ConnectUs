@@ -6,7 +6,7 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 // 
-import { NEW_URL } from "@/constants/constant";
+
 
 const SecondButton = ({ userId, id }) => {
   const dispatch = useDispatch();
@@ -15,7 +15,7 @@ const SecondButton = ({ userId, id }) => {
   const startMessage = async () => {
     try {
       const res = await axios.post(
-        `${NEW_URL}/chat/addchat`,
+        `${process.env.NEXT_PUBLIC_API_URL}/chat/addchat`,
         { recvId: id },
         { withCredentials: true }
       );

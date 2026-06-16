@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import EmailInput from "./EmailInput";
 import PasswordInput from "./PasswordInput";
 import UsernameInput from "./UsernameInput";
-import { NEW_URL } from "@/constants/constant";
+
 
 const SignupForm = () => {
   const dispatch = useDispatch();
@@ -84,7 +84,7 @@ const SignupForm = () => {
 
     try {
       setIsLoading(true);
-      const res = await axios.post(`${NEW_URL}/auth/signup`, formData, { withCredentials: true });
+      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/signup`, formData, { withCredentials: true });
 
 
       if (res.data.success) {
@@ -94,7 +94,7 @@ const SignupForm = () => {
         setTimeout(() => {
           router.replace("/home");
         }, 1000);
-        
+
       } else {
         throw new Error(res.data.message || "Login failed");
       }

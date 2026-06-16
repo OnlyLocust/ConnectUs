@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { followRecv } from "@/store/authSlice";
 import { Button } from "@/components/ui/button";
 import ShowAvatar from "../ShowAvatar";
-import { NEW_URL } from "@/constants/constant";
+
 
 const SearchShowFollowBox = ({ user }) => {
   const dispatch = useDispatch();
@@ -38,7 +38,7 @@ const SearchShowFollowBox = ({ user }) => {
 
     try {
       const res = await axios.patch(
-        `${NEW_URL}/follow/${user._id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/follow/${user._id}`,
         {},
         { withCredentials: true }
       );

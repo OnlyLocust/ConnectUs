@@ -1,6 +1,4 @@
 import { io } from "socket.io-client";
-import dotenv from "dotenv";
-dotenv.config();
 import { store } from "@/store/store";
 import { addChat, addOnline, removeOnline, setNotReadMessage, setOnline, setTyping, resetNotReadMessage, setUserChats, setChats } from "@/store/chatSlice";
 import { setNotRead, followRecv } from "@/store/authSlice";
@@ -8,8 +6,6 @@ import { setPostLike, setPostComment, deletePost, prependPost, reconcilePosts } 
 import { setFollower, updateReceiverPresence, reconcileRecvPost } from "@/store/recvSlice";
 import { addNotification, setNotifications } from "@/store/notificationSlice";
 import axios from "axios";
-
-import { NEW_URL } from "@/constants/constant";
 
 let activePostRooms = new Set();
 let activeProfileRoom = null;
@@ -27,7 +23,7 @@ export const initiateSocket = (userId) => {
     return;
   }
 
-  socket = io(process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:3000", {
+  socket = io(process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:5000", {
     query: { userId },
     transports: ["websocket"],
     reconnection: true,
@@ -87,7 +83,7 @@ export const initiateSocket = (userId) => {
     };
 
     // Fetch up-to-date user details (to sync unread notification count on connect/reconnect)
-    axios.get(`${NEW_URL}/user/profile`, {
+    axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/profile`, {
       withCredentials: true,
       signal,
     }).then((res) => {
@@ -100,7 +96,7 @@ export const initiateSocket = (userId) => {
     // If currently viewing notifications page, refresh the notifications list to fetch missed events
     const isNotification = store.getState().notification.isNotification;
     if (isNotification) {
-      axios.get(`${NEW_URL}/notification`, {
+      axios.get(`${process.env.NEXT_PUBLIC_API_URL}/notification`, {
         withCredentials: true,
         signal,
       }).then((res) => {
@@ -113,7 +109,7 @@ export const initiateSocket = (userId) => {
     // Reconnect recovery for active chat messages
     const activeRecv = store.getState().chat.recv;
     if (activeRecv) {
-      axios.get(`${NEW_URL}/chat/get/${activeRecv}`, {
+      axios.get(`${process.env.NEXT_PUBLIC_API_URL}/chat/get/${activeRecv}`, {
         withCredentials: true,
         signal,
       }).then((res) => {
@@ -124,7 +120,7 @@ export const initiateSocket = (userId) => {
     }
 
     // Reconnect recovery for sidebar chat users list
-    axios.get(`${NEW_URL}/chat/chatusers`, {
+    axios.get(`${process.env.NEXT_PUBLIC_API_URL}/chat/chatusers`, {
       withCredentials: true,
       signal,
     }).then((res) => {
@@ -137,7 +133,7 @@ export const initiateSocket = (userId) => {
     const homePosts = store.getState().posts.posts;
     if (homePosts && homePosts.length > 0) {
       const fetchLimit = Math.max(10, homePosts.length);
-      axios.get(`${NEW_URL}/post?limit=${fetchLimit}`, {
+      axios.get(`${process.env.NEXT_PUBLIC_API_URL}/post?limit=${fetchLimit}`, {
         withCredentials: true,
         signal,
       }).then((res) => {
@@ -149,7 +145,7 @@ export const initiateSocket = (userId) => {
 
     // Reconnect recovery for active profile details
     if (activeProfileRoom) {
-      axios.get(`${NEW_URL}/user/get/${activeProfileRoom}`, {
+      axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/get/${activeProfileRoom}`, {
         withCredentials: true,
         signal,
       }).then((res) => {
@@ -162,7 +158,7 @@ export const initiateSocket = (userId) => {
     // Reconnect recovery for active single post detail view
     const recvPost = store.getState().recv.recvPost;
     if (recvPost) {
-      axios.get(`${NEW_URL}/post/get/${recvPost._id}`, {
+      axios.get(`${process.env.NEXT_PUBLIC_API_URL}/post/get/${recvPost._id}`, {
         withCredentials: true,
         signal,
       }).then((res) => {
@@ -193,7 +189,7 @@ export const initiateSocket = (userId) => {
       const chatUsers = store.getState().chat.chatUsers;
       const activeChat = chatUsers.find((chat) => chat.member._id === data.userId);
       if (activeChat) {
-        axios.patch(`${NEW_URL}/chat/notread/${activeChat._id}`, {}, {
+        axios.patch(`${process.env.NEXT_PUBLIC_API_URL}/chat/notread/${activeChat._id}`, {}, {
           withCredentials: true,
         }).catch((err) => {
           console.error("Failed to mark message as read in real-time:", err);

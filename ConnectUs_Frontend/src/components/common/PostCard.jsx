@@ -20,7 +20,7 @@ import ShowAvatar from "./ShowAvatar";
 import PostImage from "./PostCard/PostImage";
 import CommentInput from "./PostCard/CommentInput";
 
-import { NEW_URL } from "@/constants/constant";
+
 import { joinPostRoom, leavePostRoom } from "@/lib/socket";
 
 const PostCard = ({ post, type }) => {
@@ -78,7 +78,7 @@ const PostCard = ({ post, type }) => {
 
     try {
       const res = await axios.patch(
-        `${NEW_URL}/post/bookmark/${postId}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/post/bookmark/${postId}`,
         {},
         { withCredentials: true }
       );
@@ -107,7 +107,7 @@ const PostCard = ({ post, type }) => {
 
     try {
       const res = await axios.patch(
-        `${NEW_URL}/post/like/${postId}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/post/like/${postId}`,
         { like: isLiked ? "unlike" : "like" },
         { withCredentials: true }
       );
@@ -135,7 +135,7 @@ const PostCard = ({ post, type }) => {
     dispatch(setPostComment(payload));
     try {
       const res = await axios.patch(
-        `${NEW_URL}/post/comment/${postId}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/post/comment/${postId}`,
         { text: payload.text, optimisticId },
         { withCredentials: true }
       );

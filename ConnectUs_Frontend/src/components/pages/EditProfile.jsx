@@ -13,7 +13,7 @@ import ProfileInput from "../common/editProfilePage/ProfileInput";
 import UserInputName from "../common/editProfilePage/UserInputName";
 import SubmitButton from "../common/editProfilePage/SubmitButton";
 import ShowAvatar from "../common/ShowAvatar";
-import { NEW_URL } from "@/constants/constant";
+
 
 const EditProfile = () => {
   const router = useRouter();
@@ -91,7 +91,7 @@ const EditProfile = () => {
       }
 
       const res = await axios.patch(
-        `${NEW_URL}/user/profile`,
+        `${process.env.NEXT_PUBLIC_API_URL}/user/profile`,
         newForm,
         {
           withCredentials: true,

@@ -56,20 +56,22 @@ export const setupSocket = (server) => {
     // SEND MESSAGE
     // ==================
 
-    socket.on("send", (data) => {
+    // temp commented
 
-      const {
-        recvId,
-        message,
-        createdAt,
-      } = data;
+    // socket.on("send", (data) => {
 
-      io.to(recvId).emit("get", {
-        userId,
-        message,
-        createdAt,
-      });
-    });
+    //   const {
+    //     recvId,
+    //     message,
+    //     createdAt,
+    //   } = data;
+
+    //   io.to(recvId).emit("get", {
+    //     userId,
+    //     message,
+    //     createdAt,
+    //   });
+    // });
 
     // ==================
     // ONLINE USERS
@@ -111,10 +113,12 @@ export const setupSocket = (server) => {
     // NOTIFICATIONS
     // ==================
 
-    socket.on("notify", ({ recvId }) => {
+    // temp commented
 
-      io.to(recvId).emit("notification");
-    });
+    // socket.on("notify", ({ recvId }) => {
+
+    //   io.to(recvId).emit("notification");
+    // });
 
     // ==================
     // ROOMS

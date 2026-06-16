@@ -6,7 +6,7 @@ import { Paperclip, Send, Smile } from "lucide-react";
 import React, { useCallback, useState, useRef, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
-import { NEW_URL } from "@/constants/constant";
+
 import { getSocket } from "@/lib/socket";
 
 const MessageInput = ({ recvId }) => {
@@ -73,7 +73,7 @@ const MessageInput = ({ recvId }) => {
     setMessage("");
     try {
       const res = await axios.post(
-        `${NEW_URL}/chat/send/${recvId}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/chat/send/${recvId}`,
         { message: text, optimisticId },
         { withCredentials: true }
       );

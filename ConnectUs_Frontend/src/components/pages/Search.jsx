@@ -13,7 +13,7 @@ import SearchLoading from "../common/searchPage/SearchLoading";
 import NoSearch from "../common/searchPage/NoSearch";
 import SearchShowFollowBox from "../common/searchPage/SearchShowFollowBox";
 
-import { NEW_URL } from "@/constants/constant";
+
 
 const searchSlicing = 7;
 
@@ -60,7 +60,7 @@ export default function SearchPage() {
       setIsLoading(true);
       try {
         if (activeTab === "users" && users.length === 0) {
-          const res = await axios.get(`${NEW_URL}/user/users`, {
+          const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user/users`, {
             withCredentials: true,
             signal: controller.signal,
           });
@@ -70,7 +70,7 @@ export default function SearchPage() {
             throw new Error(res.data.message || "Failed to fetch users");
           }
         } else if (activeTab === "posts" && posts.length === 0) {
-          const res = await axios.get(`${NEW_URL}/post/getall`, {
+          const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/post/getall`, {
             withCredentials: true,
             signal: controller.signal,
           });

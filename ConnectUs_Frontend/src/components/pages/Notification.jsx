@@ -14,7 +14,7 @@ import NotificationCard from "../common/notificationPage/NotificationCard";
 import Header from "../common/notificationPage/Header";
 import LoadingNotifications from "../common/notificationPage/LoadingNotifications";
 
-import { NEW_URL } from "@/constants/constant";
+
 
 export default function NotificationsPage() {
   const dispatch = useDispatch();
@@ -31,7 +31,7 @@ export default function NotificationsPage() {
     const getNotifications = async () => {
       try {
         setLoading(true);
-        const res = await axios.get(`${NEW_URL}/notification`, {
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/notification`, {
           withCredentials: true,
         });
         if (res.data.success) {
@@ -110,8 +110,8 @@ export default function NotificationsPage() {
                   <div
                     key={notification._id}
                     className={`p-4 rounded-lg ${i < notRead && activeTab === "all"
-                        ? "bg-muted border border-primary/20"
-                        : "bg-card border border-border"
+                      ? "bg-muted border border-primary/20"
+                      : "bg-card border border-border"
                       }`}
                   >
                     <NotificationCard

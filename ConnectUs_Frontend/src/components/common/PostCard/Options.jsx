@@ -14,7 +14,7 @@ import { toast } from "sonner";
 import { followRecv, removePost } from "@/store/authSlice";
 import Link from "next/link";
 import ShowAvatar from "../ShowAvatar";
-import { NEW_URL } from "@/constants/constant";
+
 
 const Options = ({
   children,
@@ -35,7 +35,7 @@ const Options = ({
       dispatch(deletePost({ postId }));
       dispatch(removePost({ postId }));
       setOpen(false);
-      const res = await axios.delete(`${NEW_URL}/post/${postId}`, {
+      const res = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/post/${postId}`, {
         withCredentials: true,
       });
 
@@ -62,7 +62,7 @@ const Options = ({
 
     try {
       const res = await axios.patch(
-        `${NEW_URL}/follow/${userId}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/follow/${userId}`,
         {},
         { withCredentials: true }
       );

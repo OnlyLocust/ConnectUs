@@ -8,7 +8,7 @@ import { setPosts, addPosts } from "@/store/postSlice";
 import axios from "axios";
 import Loading from "../common/Loading";
 import NoPosts from "../common/NoPost";
-import { NEW_URL } from "@/constants/constant";
+
 
 const Main = () => {
   const dispatch = useDispatch();
@@ -34,8 +34,8 @@ const Main = () => {
     try {
       const before = (!isInitial && posts.length > 0) ? posts[posts.length - 1].createdAt : "";
       const url = before
-        ? `${NEW_URL}/post?before=${encodeURIComponent(before)}&limit=4`
-        : `${NEW_URL}/post?limit=4`;
+        ? `${process.env.NEXT_PUBLIC_API_URL}/post?before=${encodeURIComponent(before)}&limit=4`
+        : `${process.env.NEXT_PUBLIC_API_URL}/post?limit=4`;
 
       const res = await axios.get(url, {
         withCredentials: true,

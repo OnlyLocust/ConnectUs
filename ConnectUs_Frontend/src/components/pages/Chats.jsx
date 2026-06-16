@@ -17,7 +17,7 @@ import { setIsHide } from "@/store/uiSlice";
 import { usePathname } from "next/navigation";
 import { joinChatRoom, leaveChatRoom } from "@/lib/socket";
 
-import { NEW_URL } from "@/constants/constant";
+
 
 export default function MessagesPage() {
   const dispatch = useDispatch();
@@ -58,7 +58,7 @@ export default function MessagesPage() {
     const getChatUsers = async () => {
       setLoading(true);
       try {
-        const res = await axios.get(`${NEW_URL}/chat/chatusers`, {
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/chat/chatusers`, {
           withCredentials: true,
         });
         if (res.data.success) {

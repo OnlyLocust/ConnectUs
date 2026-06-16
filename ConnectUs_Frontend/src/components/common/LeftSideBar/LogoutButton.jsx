@@ -6,31 +6,31 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
-import { NEW_URL } from "@/constants/constant";
+
 
 const LogoutButton = () => {
   const dispatch = useDispatch();
   const router = useRouter();
 
   const logoutHandler = async () => {
-  try {
-    dispatch(logout());
-    disconnectSocket();
+    try {
+      dispatch(logout());
+      disconnectSocket();
 
-    router.replace("/");
+      router.replace("/");
 
-    toast.success("Logout successful");
+      toast.success("Logout successful");
 
-    axios.get(`${NEW_URL}/auth/logout`, {
-      withCredentials: true,
-    }).catch((err) => {
-      console.error("Logout API failed:", err);
-    });
+      axios.get(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`, {
+        withCredentials: true,
+      }).catch((err) => {
+        console.error("Logout API failed:", err);
+      });
 
-  } catch (error) {
-    toast.error("Logout failed");
-  }
-};
+    } catch (error) {
+      toast.error("Logout failed");
+    }
+  };
 
   return (
     <div className="px-6">

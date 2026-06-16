@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import User from "../models/user.model.js";
 import cloudinary from "../config/cloudinary.js";
 import { getPublicIdFromUrl } from "../utils/cloudinary.js";
+import { onlineUsers } from "../socket/onlineUsers.js";
 
 export const getMe = async (req, res) => {
   try {
@@ -397,7 +398,7 @@ export const getUserProfile = async (req, res) => {
     }
 
     user.online =
-      global.onlineUsers?.has(profileId) || false;
+      onlineUsers?.has(profileId) || false;
 
     return res.status(200).json({
       success: true,

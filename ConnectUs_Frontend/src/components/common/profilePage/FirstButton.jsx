@@ -8,7 +8,7 @@ import Link from "next/link";
 import React, { useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
-import { NEW_URL } from "@/constants/constant";
+
 
 const FirstButton = ({ userId, id }) => {
   const dispatch = useDispatch();
@@ -33,7 +33,7 @@ const FirstButton = ({ userId, id }) => {
 
     try {
       const res = await axios.patch(
-        `${NEW_URL}/follow/${id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/follow/${id}`,
         {},
         { withCredentials: true }
       );
