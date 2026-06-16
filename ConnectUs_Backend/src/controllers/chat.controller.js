@@ -226,7 +226,6 @@ export const sendMessage = async (req, res) => {
 
 
 export const markChatAsRead = async (req, res) => {
-  console.log('really?');
   
   try {
 

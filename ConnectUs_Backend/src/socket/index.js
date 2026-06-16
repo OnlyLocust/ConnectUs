@@ -50,7 +50,7 @@ export const setupSocket = (server) => {
       });
     }
 
-    console.log("Connected:", userId);
+    // console.log("Connected:", userId);
 
     // ==================
     // SEND MESSAGE
@@ -183,7 +183,7 @@ export const setupSocket = (server) => {
         onlineUsers.delete(userId);
       }
 
-      console.log("Disconnected:", userId);
+      // console.log("Disconnected:", userId);
     });
   });
 
