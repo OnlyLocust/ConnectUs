@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { followRecv } from "@/store/authSlice";
 import { Button } from "@/components/ui/button";
 import ShowAvatar from "../ShowAvatar";
-import { API_URL } from "@/constants/constant";
+import { NEW_URL } from "@/constants/constant";
 
 const SearchShowFollowBox = ({ user }) => {
   const dispatch = useDispatch();
@@ -38,7 +38,7 @@ const SearchShowFollowBox = ({ user }) => {
 
     try {
       const res = await axios.patch(
-        `${API_URL}/follow/${user._id}`,
+        `${NEW_URL}/follow/${user._id}`,
         {},
         { withCredentials: true }
       );
@@ -61,8 +61,8 @@ const SearchShowFollowBox = ({ user }) => {
 
       toast.error(
         error.response?.data?.message ||
-          error.message ||
-          "Failed to follow user"
+        error.message ||
+        "Failed to follow user"
       );
     } finally {
       setFollowLoading(false);

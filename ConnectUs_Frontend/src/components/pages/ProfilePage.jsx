@@ -13,7 +13,7 @@ import SecondButton from "@/components/common/profilePage/SecondButton";
 import FirstButton from "@/components/common/profilePage/FirstButton";
 import { useParams } from "next/navigation";
 import ShowAvatar from "../common/ShowAvatar";
-import { API_URL } from "@/constants/constant";
+import { NEW_URL } from "@/constants/constant";
 import { formatDistanceToNow } from "date-fns";
 import { joinProfileRoom, leaveProfileRoom } from "@/lib/socket";
 
@@ -44,7 +44,7 @@ const ProfilePage = () => {
   useEffect(() => {
     const getUser = async () => {
       try {
-        const res = await axios.get(`${API_URL}/get/${id}`, {
+        const res = await axios.get(`${NEW_URL}/user/get/${id}`, {
           withCredentials: true,
         });
 
@@ -56,8 +56,8 @@ const ProfilePage = () => {
       } catch (error) {
         toast.error(
           error.response?.data?.message ||
-            error.message ||
-            "Failed to fetch user"
+          error.message ||
+          "Failed to fetch user"
         );
       }
     };

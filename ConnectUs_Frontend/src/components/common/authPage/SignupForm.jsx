@@ -84,7 +84,8 @@ const SignupForm = () => {
 
     try {
       setIsLoading(true);
-      const res = await axios.post(`${NEW_URL}/auth/signup`, formData);
+      const res = await axios.post(`${NEW_URL}/auth/signup`, formData, { withCredentials: true });
+
 
       if (res.data.success) {
         toast.success(res.data.message);

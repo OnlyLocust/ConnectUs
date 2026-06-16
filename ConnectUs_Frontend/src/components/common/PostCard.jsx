@@ -19,7 +19,7 @@ import { Badge } from "../ui/badge";
 import ShowAvatar from "./ShowAvatar";
 import PostImage from "./PostCard/PostImage";
 import CommentInput from "./PostCard/CommentInput";
-import { API_URL } from "@/constants/constant";
+
 import { NEW_URL } from "@/constants/constant";
 import { joinPostRoom, leavePostRoom } from "@/lib/socket";
 
@@ -107,7 +107,7 @@ const PostCard = ({ post, type }) => {
 
     try {
       const res = await axios.patch(
-        `${API_URL}/post/like/${postId}`,
+        `${NEW_URL}/post/like/${postId}`,
         { like: isLiked ? "unlike" : "like" },
         { withCredentials: true }
       );
@@ -135,7 +135,7 @@ const PostCard = ({ post, type }) => {
     dispatch(setPostComment(payload));
     try {
       const res = await axios.patch(
-        `${API_URL}/post/comment/${postId}`,
+        `${NEW_URL}/post/comment/${postId}`,
         { text: payload.text, optimisticId },
         { withCredentials: true }
       );
@@ -197,9 +197,8 @@ const PostCard = ({ post, type }) => {
         <div className="flex justify-between items-center mb-2">
           <div className="flex gap-4">
             <button
-              className={`flex items-center gap-1 transition-all duration-200 ease-in-out hover:scale-115 active:scale-90 ${
-                isLiked ? "text-red-500" : "text-muted-foreground hover:text-red-500"
-              }`}
+              className={`flex items-center gap-1 transition-all duration-200 ease-in-out hover:scale-115 active:scale-90 ${isLiked ? "text-red-500" : "text-muted-foreground hover:text-red-500"
+                }`}
               onClick={likePost}
               aria-label={isLiked ? "Unlike post" : "Like post"}
             >
@@ -232,9 +231,8 @@ const PostCard = ({ post, type }) => {
           </div>
 
           <button
-            className={`transition-all duration-200 ease-in-out hover:scale-115 active:scale-90 ${
-              isBookmarked ? "text-foreground" : "text-muted-foreground hover:text-yellow-600"
-            }`}
+            className={`transition-all duration-200 ease-in-out hover:scale-115 active:scale-90 ${isBookmarked ? "text-foreground" : "text-muted-foreground hover:text-yellow-600"
+              }`}
             onClick={bookmarkPost}
             aria-label={isBookmarked ? "Remove bookmark" : "Add bookmark"}
           >

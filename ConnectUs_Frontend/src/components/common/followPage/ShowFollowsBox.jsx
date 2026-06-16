@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { followRecv } from "@/store/authSlice";
 import { TableCell, TableRow } from "@/components/ui/table";
 import ShowAvatar from "../ShowAvatar";
-import { API_URL } from "@/constants/constant";
+import { NEW_URL } from "@/constants/constant";
 
 const ShowFollowsBox = ({ user, userId }) => {
   const dispatch = useDispatch();
@@ -30,7 +30,7 @@ const ShowFollowsBox = ({ user, userId }) => {
 
     try {
       const res = await axios.patch(
-        `${API_URL}/follow/${user._id}`,
+        `${NEW_URL}/follow/${user._id}`,
         {},
         { withCredentials: true }
       );
@@ -46,8 +46,8 @@ const ShowFollowsBox = ({ user, userId }) => {
 
       toast.error(
         error.response?.data?.message ||
-          error.message ||
-          "Failed to follow/unfollow user"
+        error.message ||
+        "Failed to follow/unfollow user"
       );
     } finally {
       setFollowLoading(false);

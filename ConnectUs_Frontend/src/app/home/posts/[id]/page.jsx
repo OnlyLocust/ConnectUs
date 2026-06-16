@@ -1,6 +1,6 @@
 'use client'
 import PostCard from '@/components/common/PostCard';
-import { API_URL, NEW_URL } from '@/constants/constant';
+import { NEW_URL } from '@/constants/constant';
 import { removeRecvPost, setRecvOnePost } from '@/store/recvSlice';
 import axios from 'axios';
 import { useParams } from 'next/navigation';
@@ -12,43 +12,43 @@ import { toast } from 'sonner';
 const page = () => {
 
   const params = useParams();
-    const postId = params.id;
+  const postId = params.id;
 
   const recvPost = useSelector((state) => state.recv.recvPost);
   const dispatch = useDispatch()
 
-    useEffect(() => {
-        const getPost = async () => {
-          try {
-            // const { id: postId } = await params;
-    
-            const res = await axios.get(`${NEW_URL}/post/get/${postId}`, {
-              withCredentials: true,
-            });
-    
-            if (res.data.success) {
-              dispatch(setRecvOnePost(res.data.post))
-              
-            } else {
-              throw new Error(res.data.message || "Failed to fetch this post");
-            }
-          } catch (error) {
+  useEffect(() => {
+    const getPost = async () => {
+      try {
+        // const { id: postId } = await params;
 
-            toast.error(
-              error.response?.data?.message ||
-                error.message ||
-                "Failed to fetch this post"
-            );
-          }
-        };
-        getPost()
+        const res = await axios.get(`${NEW_URL}/post/get/${postId}`, {
+          withCredentials: true,
+        });
 
-        return () => dispatch(removeRecvPost())
-      }, []);
+        if (res.data.success) {
+          dispatch(setRecvOnePost(res.data.post))
+
+        } else {
+          throw new Error(res.data.message || "Failed to fetch this post");
+        }
+      } catch (error) {
+
+        toast.error(
+          error.response?.data?.message ||
+          error.message ||
+          "Failed to fetch this post"
+        );
+      }
+    };
+    getPost()
+
+    return () => dispatch(removeRecvPost())
+  }, []);
 
   return (
     <div className='h-screen'>
-      {recvPost && (<PostCard post={recvPost} type='single'/>)}
+      {recvPost && (<PostCard post={recvPost} type='single' />)}
     </div>
   )
 }

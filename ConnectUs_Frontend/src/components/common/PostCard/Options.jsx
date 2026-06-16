@@ -14,7 +14,7 @@ import { toast } from "sonner";
 import { followRecv, removePost } from "@/store/authSlice";
 import Link from "next/link";
 import ShowAvatar from "../ShowAvatar";
-import { API_URL } from "@/constants/constant";
+import { NEW_URL } from "@/constants/constant";
 
 const Options = ({
   children,
@@ -35,7 +35,7 @@ const Options = ({
       dispatch(deletePost({ postId }));
       dispatch(removePost({ postId }));
       setOpen(false);
-      const res = await axios.delete(`${API_URL}/post/${postId}`, {
+      const res = await axios.delete(`${NEW_URL}/post/${postId}`, {
         withCredentials: true,
       });
 
@@ -52,53 +52,53 @@ const Options = ({
   };
 
   const followUser = async () => {
-  // optimistic update
-  dispatch(
-    followRecv({
-      follow: !isFollowing,
-      recvId: userId,
-    })
-  );
-
-  try {
-    const res = await axios.patch(
-      `${API_URL}/follow/${userId}`,
-      {},
-      { withCredentials: true }
+    // optimistic update
+    dispatch(
+      followRecv({
+        follow: !isFollowing,
+        recvId: userId,
+      })
     );
 
-    if (!res.data.success) {
-      throw new Error(res.data.message || "Failed to follow user");
+    try {
+      const res = await axios.patch(
+        `${NEW_URL}/follow/${userId}`,
+        {},
+        { withCredentials: true }
+      );
+
+      if (!res.data.success) {
+        throw new Error(res.data.message || "Failed to follow user");
+      }
+
+      const follow = res.data.follow;
+
+      toast.success(res.data.message);
+
+      // sync actual backend state
+      dispatch(
+        followRecv({
+          follow,
+          recvId: userId,
+        })
+      );
+
+    } catch (error) {
+      // rollback optimistic update
+      dispatch(
+        followRecv({
+          follow: isFollowing,
+          recvId: userId,
+        })
+      );
+
+      toast.error(
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to follow user"
+      );
     }
-
-    const follow = res.data.follow;
-
-    toast.success(res.data.message);
-
-    // sync actual backend state
-    dispatch(
-      followRecv({
-        follow,
-        recvId: userId,
-      })
-    );
-
-  } catch (error) {
-    // rollback optimistic update
-    dispatch(
-      followRecv({
-        follow: isFollowing,
-        recvId: userId,
-      })
-    );
-
-    toast.error(
-      error.response?.data?.message ||
-      error.message ||
-      "Failed to follow user"
-    );
-  }
-};
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

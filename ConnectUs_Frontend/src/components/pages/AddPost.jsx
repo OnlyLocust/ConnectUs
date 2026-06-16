@@ -11,7 +11,7 @@ import ProfileHeader from "../common/addPostPage/ProfileHeader";
 import ImageInput from "../common/addPostPage/ImageInput";
 import SubmitButton from "../common/addPostPage/SubmitButton";
 import CaptionInput from "../common/addPostPage/CaptionInput";
-import { API_URL } from "@/constants/constant";
+import { NEW_URL } from "@/constants/constant";
 
 export default function AddPost() {
   const dispatch = useDispatch();
@@ -67,12 +67,11 @@ export default function AddPost() {
       }
       formData.append("caption", caption);
 
-      const res = await axios.post(`${API_URL}/post/add`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        withCredentials: true,
-      });
+      const res = await axios.post(
+        `${NEW_URL}/post/add`,
+        formData,
+        { withCredentials: true }
+      );
 
       if (res.data.success === false) {
         throw new Error(res.data.message || "Failed to create post");
@@ -90,8 +89,8 @@ export default function AddPost() {
     } catch (error) {
       toast.error(
         error.response?.data?.message ||
-          error.message ||
-          "Failed to create post"
+        error.message ||
+        "Failed to create post"
       );
     } finally {
       setIsLoading(false);

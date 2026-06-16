@@ -8,7 +8,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import Loader from "./Loader";
-import { API_URL } from "@/constants/constant";
+
 import { NEW_URL } from "@/constants/constant";
 
 const ChatArea = ({ recvId, activeChat }) => {
@@ -44,7 +44,7 @@ const ChatArea = ({ recvId, activeChat }) => {
 
     const setNotRead = async () => {
       try {
-        await axios.patch(`${API_URL}/chat/notread/${activeChat}`, {
+        await axios.patch(`${NEW_URL}/chat/notread/${activeChat}`, {}, {
           withCredentials: true,
         });
       } catch (error) {
@@ -78,17 +78,14 @@ const ChatArea = ({ recvId, activeChat }) => {
               className={`flex ${msg.isSender ? "justify-end" : "justify-start"}`}
             >
               <div
-                className={`max-w-xs md:max-w-md rounded-lg px-4 py-2 transition-opacity duration-300 ${
-                  isPending ? "opacity-60" : "opacity-100"
-                } ${
-                  msg.isSender ? "bg-blue-500 text-white" : "bg-muted text-foreground"
-                }`}
+                className={`max-w-xs md:max-w-md rounded-lg px-4 py-2 transition-opacity duration-300 ${isPending ? "opacity-60" : "opacity-100"
+                  } ${msg.isSender ? "bg-blue-500 text-white" : "bg-muted text-foreground"
+                  }`}
               >
                 <p>{msg.message}</p>
                 <p
-                  className={`text-xs mt-1 ${
-                    msg.isSender ? "text-blue-100" : "text-muted-foreground"
-                  }`}
+                  className={`text-xs mt-1 ${msg.isSender ? "text-blue-100" : "text-muted-foreground"
+                    }`}
                 >
                   {formatDistanceToNow(msg.createdAt, { addSuffix: true })}
                 </p>

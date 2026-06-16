@@ -13,7 +13,7 @@ import ProfileInput from "../common/editProfilePage/ProfileInput";
 import UserInputName from "../common/editProfilePage/UserInputName";
 import SubmitButton from "../common/editProfilePage/SubmitButton";
 import ShowAvatar from "../common/ShowAvatar";
-import { API_URL, NEW_URL } from "@/constants/constant";
+import { NEW_URL } from "@/constants/constant";
 
 const EditProfile = () => {
   const router = useRouter();
@@ -148,7 +148,7 @@ const EditProfile = () => {
 
         <BioInput value={formData.bio} onChange={handleChange} />
 
-        <SubmitButton isLoading={isLoading} userId={userId}/>
+        <SubmitButton isLoading={isLoading} userId={userId} />
       </form>
     </div>
   );

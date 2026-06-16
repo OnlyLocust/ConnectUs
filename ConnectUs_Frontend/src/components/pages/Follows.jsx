@@ -11,7 +11,7 @@ import SearchInput from "../common/followPage/SearchInput";
 import FollowHeaderProfile from "../common/followPage/FollowHeaderProfile";
 import FollowType from "../common/followPage/FollowType";
 import ShowFollowsBox from "../common/followPage/ShowFollowsBox";
-import { API_URL, NEW_URL } from "@/constants/constant";
+import { NEW_URL } from "@/constants/constant";
 
 export default function FollowsPage({ id, followType }) {
   const follow = useSelector((state) => state.follow.follow) || [];

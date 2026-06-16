@@ -13,7 +13,7 @@ import Settings from "../common/notificationPage/Settings";
 import NotificationCard from "../common/notificationPage/NotificationCard";
 import Header from "../common/notificationPage/Header";
 import LoadingNotifications from "../common/notificationPage/LoadingNotifications";
-import { API_URL } from "@/constants/constant";
+
 import { NEW_URL } from "@/constants/constant";
 
 export default function NotificationsPage() {
@@ -109,11 +109,10 @@ export default function NotificationsPage() {
                 filteredNotifications.map((notification, i) => (
                   <div
                     key={notification._id}
-                    className={`p-4 rounded-lg ${
-                      i < notRead && activeTab === "all"
+                    className={`p-4 rounded-lg ${i < notRead && activeTab === "all"
                         ? "bg-muted border border-primary/20"
                         : "bg-card border border-border"
-                    }`}
+                      }`}
                   >
                     <NotificationCard
                       getNotificationIcon={getNotificationIcon}

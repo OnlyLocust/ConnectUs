@@ -8,7 +8,7 @@ import Link from "next/link";
 import React, { useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
-import { API_URL } from "@/constants/constant";
+import { NEW_URL } from "@/constants/constant";
 
 const FirstButton = ({ userId, id }) => {
   const dispatch = useDispatch();
@@ -26,14 +26,14 @@ const FirstButton = ({ userId, id }) => {
     setFollowLoading(true);
 
     const follow = !isFollowing;
-    
+
     // Instant optimistic update
     dispatch(setFollower({ follow }));
     dispatch(followRecv({ follow, recvId: id }));
 
     try {
       const res = await axios.patch(
-        `${API_URL}/follow/${id}`,
+        `${NEW_URL}/follow/${id}`,
         {},
         { withCredentials: true }
       );

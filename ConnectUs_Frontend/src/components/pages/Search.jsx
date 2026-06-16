@@ -12,7 +12,7 @@ import SearchForm from "../common/searchPage/SearchForm";
 import SearchLoading from "../common/searchPage/SearchLoading";
 import NoSearch from "../common/searchPage/NoSearch";
 import SearchShowFollowBox from "../common/searchPage/SearchShowFollowBox";
-import { API_URL } from "@/constants/constant";
+
 import { NEW_URL } from "@/constants/constant";
 
 const searchSlicing = 7;

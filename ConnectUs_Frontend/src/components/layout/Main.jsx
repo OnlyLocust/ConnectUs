@@ -8,7 +8,7 @@ import { setPosts, addPosts } from "@/store/postSlice";
 import axios from "axios";
 import Loading from "../common/Loading";
 import NoPosts from "../common/NoPost";
-import { API_URL } from "@/constants/constant";
+import { NEW_URL } from "@/constants/constant";
 
 const Main = () => {
   const dispatch = useDispatch();
@@ -34,8 +34,8 @@ const Main = () => {
     try {
       const before = (!isInitial && posts.length > 0) ? posts[posts.length - 1].createdAt : "";
       const url = before
-        ? `${API_URL}/post?before=${encodeURIComponent(before)}&limit=4`
-        : `${API_URL}/post?limit=4`;
+        ? `${NEW_URL}/post?before=${encodeURIComponent(before)}&limit=4`
+        : `${NEW_URL}/post?limit=4`;
 
       const res = await axios.get(url, {
         withCredentials: true,
@@ -73,8 +73,8 @@ const Main = () => {
       if (axios.isCancel(error)) return;
       toast.error(
         error.response?.data?.message ||
-          error.message ||
-          "Failed to fetch posts"
+        error.message ||
+        "Failed to fetch posts"
       );
     } finally {
       setLoading(false);

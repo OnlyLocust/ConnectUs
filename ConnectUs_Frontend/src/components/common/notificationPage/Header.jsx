@@ -4,16 +4,17 @@ import axios from "axios";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
-import { API_URL } from "@/constants/constant";
+import { NEW_URL } from "@/constants/constant";
 
 const Header = () => {
   const dispatch = useDispatch();
 
   const setNotReadZero = async () => {
     try {
-      const res = await axios.patch(`${API_URL}/notification/reset`, {
+      const res = await axios.patch(`${NEW_URL}/notification/reset`, {}, {
         withCredentials: true,
       });
+
       if (!res.data.success) {
         throw new Error("Failed to set zero ");
       }
