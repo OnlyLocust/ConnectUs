@@ -1,7 +1,15 @@
 import express from "express";
-import { addComment, createPost, deletePost, getHomePosts, getPost, getPosts, likeUnlikePost, toggleBookmark } from "../controllers/post.controller.js";
 import { protect } from "../middleware/auth.js";
 import upload from "../middleware/multer.js";
+
+import { getPosts } from "../controllers/post/getPosts.js";
+import { getPost } from "../controllers/post/getPost.js";
+import { toggleBookmark } from "../controllers/post/toggleBookmark.js";
+import { getHomePosts } from "../controllers/post/getHomePosts.js";
+import { addComment } from "../controllers/post/addComment.js";
+import { likeUnlikePost } from "../controllers/post/likeUnlikePost.js";
+import { deletePost } from "../controllers/post/deletePost.js";
+import { createPost } from "../controllers/post/createPost.js";
 
 const router = express.Router();
 

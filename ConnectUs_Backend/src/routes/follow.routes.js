@@ -1,6 +1,7 @@
 import express from "express";
-import { toggleFollow } from "../controllers/follow.controller.js";
 import { protect } from "../middleware/auth.js";
+
+import { toggleFollow } from "../controllers/follow/toggleFollow.js";
 
 const router = express.Router();
 

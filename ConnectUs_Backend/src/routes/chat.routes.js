@@ -1,6 +1,11 @@
 import express from "express";
-import { getMessages, addChat ,chatUsers, sendMessage, markChatAsRead} from "../controllers/chat.controller.js";
 import { protect } from "../middleware/auth.js";
+
+import {getMessages} from "../controllers/chat/getMessages.js"
+import {addChat} from "../controllers/chat/addChat.js"
+import {chatUsers} from "../controllers/chat/chatUsers.js"
+import {sendMessage} from "../controllers/chat/sendMessage.js"
+import {markChatAsRead} from "../controllers/chat/markChatAsRead.js"
 
 const router = express.Router();
 

@@ -1,5 +1,5 @@
-import User from "../models/user.model.js";
-import { eventBus, EVENTS } from "../utils/eventBus.js";
+import User from "../../models/user.model.js";
+import { eventBus, EVENTS } from "../../utils/eventBus.js";
 
 export const toggleFollow = async (req, res) => {
   try {
