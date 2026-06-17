@@ -13,6 +13,7 @@ let activeChatRoom = null;
 let receivedNotificationIds = new Set();
 let socket;
 let resyncAbortController = null;
+let disconnectTimestamp = null;
 
 export const initiateSocket = (userId) => {
   if (socket) {
@@ -40,6 +41,7 @@ export const initiateSocket = (userId) => {
 
   socket.on("disconnect", (reason) => {
     console.warn("⚠️ Socket disconnected. Reason:", reason);
+    disconnectTimestamp = Date.now();
     if (resyncAbortController) {
       resyncAbortController.abort();
       resyncAbortController = null;
@@ -55,6 +57,11 @@ export const initiateSocket = (userId) => {
     }
     resyncAbortController = new AbortController();
     const signal = resyncAbortController.signal;
+
+    // Check how long we were disconnected
+    const disconnectDuration = disconnectTimestamp ? Date.now() - disconnectTimestamp : null;
+    disconnectTimestamp = null; // Reset for future disconnects
+    const shouldResync = disconnectDuration === null || disconnectDuration > 30000;
 
     socket.emit("get-users", {});
 
@@ -130,17 +137,19 @@ export const initiateSocket = (userId) => {
     }).catch(handleCatch("chat users list"));
 
     // Reconnect recovery for home feed posts
-    const homePosts = store.getState().posts.posts;
-    if (homePosts && homePosts.length > 0) {
-      const fetchLimit = Math.max(10, homePosts.length);
-      axios.get(`${process.env.NEXT_PUBLIC_API_URL}/post?limit=${fetchLimit}`, {
-        withCredentials: true,
-        signal,
-      }).then((res) => {
-        if (res.data.success) {
-          store.dispatch(reconcilePosts(res.data.posts));
-        }
-      }).catch(handleCatch("home feed posts"));
+    if (shouldResync) {
+      const homePosts = store.getState().posts.posts;
+      if (homePosts && homePosts.length > 0) {
+        const fetchLimit = Math.max(10, homePosts.length);
+        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/post?limit=${fetchLimit}`, {
+          withCredentials: true,
+          signal,
+        }).then((res) => {
+          if (res.data.success) {
+            store.dispatch(reconcilePosts(res.data.posts));
+          }
+        }).catch(handleCatch("home feed posts"));
+      }
     }
 
     // Reconnect recovery for active profile details
