@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import http from "http";
+import mongoSanitize from "./src/middleware/mongoSanitize.js";
 
 import { setupSocket } from "./src/socket/index.js";
 import connectDB from "./src/config/db.js";
@@ -30,6 +31,7 @@ app.use(
 );
 
 app.use(express.json());
+app.use(mongoSanitize);
 app.use(cookieParser());
 
 // Health Check
