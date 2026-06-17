@@ -25,7 +25,7 @@ export const initiateSocket = (userId) => {
   }
 
   socket = io(process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:5000", {
-    query: { userId },
+    withCredentials: true,
     transports: ["websocket"],
     reconnection: true,
     reconnectionAttempts: Infinity,

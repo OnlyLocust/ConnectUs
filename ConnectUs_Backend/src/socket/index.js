@@ -1,4 +1,5 @@
 import { Server } from "socket.io";
+import jwt from "jsonwebtoken";
 import User from "../models/user.model.js";
 import { onlineUsers } from "./onlineUsers.js";
 import { getPresenceSubscribers } from "./getPresenceSubscribers.js";
@@ -13,9 +14,38 @@ export const setupSocket = (server) => {
 
   global.io = io;
 
+  io.use((socket, next) => {
+    try {
+      const cookieHeader = socket.handshake.headers.cookie;
+      if (!cookieHeader) {
+        return next(new Error("Authentication error: No cookies provided"));
+      }
+
+      // Simple cookie parser helper
+      const cookies = {};
+      cookieHeader.split(";").forEach((cookie) => {
+        const parts = cookie.split("=");
+        if (parts.length >= 2) {
+          cookies[parts[0].trim()] = parts.slice(1).join("=").trim();
+        }
+      });
+
+      const token = cookies.token;
+      if (!token) {
+        return next(new Error("Authentication error: No token found"));
+      }
+
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      socket.userId = decoded.id;
+      next();
+    } catch (err) {
+      return next(new Error("Authentication error: Invalid or expired token"));
+    }
+  });
+
   io.on("connection", async (socket) => {
 
-    const { userId } = socket.handshake.query;
+    const userId = socket.userId;
 
     if (!userId) {
       return socket.disconnect();
