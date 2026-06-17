@@ -13,7 +13,7 @@ export const login = async (req, res) => {
       });
     }
 
-    const existUser = await User.findOne({ email }).select("+password");
+    const existUser = await User.findOne({ email }).select("+password").lean();
 
     if (!existUser) {
       return res.status(400).json({

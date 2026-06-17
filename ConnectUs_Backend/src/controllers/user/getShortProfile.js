@@ -7,7 +7,8 @@ export const getShortProfile = async (req, res) => {
 
     const user = await User.findById(id)
       .populate("posts")
-      .populate("bookmarks");
+      .populate("bookmarks")
+      .lean();
 
     if (!user) {
       return res.status(404).json({

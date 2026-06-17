@@ -14,7 +14,7 @@ export const signup = async (req, res) => {
       });
     }
 
-    const usernameExists = await User.findOne({ username });
+    const usernameExists = await User.findOne({ username }).select("_id").lean();
 
     if (usernameExists) {
         return res.status(400).json({
@@ -23,7 +23,7 @@ export const signup = async (req, res) => {
         });
     }
 
-    const emailExists = await User.findOne({ email });
+    const emailExists = await User.findOne({ email }).select("_id").lean();
 
     if (emailExists) {
         return res.status(400).json({

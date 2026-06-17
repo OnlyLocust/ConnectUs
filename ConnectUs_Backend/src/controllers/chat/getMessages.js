@@ -19,7 +19,8 @@ export const getMessages = async (req, res) => {
         options: {
           sort: { createdAt: 1 },
         },
-      });
+      })
+      .lean();
 
     if (!chat) {
       return res.status(200).json({

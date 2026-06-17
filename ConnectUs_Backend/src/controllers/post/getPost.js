@@ -18,7 +18,8 @@ export const getPost = async (req, res) => {
           path: "author",
           select: "username profilePicture",
         },
-      });
+      })
+      .lean();
 
     if (!post) {
       return res.status(404).json({

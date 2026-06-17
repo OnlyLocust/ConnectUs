@@ -36,7 +36,8 @@ export const getHomePosts = async (req, res) => {
           select: "username profilePicture",
         },
       })
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .lean();
 
     if (!before) {
       const skip = parseInt(req.query.skip) || 0;

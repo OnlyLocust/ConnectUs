@@ -13,7 +13,8 @@ export const chatUsers = async (req, res) => {
         "members",
         "username profilePicture lastSeen"
       )
-      .sort({ updatedAt: -1 });
+      .sort({ updatedAt: -1 })
+      .lean();
 
     const chatUsers = chats.map((chat) => {
       const otherMember =
@@ -31,7 +32,7 @@ export const chatUsers = async (req, res) => {
         },
         lastMessage: chat.lastMessage,
         updatedAt: chat.updatedAt,
-        notRead: chat.notRead.get(userId.toString()) || 0,
+        notRead: (chat.notRead instanceof Map ? chat.notRead.get(userId.toString()) : chat.notRead?.[userId.toString()]) || 0,
       };
     });
 
