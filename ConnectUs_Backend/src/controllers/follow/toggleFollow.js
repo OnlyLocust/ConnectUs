@@ -48,18 +48,23 @@ export const toggleFollow = async (req, res) => {
 
     if (isFollowing) {
 
-      currentUser.following =
-        currentUser.following.filter(
-          id => id.toString() !== userId
-        );
+      await User.findByIdAndUpdate(
+        currentUserId,
+        {
+          $pull: {
+            following: userId,
+          },
+        }
+      );
 
-      user.followers =
-        user.followers.filter(
-          id => id.toString() !== currentUserId
-        );
-
-      await currentUser.save();
-      await user.save();
+      await User.findByIdAndUpdate(
+        userId,
+          {
+            $pull: {
+              followers: currentUserId,
+            },
+          }
+      );
 
       eventBus.emit(EVENTS.FOLLOW_CREATED, {
         followerId: currentUserId,
@@ -75,11 +80,24 @@ export const toggleFollow = async (req, res) => {
 
     } else {
 
-      currentUser.following.push(userId);
-      user.followers.push(currentUserId);
+      await User.findByIdAndUpdate(
+        currentUserId,
+          {
+            $addToSet: {
+              following: userId,
+            },
+          }
+      );
 
-      await currentUser.save();
-      await user.save();
+      await User.findByIdAndUpdate(
+        userId,
+        {
+          $addToSet: {
+            followers: currentUserId,
+          },
+        }
+      );
+      
 
       eventBus.emit(EVENTS.FOLLOW_CREATED, {
         followerId: currentUserId,
