@@ -4,6 +4,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import http from "http";
 import mongoSanitize from "./src/middleware/mongoSanitize.js";
+import helmet from "helmet";
 
 import { setupSocket } from "./src/socket/index.js";
 import connectDB from "./src/config/db.js";
@@ -32,6 +33,7 @@ app.use(
 
 app.use(express.json());
 app.use(mongoSanitize);
+app.use(helmet());
 app.use(cookieParser());
 
 // Health Check
